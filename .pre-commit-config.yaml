@@ -1,0 +1,83 @@
+repos:
+  # Quick content checks based on grepping for python specific patterns:
+  - repo: https://github.com/pre-commit/pygrep-hooks
+    rev: v1.10.0
+    hooks:
+      - id: python-check-blanket-noqa # Prohibit overly broad QA exclusions.
+      - id: python-no-eval # Never use eval() it's dangerous.
+      - id: python-no-log-warn # logger.warning(), not old .warn()
+      - id: rst-backticks # Find single rather than double backticks
+      - id: rst-directive-colons # Missing double-colons after directives
+      - id: rst-inline-touching-normal # Inline code should never touch normal text
+      - id: python-use-type-annotations # Use annotations not old-style type comments
+
+  # Other file formatting, plus common Git mistakes & text file standardization:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-added-large-files # Don't accidentally commit giant files.
+        args: ["--maxkb=9000"]
+      - id: check-merge-conflict # Watch for lingering merge markers.
+      - id: check-yaml # Validate all YAML files.
+      - id: check-case-conflict # Avoid case sensitivity in file names.
+      - id: debug-statements # Watch for lingering debugger calls.
+      - id: end-of-file-fixer # Ensure there's a newline at EOF.
+      - id: mixed-line-ending # Only newlines, no line-feeds.
+      - id: trailing-whitespace # Remove trailing whitespace.
+      - id: name-tests-test # Follow PyTest naming convention.
+
+  ########################################################################################
+  # Formatters: hooks that re-write Python and RST files
+  ########################################################################################
+
+  # Linter and formatter that replaces flake8, isort, etc.
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.11.11
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+      - id: ruff-format
+
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v4.0.0-alpha.8
+    hooks:
+      - id: prettier
+        types_or: [yaml]
+
+  # clear outputs from Jupyter notebooks
+  - repo: https://github.com/kynan/nbstripout
+    rev: 0.8.1
+    hooks:
+      - id: nbstripout
+        args: [--drop-empty-cells]
+
+  ########################################################################################
+  # Linters: hooks that check but don't alter Python & RST files
+  ########################################################################################
+
+  # Check for errors in restructuredtext (.rst) files under the doc hierarchy
+  - repo: https://github.com/PyCQA/doc8
+    rev: v1.1.2
+    hooks:
+      - id: doc8
+        args: [--config, pyproject.toml]
+
+  # Lint any RST files and embedded code blocks for syntax / formatting errors
+  - repo: https://github.com/rstcheck/rstcheck
+    rev: v6.2.4
+    hooks:
+      - id: rstcheck
+        additional_dependencies: ["rstcheck[toml, sphinx]"]
+        args: [--config, pyproject.toml]
+
+# Configuration for pre-commit.ci
+ci:
+  autofix_commit_msg: |
+    [pre-commit.ci] auto fixes from pre-commit.com hooks
+
+    For more information, see https://pre-commit.ci
+  autofix_prs: true
+  autoupdate_branch: main
+  autoupdate_commit_msg: "[pre-commit.ci] pre-commit autoupdate"
+  autoupdate_schedule: weekly
+  submodules: false
