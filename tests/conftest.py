@@ -1,26 +1,39 @@
-"""PyTest configuration module. Defines useful fixtures, command line args."""
-
-import logging
+import shutil
 from pathlib import Path
 
 import pytest
 
-logger = logging.getLogger(__name__)
+from patio.data.asset_data import AssetData
+from patio.data.profile_data import ProfileData
 
 
-def pytest_addoption(parser: pytest.Parser) -> None:
-    """Add package-specific command line options to pytest.
+@pytest.fixture(scope="session")
+def copt_license_etc():
+    import os
 
-    This is slightly magical -- pytest has a hook that will run this function
-    automatically, adding any options defined here to the internal pytest options that
-    already exist.
-    """
-    parser.addoption(
-        "--sandbox",
-        action="store_true",
-        default=False,
-        help="Flag to indicate that the tests should use a sandbox.",
-    )
+    for var, val in {
+        "COPT_HOME": "/Users/aengel/Applications/copt72",
+        "COPT_LICENSE_DIR": "/Users/aengel/Applications/copt72",
+        # "DYLD_LIBRARY_PATH": ""
+    }.items():
+        # if var not in os.environ:
+        #     val = subprocess.getoutput(["echo", f"${var}"])
+        os.environ[var] = val
+
+
+@pytest.fixture(scope="session")
+def asset_data():
+    return AssetData()
+
+
+@pytest.fixture(scope="session")
+def profile_data(asset_data):
+    return ProfileData(asset_data, solar_ilr=1.34, regime="reference")
+
+
+@pytest.fixture(scope="session")
+def profile_data_limited(asset_data):
+    return ProfileData(asset_data, solar_ilr=1.34, regime="limited")
 
 
 @pytest.fixture(scope="session")
@@ -33,3 +46,14 @@ def test_dir() -> Path:
     Mostly this is meant as an example of a fixture.
     """
     return Path(__file__).parent
+
+
+@pytest.fixture(scope="session")
+def temp_dir(test_dir) -> Path:
+    """Return the path to a temp directory that gets deleted on teardown."""
+    out = test_dir / "temp"
+    if out.exists():
+        shutil.rmtree(out)
+    out.mkdir(exist_ok=True)
+    return out
+    # shutil.rmtree(out)

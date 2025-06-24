@@ -1,0 +1,785 @@
+\documentclass[9pt, oneside]{article}
+\usepackage[letterpaper, top=0.75in, bottom=0.75in, left=0.75in, right=0.75in]{geometry}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{enumitem}
+\usepackage{mathtools}
+\usepackage{setspace}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{xpatch}
+\usepackage{parskip}
+\usepackage{hyperref}
+\usepackage{multicol}
+\usepackage{draftwatermark}
+\SetWatermarkText{CONFIDENTIAL\\DRAFT}
+\SetWatermarkScale{2}
+\newcommand{\eqname}[1]{\tag*{#1}}
+\setlength{\columnsep}{0.25in}
+\widowpenalty10000
+\clubpenalty10000
+\numberwithin{equation}{subsubsection}
+\raggedbottom
+\everymath{\displaystyle}
+\title{A model for zero impact load}
+\author{RMI}
+\allowdisplaybreaks
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\section{Introduction}\label{sec:introduction}
+We define a model that selects a set of clean energy resources to add at an incumbent fossil plant to support additional load at that location.
+
+This optimization sits within our model for analyzing clean repowering opportunities called Patio.
+That model looks for opportunities to add renewables behind the POI of existing fossil power plants and then simulates the operation of the balancing authority after those renewables are added.
+Those simulated operations define a set of the export requirements of the projects this model constructs and are used to determine hourly marginal prices for the balancing authority.
+
+\subsection{A brief primer on Patio}
+Patio begins with all major existing fossil generators in a grid region eligible for either generator replacement or surplus interconnection service.
+We use the term \textit{clean repowering} to refer to renewables added at an existing POI under either of these rules.
+To be considered for clean repowering, a fossil generator must be in a region where the relevant process exists and its retirement date from EIA 860M must be in the correct range.
+
+Patio identifies potential renewable sites within 10 km of each fossil site and creates a
+set of portfolios in which it selects increasing amounts of renewables and storage
+at the sites where renewables are most cost effective relative to the incumbent fossil generator,
+specifically when comparing renewable LCOE with the incumbent fossil generator's short-run marginal cost of energy.
+It selects these renewables to maximize replacement of historical fossil dispatch
+and minimize cost constrained by siting limitations and the incumbent generator’s
+capacity to avoid transmission upgrades beyond spur lines.
+
+For each portfolio, the model simulates hourly operations using 15 years of historical data
+to estimate production costs, emissions, and reliability under different weather
+and fuel price conditions.
+\begin{itemize}
+	\item Simulations employ a simplified economic dispatch logic to determine fossil and
+	      storage operations before and after renewables deployment.
+	\item Interconnection constraints are enforced by preventing the hourly output of clean
+	      repowering renewables and the associated incumbent fossil generator from exceeding the
+	      fossil generator's capacity.
+	\item Fossil operating costs are estimated using a regression of historical plant-level
+	      FERC 1, EIA 860 and 923, and EPA CAMD fuel and operating cost and operational data to
+	      best reflect impacts of changing utilization patterns on generation costs.
+\end{itemize}
+
+\section{Notation}\label{sec:notation}
+First we define our variables, data, etc. so we understand what we are
+talking about.
+
+\subsection{Indices and sets}\label{subsec:indices-and-sets}
+\begin{multicols}{2}
+	{\small
+		\begin{itemize}
+			\item[$\ell \in \mathcal{L}$] where $\ell$ denotes a site containing one or more renewable resources and $\mathcal{L}$ is the set of all such sites near the incumbent fossil plant.
+			      These sites and their data come from \href{https://www.nrel.gov/gis/renewable-energy-supply-curves.html}{NREL Renewable Energy Supply Curves}.
+			\item[$j \in \mathcal{J}$] where $j$ denotes a renewable resource and $\mathcal{J}$ is the set of onshore wind, offshore wind, and solar resources accross all $\mathcal{L}$ sites.
+			\item[$\mathcal{J}_{\ell} \subseteq \mathcal{J}$] where $\mathcal{J}_{\ell}$ denotes the set of resources $j$ within site $\ell$.
+			\item[$\ell_0$] where $\ell_0$ denotes the set of resources on the site closest to the incumbent power plant.
+			\item[$\mathcal{W} \subseteq \mathcal{J}$] $\mathcal{W}$ denotes the subset of $\mathcal{J}$ representing wind resources.
+			\item[$t \in \mathcal{T}$] where $t$ denotes an hour and $\mathcal{T}$ is the set of all modeled hours.
+			\item[$\mathcal{C} \subseteq \mathcal{T}$] the set of critical peak hours.
+			\item[$\mathcal{B} \subseteq \mathcal{T}$] the set of hours $t$ in the worst RE weather year selected from the 15 available.
+			\item[$\mathcal{G} \subseteq \mathcal{T}$] the set of hours $t$ in the second-worst RE weather years selected from the 15 available.
+			\item[$y \in$] $\{0,\dots,\lambda-1\}$ indices for future years where $\mathcal{T}_y$ is the set of hours $t$ in year $y$.
+			\item[$m \in$] $\{1,\dots,11\}$ indices for future months where $\mathcal{T}_y^m$ is the set of hours $t$ in month $m$ of year $y$ and $\mathcal{T}^m$ is the set of hours $t$ in month $m$ in all years.
+			      In the model, months are used to account for seasonal factors, for this reason we do not use actual calendar months but 12 `months' each consisting of 730 hours.
+		\end{itemize}
+	}
+\end{multicols}
+
+\subsection{Data}\label{subsec:data}
+\begin{multicols}{2}
+	{\small
+		\begin{itemize}
+			\item[$F_{ht}$] historical output of incumbent fossil plant in $t$.
+			\item[$F_{E}$] emissions intensity of incumbent fossil plant in tonnes/MWh.
+			\item[$F_c$] capacity of incumbent power plant and capacity of its POI.
+			\item[$F_{mt}$] marginal cost of operating incumbent fossil plant in $t$ (\$/MWh).
+			\item[$d_{t}$] demand of new load during $t$, typically this load is flat and is some percentage of $F_c$.
+			\item[$p_{jt}$] output of one MW of renewable $j$ in $t$.
+			      These hourly renewable production profiles come from \href{https://www.renewables.ninja}{renewables.ninja}.
+			\item[$u_{j}$] distance from resource $j$ to the incumbent plant's POI.
+			\item[$a_{j\ell}$] area required to build one MW of resource $j$ within site $\ell$.
+			\item[$q_{\ell}$] area available for the set of $\ell$ for all renewables.
+			\item[$q_{w\ell}$] area available within site $\ell$ for wind.
+			\item[$k_{j}$] Capex for resource $j$, (\$/MW).
+			\item[$k_u$] Capex for transmission, (\$/MW-km).
+			\item[$o_{j}$] FOM for resource $j$, (\$/MW-y). Note: in the case of Li-ion storage $o_s = \frac{0.8}{30} k_s$ as described in ATB 2024.
+			\item[$itc$] investment tax credit (\%).
+			\item[$ptc$] production tax credit (\$/MWh).
+			\item[$N_{bt}$] marginal cost of operating new fossil for load on stored fuel (\$/MWh).
+		\end{itemize}
+	}
+	\subsubsection{Data from Patio modeled portfolio}
+	{\small
+		\begin{itemize}
+			\item[$F_{bt}$] baseline output of incumbent fossil plant in $t$.
+			\item[$F_{rt}$] target generation of prior clean repowering in $t$.
+			      This is zero unless we are running in a Patio portfolio in which this plant was selected for clean repowering.
+			\item[$B_{gt}$] fraction of generation curtailed across balancing area in $t$.
+			\item[$B_{Et}$] carbon emissions of generators in BA controlled by BA in $t$ in tonnes.
+			\item[$B_{mt}$] marginal cost of electricity from BA in $t$ (\$/MWh).
+			\item[$B_{Tt}$] total operating cost of generators in BA controlled by BA in $t$.
+		\end{itemize}
+	}
+\end{multicols}
+
+\subsection{Parameters}\label{subsec:parameters}
+\begin{multicols}{2}
+	{\small
+		\begin{itemize}
+			\item[$\lambda$] project life in years.
+			\item[$\iota$] cost inflation rate.
+			\item[$\delta$] real discount rate.
+			\item[$\eta_d$] discharge efficiency.
+			\item[$\eta_c$] charge efficiency.
+			\item[$\eta_{self}$] self discharge per hour.
+			\item[$\rho$] the percentage of new load that can be supplied with fossil over the period.
+			\item[$\varepsilon$] the percentage of historical site fossil generation to serve as a ceiling for total fossil dispatch.
+			\item[$\upsilon$] the percentage of annual load that must be met to avoid failing dispatch.
+			\item[$\mu$] the lowest value for load allowed in a single hour.
+			\item[$\omega$] duration of storage resource in hours.
+			\item[$\nu$] the number of critical hours in a year, this is also the cardinality of $\mathcal{C}_y$ or $|\mathcal{C}_y|$.
+			\item[$\gamma$] the number of hours over which gas consumption cannot exceed historical.
+			\item[$\xi$] the multiplier applied to historical trailing gas consumption.
+			\item[$\zeta$] the number of hours of stored fuel, i.e. the number of hours that the load can be entirely served by the backup generator running on stored fuel.
+			\item[$\psi$] the number of hours that the backup generator can operate at full capacity during a calendar year.
+			\item[$\beta$] market price multiplier, a haircut applied to BA market revenue seen by the model.
+			\item[$\phi$] fossil load penalty, non-economic penalty used only to push the model away from using fossil for load when alternatives are available.
+			\item[$\alpha$] area occupied by the load per MW in km$^2$ / MW, for datacenters this is typically 0.004 km$^2$ / MW which is approximately 1 acre per MW.
+		\end{itemize}
+	}
+\end{multicols}
+
+\subsection{Decision variables}\label{subsec:decision-variables}
+\begin{multicols}{2}
+	{\small
+		\begin{itemize}
+			\item[$\mathbf{x}$] the decision variable vector in its entirety, we refer to parts of it as described below.
+			\item[$x_j$] MW of new build renewable $j$.
+			\item[$x_d$] MW of new build storage.
+			\item[$x_s$] MWh of new build storage so that $\dfrac{x_s}{x_d}$ is the duration of the storage in hours.
+			\item[$x_{dt}$] storage discharge in $t$, $\mathbf{x}_{d}$ for all hours.
+			\item[$x_{ct}$] storage charging in $t$, $\mathbf{x}_{c}$ for all hours.
+			\item[$x_{st}$] storage state of charge in $t$, $\mathbf{x}_{s}$ for all hours.
+			\item[$x_{n}$] MW of new fossil to serve load.
+			\item[$x_{nt}$] gas operation of new fossil for load in $t$, $\mathbf{x}_{n}$ for all hours.
+			\item[$x_{nbt}$] stored fuel operation of new fossil for load in $t$, $\mathbf{x}_{n}$ for all hours.
+			\item[$x_{bt}$] stored fuel operation of backup generators in $t$, $\mathbf{x}_{b}$ for all hours.
+			      Backup capacity assumed to be $x_v$ or $x_v^{**}$.
+			\item[$x_v$] MW of load, used in \hyperref[sec:res]{resource selection} where load is not flexible.
+			\item[$x_{vt}$] MW of load, used in \hyperref[sec:anndisp]{annual dispatch} where load can be flexible.
+			\item[$x_{flt}$] existing fossil for load in $t$, $\mathbf{x}_{fl}$ for all hours.
+			\item[$x_{fet}$] existing fossil for export $t$, $\mathbf{x}_{fe}$ for all hours.
+			\item[$x_{et}$] clean exports in $t$, $\mathbf{x}_{e}$ for all hours.
+			\item[$x_{gt}$] curtailment in $t$, $\mathbf{x}_{g}$ for all hours.
+		\end{itemize}
+	}
+\end{multicols}
+
+\section{Data}\label{sec:data}
+The underlying data used in this model are a combination of reported historical data
+and data modeled based on historical inputs. The data used for future years is sampled
+from 15 historical ones and this sampling preserves the interrelationships between the
+data.
+\begin{itemize}
+	\item Hourly fossil operations from \href{https://campd.epa.gov}{EPA CAMD}, used in dispatch and, in total
+	      for a balancing authority, as a proxy for net load.
+	\item Hourly renewable production profiles from \href{https://www.renewables.ninja}{renewables.ninja}
+	\item Renewable siting potential from \href{https://www.nrel.gov/gis/renewable-energy-supply-curves.html}{NREL Renewable Energy Supply Curves} include resource quality and the quantity of renewables that can be deployed there given reference land exclusions.
+	\item Generator specifications from EIA 860.
+	\item Fossil operating costs are estimated using a regression of historical plant-level
+	      FERC 1, EIA 860 and 923, and EPA CAMD fuel and operating cost and operational data to
+	      best reflect impacts of changing utilization patterns on generation costs.
+	\item Renewable and storage costs from \href{https://atb.nrel.gov/electricity/2024/data}{NREL ATB}.
+\end{itemize}
+
+\section{Model logic}\label{sec:model-logic}
+We begin with a set of the generators in a balancing authority. We then exclude any generators with retirement dates
+before 2050 and any with operating dates before 2000. We aggregate them by plant, technology, and operational status
+and then exclude any resulting combinations less than 150 MW.
+
+For each remaining plant we run it in the model with various parameter settings of $\rho$,
+$\varepsilon$, and $\nu$. So for each parameter setting we are
+seeing what is the largest load that can be served at the fossil site.
+
+For each combination of fossil plant and parameter set, we run the
+model in two parts.
+
+\begin{enumerate}
+	\item \hyperref[sec:res]{Resource selection}, in which we run the optimization to
+	      determine the amount of load, renewables, and storage, or to use our notation,
+	      the values for $x_v^*$, $x_j^* \;\forall j \in \mathcal{J}$, $x_d^*$ and $x_s^*$ using two or
+	      more weather years.
+	\item \hyperref[sec:anndisp]{Annual dispatch}, we run the optimization
+	      for each of the $\lambda$ years of the study period but with the values of
+	      $x_v^*$, $x_j^* \;\forall j \in \mathcal{J}$, $x_d^*$ and $x_s^*$ fixed to the values found in
+	      \hyperref[sec:res]{resource selection} to determine the hourly operation of
+	      the system. If $\lambda > 15$, then some weather years are reused.
+\end{enumerate}
+
+If \hyperref[sec:anndisp]{annual dispatch} fails in any year, we rerun \hyperref[sec:res]{resource selection} again to determine revised values of $x_v^*$, $x_j^* \;\forall j \in \mathcal{J}$ and $x_s^*$, but instead of $\mathcal{G}$ containing hours from the second worst weather year, it contains those hours plus the hours of the year when dispatch failed.
+This can happen at most two times so \hyperref[sec:res]{resource selection} will never be based on more than four years of weather data.
+
+The structure of the objective function and constraints as described in~\ref{sec:objfun} and~\ref{sec:constraints} respectively are shared by both optimizations, with differences described in~\ref{sec:res} and~\ref{sec:anndisp}.
+
+\subsection{Resource selection}\label{sec:res}
+In this part, we use the two years of weather data where renewables had the lowest daily generation.
+We take the worst year, the hours of which are $\mathcal{B}$, and use that year to represent the first 10 years of system operation where the PTC applies, and the second-worst year, $\mathcal{G}$ to represent the following $\lambda - 10$ years of iterations when there is no PTC\@.
+As previously mentioned, if \hyperref[sec:anndisp]{annual dispatch} fails in any year, we rerun this resource \hyperref[sec:res]{resource selection} process again with $\mathcal{G}$ augmented with the hours from the failing year.
+
+While the only part of the results of this optimization that are relevant to the final results are $x_v^*$, $x_j^* \;\forall j \in \mathcal{J}$, $x_d^*$ and $x_s^*$, the objective function values need to represent the cost and revenue of the system for all $\lambda$ years.
+That is the goal for these definitions of objective function coefficients.
+
+Note, the way PTC is represented here, the whole value of the PTC, over
+the entire study period, reduces the cost of building a renewable
+resource $j$ and is included in $c_j$.
+We then add back the PTC when energy from renewables
+is curtailed because we can’t use or export it, represented in $c_{gt}$, or
+because some of it was curtailed when it was exported because the system
+had curtailment during the relevant hour, the $ptcB_{gt}$ term of $c_{et}$.
+
+\begin{subequations}
+	\begin{align}
+		 & \begin{array}{lll}
+			   D_{\mathcal{B}} = \sum_{y=0}^{9} \left( \frac{1+\iota}{1+\delta} \right)^y & D_{\mathcal{G}} = \sum_{y=10}^{\lambda -1} \left( \frac{1+\iota}{1+\delta} \right)^y & D_{\mathcal{B} \cup \mathcal{G}} = \sum_{y=0}^{\lambda -1} \left( \frac{1+\iota}{1+\delta} \right)^y \\
+		   \end{array} \\
+		 & c_j = k_j + k_u u_j + o_j D_{\mathcal{B} \cup \mathcal{G}} - ptc \sum_{t\in \mathcal{B}} p_{jt} D_{\mathcal{B}}                                                                                                                                                                                                      \\
+		 & c_d = (1-itc) k_d + k_d \frac{0.8}{30} D_{\mathcal{B} \cup \mathcal{G}}                                                                                                                                                                                                                                              \\
+		 & c_s = (1-itc) k_s + k_s \frac{0.8}{30} D_{\mathcal{B} \cup \mathcal{G}}                                                                                                                                                                                                                                              \\
+		 & c_n = k_n + o_n D_{\mathcal{B} \cup \mathcal{G}}                                                                                                                                                                                                                                                                     \\
+		 & c_v = -V \sum_{y=0}^{\lambda -1} |\mathcal{T}_y| \left( \frac{1+\iota}{1+\delta} \right)^y                                                                                                                                                                                                                           \\
+		 & c_{nt} = \left\{ \begin{array}{ll}
+			                    \phi F_{mt} D_{\mathcal{B}} & t \in \mathcal{B} \\
+			                    \phi F_{mt} D_{\mathcal{G}} & t \in \mathcal{G}
+		                    \end{array} \right.                                                                                                                                                                                                                                          \\
+		 & c_{flt} = \left\{ \begin{array}{ll}
+			                     \phi F_{mt} D_{\mathcal{B}} & t \in \mathcal{B} \\
+			                     \phi F_{mt} D_{\mathcal{G}} & t \in \mathcal{G}
+		                     \end{array} \right.                                                                                                                                                                                                                                         \\
+		 & c_{fet} = \left\{ \begin{array}{ll}
+			                     F_{mt} D_{\mathcal{B}} & t \in \mathcal{B} \\
+			                     F_{mt} D_{\mathcal{G}} & t \in \mathcal{G}
+		                     \end{array} \right.                                                                                                                                                                                                                                              \\
+		 & c_{et} = \left\{ \begin{array}{ll}
+			                    \left[ ptc\; B_{gt} - \min \left(\beta B_{mt},\: F_{mt} \right)( 1-B_{gt} ) \right] D_{\mathcal{B}} & t \in \mathcal{B} \wedge t \notin \mathcal{C} \wedge \max \left( F_{bt} ,\: F_{ht}\right) = 0 \\[0.3em]
+			                    \left[ ptc\; B_{gt} - \min \left( B_{mt},\: F_{mt} \right)( 1-B_{gt} ) \right] D_{\mathcal{B}}      & t \in \mathcal{B} \wedge ( t \in \mathcal{C} \vee \max \left( F_{bt} ,\: F_{ht}\right) > 0 )  \\[0.3em]
+			                    -\min \left(\beta B_{mt},\: F_{mt} \right) \left(1-B_{gt}\right) D_{\mathcal{G}}                    & t \in \mathcal{G} \wedge t \notin \mathcal{C} \wedge \max \left( F_{bt} ,\: F_{ht}\right) = 0 \\[0.3em]
+			                    - \min \left( B_{mt},\: F_{mt} \right)\left(1-B_{gt}\right) D_{\mathcal{G}}                         & t \in \mathcal{G} \wedge ( t \in \mathcal{C} \vee \max \left( F_{bt} ,\: F_{ht}\right) > 0 )
+		                    \end{array} \right.                                                                        \\
+		 & c_{gt}= \left\{ \begin{array}{ll}
+			                   ptc D_{\mathcal{B}} & t \in \mathcal{B} \\
+			                   0                   & t \in \mathcal{G}
+		                   \end{array} \right.
+	\end{align}
+\end{subequations}
+
+\subsection{Annual dispatch}\label{sec:anndisp}
+These optimizations determine the project’s dispatch as well as the costs and revenues associated with that dispatch for each modeled year.
+The modeled years each represent a future year and their data is derived from 15 years of historical data.
+Because we optimize each year individually, the costs and revenues we include in the objective function must be different from those previously described.
+The following equations define the objective coefficients.
+For coefficients that include PTC in any form there are two variants, the one used in the first 10 years ($y<10$) when the PTC applies, and then the one used in any following years when there is no PTC ($y\geq10$).
+
+\begin{subequations}
+	\begin{align}
+		 & C = \frac{\frac{1+\delta}{1+\iota} - 1}{1 - \left(\frac{1+\delta}{1+\iota} \right)^{-\lambda}}                                                                              \\[1em]
+		 & c_j = \left\{ \begin{array}{ll}
+			                 C k_j + o_j - ptc \sum_{\mathcal{T}_y} p_{jt} & y < 10    \\
+			                 C k_j + o_j                                  & y \geq 10
+		                 \end{array} \right.                                                                                           \\
+		 & c_d = C (1-itc) k_d + o_d                                                                                                                                                   \\
+		 & c_s = C (1-itc) k_s + o_s                                                                                                                                                   \\
+		 & c_{n} = C k_n + o_n                                                                                                                                                         \\
+		 & c_{vt} = -V                                                                                                                                                                 \\
+		 & c_{nt} = \phi F_{mt}                                                                                                                                                        \\
+		 & c_{nbt} = \max \left( N_{bt} ,\: \phi F_{mt} + 5 \right)                                                                                                                      \\
+		 & c_{bt} = \max \left( N_{bt} ,\: \phi F_{mt} + 5 \right)                                                                                                                       \\
+		 & c_{flt} = \phi F_{mt}                                                                                                                                                       \\
+		 & c_{fet} = F_{mt}                                                                                                                                                            \\
+		 & c_{et} = \left\{
+		\begin{array}{ll}
+			ptc\; B_{gt} - \min \left(\beta B_{mt}, \:F_{mt} \right)\left(1-B_{gt}\right) & y < 10 \wedge t \notin \mathcal{C} \wedge \max \left( F_{bt} ,\: F_{ht}\right) = 0    \\[0.3em]
+			ptc\; B_{gt} - \min \left( B_{mt},\: F_{mt} \right)\left(1-B_{gt}\right)      & y < 10 \wedge ( t \in \mathcal{C} \vee \max \left( F_{bt} ,\: F_{ht}\right) > 0 )     \\[0.3em]
+			- \min \left(\beta B_{mt},\: F_{mt} \right)\left(1-B_{gt}\right)              & y \geq 10 \wedge t \notin \mathcal{C} \wedge \max \left( F_{bt} ,\: F_{ht}\right) = 0 \\[0.3em]
+			- \min \left( B_{mt},\: F_{mt} \right) \left(1-B_{gt}\right)                  & y \geq 10 \wedge ( t \in \mathcal{C} \vee \max \left( F_{bt} ,\: F_{ht}\right) > 0 )
+		\end{array} \right. \\[0.5em]
+		 & c_{gt} = \left\{
+		\begin{array}{ll}
+			ptc & y < 10    \\[0.5em]
+			0   & y \geq 10
+		\end{array} \right.
+	\end{align}
+\end{subequations}
+
+For annual dispatch we need to hold constant the capacities of resources and loads as determined in the \hyperref[sec:res]{resource selection} optimization.
+To make comparisons easier and to provide breathing room, we round load down and resources up defining a new rounded optimal value $x_i^{**}$ for each variable $x_i$ from its optimal value $x_i^{*}$ as follows:
+\begin{subequations}
+	\begin{align}
+		 & x_j^{**} = 10 \left\lceil{\frac{x_j^*}{10}}\right\rceil                                                                                                    & \forall j \in \mathcal{J} & \\
+		 & x_{d}^{**} = 25 \left\lceil{\frac{x_d^*}{25}}\right\rceil                                                                                                  &                           & \\
+		 & x_{s}^{**} = x_{d}^{**} \times 2 \left\lceil \frac{ x_s^* }{2x_{d}^{**}} \right\rceil &                           & \\
+		 & x_{n}^{**} = 25 \left\lceil{\frac{x_n^*}{25}}\right\rceil                                                                                                  &                           & \\
+		 & x_{v}^{**} = 25 \left\lfloor{\frac{x_v^*}{25}}\right\rfloor                                                                                                 &                           &
+	\end{align}
+\end{subequations}
+
+Further we swap the \hyperref[sec:res]{resource selection's} constant load variable $x_v$ for an hourly one $x_{vt}$.
+This allows the investigation of flexible loads and easier of identification of difficult periods.
+Load misses can be interpreted as required demand flexibility, use of backup generation, or case failures.
+
+\section{Objective function}\label{sec:objfun}
+The objective function minimizes the net cost of building and operating
+the project. It includes the cost of building clean, operating storage
+and fossil, less the revenue earned from clean exports. The objective
+coefficients used in \ref{eqn:obj} come from either
+\hyperref[sec:res]{Resource selection} or
+\hyperref[sec:anndisp]{Annual dispatch} depending on the part of the analysis.
+
+We do not include in the objective function the revenue earned from fossil exports as we do not want project economics to turn on the fossil plant’s operations.
+
+Note: Under some circumstances it is possible for a kind of backdoor
+economic fossil export. This happens when the BA marginal price is
+sufficiently high that fossil is run to serve load even though that load
+could have been served by clean, making the clean available for export
+and thus providing revenue. This can even happen when those exports were
+not required; they are done for purely economic reasons. While in a
+strict sense this is not what we want, it is reasonable from a business
+standpoint, and so we avoid the substantial increase in model size and
+therefore computational requirements needed to make this behavior impossible.
+
+\paragraph{Resource Selection}
+\begin{align}
+	\begin{split}
+		\min z = & \sum_{\mathcal{J}} c_{j}x_{j} + c_{d}x_{d} + c_{s}x_{s} + c_{n}x_{n} + c_{v}x_{v} + \sum_{\mathcal{T}} \left( c_{nt} x_{nt} + c_{flt} x_{flt}+ c_{fet} x_{fet} + c_{et} x_{et} + c_{gt} x_{gt} \right) \label{eqn:obj}
+	\end{split}
+\end{align}
+
+\paragraph{Annual Dispatch}
+\begin{align}
+	\begin{split}
+		\min z = & \sum_{\mathcal{J}} c_{j} x_j^{**} + c_{d}x_{d}^{**} + c_{s}x_{s}^{**} + c_{n}x_{n}^{**}                                                                                               \\
+		         & + \sum_{\mathcal{T}} \left( c_{vt} x_{vt} +c_{nt} x_{nt} + c_{nbt} x_{nbt} + c_{bt} x_{bt} + c_{flt} x_{flt}+ c_{fet} x_{fet} + c_{et} x_{et} + c_{gt} x_{gt} \right) \label{eqn:obj}
+	\end{split}
+\end{align}
+
+\section{Constraints}\label{sec:constraints}
+\subsection{Zero impact from load}\label{subsec:zero-impact-from-load}
+\subsubsection{Load}
+The first set of constraints \ref{eqn:load1} ensure that load is met in all hours and effectively defines clean export $x_{et}$, curtailment $x_{gt}$, and fossil for load $x_{flt}$.
+It does this because when aggregate clean exceeds load, that surplus will go to some combination of clean export and curtailment, or in our notation, $x_{et}+x_{gt} > 0$.
+When aggregate clean is less than load, that deficit will be made up by fossil for load $x_{flt}$.
+
+\paragraph{Resource Selection}
+\begin{subequations}
+	\begin{align}
+		 & \sum_{ \mathcal{J}} p_{jt}x_{j} + x_{dt} + x_{nt} + x_{flt} = x_v + x_{ct} + x_{et} + x_{gt} & \forall t \in \mathcal{T} \label{eqn:load1}
+	\end{align}
+\end{subequations}
+
+\paragraph{Annual Dispatch}
+\begin{subequations}
+	\begin{align}
+		 & \sum_{ \mathcal{J}} p_{jt} x_j^{**} + x_{dt} + x_{nt} + x_{nbt}+ x_{bt} + x_{flt} = x_{vt} + x_{ct} + x_{et} + x_{gt} & \forall t \in \mathcal{T} \label{eqn:load2}
+	\end{align}
+\end{subequations}
+
+\subsubsection{Critical peaks}
+In the second set of constraints \ref{eqn:load2} we create additional requirements that apply during the top $\nu$ hours of both net and gross load.
+In these hours, both load and baseline clean exports must be served by clean energy, reserving the incumbent fossil plant’s capacity to serve the grid as it must maintain its current contribution to Resource Adequacy.
+
+\paragraph{Resource Selection}
+\begin{subequations}
+	\begin{align}
+		 & \sum_{ \mathcal{J}} p_{jt}x_{j} - x_v + x_{dt} - x_{ct}+ x_{nt} \geq 0 & \forall t \in \mathcal{C} \label{eqn:load2}
+	\end{align}
+\end{subequations}
+
+\paragraph{Annual Dispatch}
+\begin{subequations}
+	\begin{align}
+		%\begin{array}{cl}
+		 & \sum_{ \mathcal{J}} p_{jt}x_{j}^{**} - x_{vt} + x_{dt} - x_{ct} + x_{nt} + x_{nbt}+ x_{bt}\geq 0 & \forall t \in \mathcal{C} \label{eqn:load2}
+		%\end{array}
+	\end{align}
+\end{subequations}
+
+\subsubsection{Required export}
+This set of constraints~\ref{eqn:export0} ensure that the combined project can continue providing the capacity and energy services that the incumbent plant (and any baseline clean repowering) provided in the baseline dispatch.
+These constraints are the same in both parts of the model.
+
+\begin{subequations}
+	\begin{align}
+		 & x_{fet} + x_{et} \geq \max \left( F_{bt} ,\: F_{ht}\right) & \forall t \in \mathcal{T}\label{eqn:export0}
+	\end{align}
+\end{subequations}
+
+\subsubsection{Clean export}
+These two sets of constraints~\ref{eqn:export1} require that aggregate net clean generation is always greater than clean exports and are an attempt to mitigate the issue described in the note in the \hyperref[sec:objfun]{objective function} section,
+namely that we do not force clean energy to always first serve load, and only after load is served can clean be exported.
+
+\paragraph{Resource Selection}
+\begin{subequations}
+	\begin{align}
+		 & \sum_{ \mathcal{J}} p_{jt}x_{j} + x_{dt} - x_{ct} - x_{et} \geq 0 & \forall t \in \mathcal{T}\label{eqn:export1}
+	\end{align}
+\end{subequations}
+
+\paragraph{Annual Dispatch}
+\begin{subequations}
+	\begin{align}
+		 & \sum_{ \mathcal{J}} p_{jt}x_{j}^{**} + x_{dt} - x_{ct} - x_{et} \geq 0 & \forall t \in \mathcal{T}\label{eqn:export1}
+	\end{align}
+\end{subequations}
+
+\subsubsection{Aggregate fossil for load}
+The first constraint~\ref{eqn:fos0} limits how much of annual load can be served by fossil implementing an hourly matched clean energy target $1 - \rho$.
+
+\paragraph{Resource Selection}
+\begin{subequations}
+	\begin{align}
+		 & \sum_{ \mathcal{T}} \left( x_{nt} + x_{flt} \right) -\rho x_v |\mathcal{T}|\leq 0 & \label{eqn:fos0}
+	\end{align}
+\end{subequations}
+
+\paragraph{Annual Dispatch}
+\begin{subequations}
+	\begin{align}
+		 & \sum_{ \mathcal{T}} \left( x_{nt} + x_{nbt} + x_{bt}+ x_{flt} \right) - \sum_{ \mathcal{T}} x_{vt} \leq 0 & \label{eqn:fos0}
+	\end{align}
+\end{subequations}
+
+We remove $\rho$ in~\ref{eqn:fos0} because we do not want annual dispatch to fail in a particular year only because we were unable to meet the clean energy design target.
+The idea being that once you build a resource, you operate it as best you can.
+It also means that the resulting calculated percent of load served by clean validates that the facility can meet a reasonable target in years whose data was not used to design it.
+
+\subsubsection{Hourly fossil fossil for load}
+Further definition of $x_{flt}$.
+
+\paragraph{Resource Selection}
+\begin{subequations}
+	\begin{align}
+		 & -x_v + x_{nt} + x_{flt} \leq 0 & \forall t \in \mathcal{T}\label{eqn:fos3}
+	\end{align}
+\end{subequations}
+
+\paragraph{Annual Dispatch}
+\begin{subequations}
+	\begin{align}
+		 & -x_{vt} + x_{nt} + x_{nbt} + x_{bt} + x_{flt} \leq 0 & \forall t \in \mathcal{T}\label{eqn:fos3}
+	\end{align}
+\end{subequations}
+
+\subsubsection{Historical fossil limits}
+The first constraint~\ref{eqn:fos2} requires aggregate fossil operations to be less than $\varepsilon$ times their historical quantity.
+This can be used to limit the environmental burden on the host community of the project’s operations.
+
+\paragraph{Resource Selection}
+\begin{subequations}
+	\begin{align}
+		 & \sum_{ \mathcal{T}} \left( x_{nt} +x_{flt}+x_{fet} \right) \leq \varepsilon \sum_{ \mathcal{T}} F_{ht} & \label{eqn:fos2}
+	\end{align}
+\end{subequations}
+
+\paragraph{Annual Dispatch}
+\begin{subequations}
+	\begin{align}
+		 & \sum_{ \mathcal{T}} \left( x_{nt} + x_{nbt} + x_{bt} +x_{flt}+x_{fet} \right) \leq \varepsilon \sum_{ \mathcal{T}} F_{ht} & \label{eqn:fos2}
+	\end{align}
+\end{subequations}
+
+%\subsubsection{Reliability etc}
+%CONSIDER: Never let state of charge drop below 1 hr so have it for emergency cut over. Where to put new fossil for pure surplus.
+
+\subsection{Operational constraints}\label{subsec:operational-constraints}
+
+\subsubsection{Incumbent}\label{subsec:incumbent}
+These constraints represent physical constraints of the incumbent plant.
+In the first set~\ref{eqn:ops0} we ensure that exports do not exceed the POI capacity in any hour. These constraints are the same in both parts of the model.
+
+\begin{subequations}
+	\begin{align}
+		 & x_{fet} + x_{et} \leq F_c & \forall t \in \mathcal{T}\label{eqn:ops0}
+	\end{align}
+\end{subequations}
+
+\subsubsection{Gas}\label{subsec:gas}
+We need to account for the limits of the upstream gas infrastructure to supply gas to both the incumbent gas plant and any new gas-fired resources of the project.
+Unfortunately we do not know anything about this infrastructure, either in terms of local distribution and transmission, or further upstream supply.
+What we do know is how much gas has been supplied in the past based on historical data. We assume this data is meaningful and that historical operations are more or less replicable.
+We implement these constraints by saying that over a trailing $\gamma$ hour window, the project's use of gas must not exceed $\xi$ times the maximum $\gamma$ hour historical use of gas in the relevant month across all years~\ref{eqn:gas}.
+Note that month in this case is not a calendar month but one of 12 equal-length periods of 730 hours that approximately correspond to actual calendar months.
+In this way we account for the fact that gas supply has a seasonal component and that storage exists along the supply chain including within transmission and distribution pipelines.
+
+\begin{subequations}
+	\begin{align}
+		 & \sum_{i=t-\gamma}^{t} \left(x_{ni} + x_{fli} + x_{fei} \right) \leq \xi f(t)                                      & \forall t \in \mathcal{T}                                                               \\
+		 & f(t) = \max_{ \forall k \in \mathcal{T}^m} \left(\sum_{i=k-\gamma}^{k} \max \left( F_{hi},\: F_{bi} \right) \right) & t \in \mathcal{T}^m \wedge \mathcal{T}^m \in \{ \mathcal{T}^1,\dots,\mathcal{T}^{12} \} \label{eqn:gas}
+	\end{align}
+\end{subequations}
+
+\subsubsection{Stored fuel}\label{subsec:stored}
+Generators that run on fuel stored on site face a constraint on continuous operation related to on site storage capacity.
+We implement that here as a constraint on trailing generation from stored fuel.
+
+\begin{subequations}
+	\begin{align}
+		 & \sum_{i=t-\zeta}^{t} \left( x_{nbi} + x_{bi} \right) \leq \zeta x_v^{**} & \forall t \in \mathcal{T}\label{eqn:stored}
+	\end{align}
+\end{subequations}
+
+\subsubsection{Backup}\label{subsec:backup}
+Most jurisdictions place limits on the number of hours backup generators can operate per year, $\psi$ represents this limit.
+\begin{subequations}
+	\begin{align}
+		 & \sum_{\mathcal{T}} x_{bi} \leq \psi x_v^{**} & \label{eqn:backup}
+	\end{align}
+\end{subequations}
+
+\subsection{Renewable siting}\label{subsec:renewable-siting}
+These two sets of constraints enforce limits the amount of renewables that can be developed within the \textasciitilde{}120 square km of any given NREL Supply Curve region.
+In the first set of constraints~\ref{eqn:re0} we limit the combined amount of wind and solar in a given region.
+In the second set~\ref{eqn:re1} we limit the amount of wind alone, we do this because the amount of land suitable for wind is always less than that for solar, and we are assuming that land where wind can be built is a subset of the land where solar can be built.
+
+In the final constraint~\ref{eqn:re2} we make sure that there is sufficient area on the site closest to the incumbent power plant to develop the load.
+Here the area required by one MW of load in km$^2$ is $\alpha$ and we assume that land where renewables can be developed is also land where the load could be developed as well.
+These constraints only apply during \hyperref[sec:res]{resource selection}.
+
+\paragraph{Resource Selection}
+\begin{subequations}
+	\begin{align}
+		 & \sum_{j \in \mathcal{J}_{\ell}} a_{j \ell} x_j \leq q_{\ell}                                     & \forall \ell \in \mathcal{L} \label{eqn:re0} \\
+		 & \sum_{j \in \mathcal{J}_{\ell} \cap \mathcal{W}} a_{j \ell} x_j \leq q_{w \ell}                  & \forall \ell \in \mathcal{L}\label{eqn:re1}  \\
+		 & \sum_{j \in \mathcal{J}_{\ell_0} } a_{j \ell_0} x_j + \alpha x_v \leq q_{\ell_0} \label{eqn:re2}
+	\end{align}
+\end{subequations}
+
+\subsection{Storage}\label{subsec:storage}
+These constraints are largely derived from those used by \href{https://github.com/GenXProject/GenX.jl}{GenX} and described in
+\href{https://energy.mit.edu/wp-content/uploads/2017/10/Enhanced-Decision-Support-for-a-Changing-Electricity-Landscape.pdf}{section 5.12 of this paper}.
+There are minor differences related to whether efficiency de-rates max charge and discharge but the logic is all the same.
+The only addition is~\ref{eqn:es7} which says that storage must be 50\% charged at the beginning and end of each year for continuity purposes.
+
+\paragraph{Resource Selection}
+\begin{subequations}
+	\begin{align}
+		 & x_{st-1} - \frac{ x_{dt}}{\eta_d} + \eta_c x_{ct} - \eta_{self} x_{st} = x_{st} & \forall t \in \mathcal{T} \label{eqn:es0} \\
+		 & x_{st} \leq x_s                                                                 & \forall t \in \mathcal{T} \label{eqn:es1} \\
+		 & x_{st}+ x_{ct} \leq x_s                                                         & \forall t \in \mathcal{T} \label{eqn:es2} \\
+		 & x_{ct} \leq x_d                                                                 & \forall t \in \mathcal{T} \label{eqn:es3} \\
+		 & x_{dt} \leq x_d                                                                 & \forall t \in \mathcal{T} \label{eqn:es4} \\
+		 & x_{dt} \leq x_{st}                                                              & \forall t \in \mathcal{T} \label{eqn:es5} \\
+		 & x_{dt} + x_{ct} \leq x_d                                                        & \forall t \in \mathcal{T} \label{eqn:es6} \\
+		 & \frac{ x_{s}}{2} = x_{st}                                                       & t \in \{0, 8760,17520\}\label{eqn:es7}
+	\end{align}
+\end{subequations}
+
+\paragraph{Annnual Dispatch}
+\begin{subequations}
+	\begin{align}
+		 & x_{st-1} - \frac{ x_{dt}}{\eta_d} + \eta_c x_{ct} - \eta_{self} x_{st} = x_{st} & \forall t \in \mathcal{T} \label{eqn:es0} \\
+		 & x_{st} \leq x_s^{**}                                                            & \forall t \in \mathcal{T} \label{eqn:es1} \\
+		 & x_{st}+ x_{ct} \leq x_s^{**}                                                    & \forall t \in \mathcal{T} \label{eqn:es2} \\
+		 & x_{ct} \leq x_d^{**}                                                            & \forall t \in \mathcal{T} \label{eqn:es3} \\
+		 & x_{dt} \leq x_d^{**}                                                            & \forall t \in \mathcal{T} \label{eqn:es4} \\
+		 & x_{dt} \leq x_{st}                                                              & \forall t \in \mathcal{T} \label{eqn:es5} \\
+		 & x_{dt} + x_{ct} \leq x_d^{**}                                                   & \forall t \in \mathcal{T} \label{eqn:es6} \\
+		 & \frac{ x_{s}^{**} }{2} = x_{st}                                                 & t \in \{0, 8760\}\label{eqn:es7}
+	\end{align}
+\end{subequations}
+
+%\subsubsection{Long Duration Storage}
+%Duration is $\omega$
+%\begin{subequations}
+%  \begin{align}
+%       & x_s = \omega x_d & \label{eqn:es00ld} \\
+%     & \displaystyle x_{st-1} - \frac{ x_{dt}}{\eta_d} + \eta_c x_{ct} - \eta_{self} x_{st} = x_{st} & \forall t \in \mathcal{T} \label{eqn:es0ld} \\
+%     & x_{st} \leq x_s & \forall t \in \mathcal{T} \label{eqn:es1ld} \\
+%     & x_{st}+ x_{ct} \leq x_s & \forall t \in \mathcal{T} \label{eqn:es2ld} \\
+%     & x_{ct} \leq x_d & \forall t \in \mathcal{T} \label{eqn:es3ld} \\
+%     & x_{dt} \leq x_d & \forall t \in \mathcal{T} \label{eqn:es4ld} \\
+%     & x_{dt} \leq x_{st} & \forall t \in \mathcal{T} \label{eqn:es5ld} \\
+%     & x_{dt} + x_{ct} \leq x_d & \forall t \in \mathcal{T} \label{eqn:es6ld} \\
+%     & \displaystyle \frac{ x_{s}}{2} = x_{st} & t \in \{0, 8760\}\label{eqn:es7ld}
+%  \end{align}
+%\end{subequations}
+
+\subsection{Bounds}\label{subsec:bounds}
+In most cases, the upper bound of each decision variable is more tightly constrained by a constraint defined above but reasonable upper bounds can make solving faster.
+
+\paragraph{Resource Selection}
+\begin{subequations}
+	\begin{align}
+		 & 0 \leq x_{j} \leq 2\times10^4                        & \forall j \in \mathcal{J}\label{eqn:bound0}  \\
+		 & 0 \leq x_{d} \leq 2\times10^4 \label{eqn:bound1}                                                    \\
+		 & 0 \leq x_{s} \leq 3\times10^5 \label{eqn:bound1}                                                    \\
+		 & 0 \leq x_{v} \leq 3\frac{F_c}{4} \label{eqn:bound1b}                                                \\
+		 & 0 \leq x_{dt} \leq 2\times10^4                       & \forall t \in \mathcal{T}\label{eqn:bound2}  \\
+		 & 0 \leq x_{ct} \leq 2\times10^4                       & \forall t \in \mathcal{T}\label{eqn:bound3}  \\
+		 & 0 \leq x_{st} \leq 2\times10^5                       & \forall t \in \mathcal{T}\label{eqn:bound4}  \\
+		 & 0 \leq x_{flt} \leq F_c                              & \forall t \in \mathcal{T}\label{eqn:bound5}  \\
+		 & 0 \leq x_{fet} \leq F_c                              & \forall t \in \mathcal{T}\label{eqn:bound6}  \\
+		 & 0 \leq x_{flt} + x_{fet} \leq F_c                    & \forall t \in \mathcal{T}\label{eqn:bound6b} \\
+		 & 0 \leq x_{et} \leq F_c                               & \forall t \in \mathcal{T}\label{eqn:bound7}  \\
+		 & 0 \leq x_{gt} \leq 1\times10^5                       & \forall t \in \mathcal{T}\label{eqn:bound8}
+	\end{align}
+\end{subequations}
+
+\paragraph{Annnual Dispatch}
+\begin{subequations}
+	\begin{align}
+		 & \mu x_v^{**}\leq x_{vt} \leq x_v^{**} & \forall t \in \mathcal{T}\label{eqn:bound1b} \\
+		 & 0 \leq x_{nt} \leq x_n^{**}           & \forall t \in \mathcal{T}\label{eqn:bound2}  \\
+		 & 0 \leq x_{nbt} \leq x_n^{**}          & \forall t \in \mathcal{T}\label{eqn:bound2}  \\
+		 & 0 \leq x_{nt} + x_{nbt} \leq x_n^{**} & \forall t \in \mathcal{T}\label{eqn:bound2}  \\
+		 & 0 \leq x_{bt} \leq x_v^{**}           & \forall t \in \mathcal{T}\label{eqn:bound2}  \\
+		 & 0 \leq x_{dt} \leq x_d^{**}           & \forall t \in \mathcal{T}\label{eqn:bound2}  \\
+		 & 0 \leq x_{ct} \leq x_c^{**}           & \forall t \in \mathcal{T}\label{eqn:bound3}  \\
+		 & 0 \leq x_{st} \leq x_s^{**}           & \forall t \in \mathcal{T}\label{eqn:bound4}  \\
+		 & 0 \leq x_{flt} \leq F_c               & \forall t \in \mathcal{T}\label{eqn:bound5}  \\
+		 & 0 \leq x_{fet} \leq F_c               & \forall t \in \mathcal{T}\label{eqn:bound6}  \\
+		 & 0 \leq x_{flt} + x_{fet} \leq F_c     & \forall t \in \mathcal{T}\label{eqn:bound6b} \\
+		 & 0 \leq x_{et} \leq F_c                & \forall t \in \mathcal{T}\label{eqn:bound7}  \\
+		 & 0 \leq x_{gt} \leq 1\times10^5        & \forall t \in \mathcal{T}\label{eqn:bound8}
+	\end{align}
+\end{subequations}
+
+%\section{System impacts}\label{sec:system-impacts}
+%The data for $r_t$, $F_{bt}$, $B_{mt}$, $B_{gt}$, $B_{Et}$ and $B_{Tt}$ all come from the hourly simulation of a Patio clean repowering portfolio using \href{https://github.com/rmi/dispatch}{rmi.dispatch}.
+%But to understand the impact on the system of this new hybrid project, we have to run the simulation again but now with this project included in the portfolio.
+%The logic and methods of the simulation are described \href{https://rmi.github.io/dispatch/approach.html}{here}.
+%
+%To do that we run the portfolio again but with two modifications:
+%\begin{enumerate}
+%	\item We adjust the load profile by subtracting our project’s clean export $\mathbf{x}_{e}^*$ from it.
+%	      This does assume that no clean export is curtailed by the BA.
+%	\item We adjust the hourly availability of the fossil plant we’ve hybridized to account for how it was used to serve the local load $\mathbf{x}_{fl}^*$.
+%	      This implies that the load has higher priority in getting served by the fossil which is unlikely to be the case, but if all BA load is served with the lower priority, then it can be served if it has higher priority.
+%\end{enumerate}
+%
+%The redispatch of the system will create a new set of hourly marginal prices which we’ll call $B_{mt}'$, which we can use to calculate project revenues.
+%It will also create a new set of BA-level curtailment data $B_{gt}'$ and new dispatch of the incumbent fossil for export $F_{bt}'$ which effectively replaces $x_{fet}^*$ for redispatch metrics.
+%
+%We can also see how total cost, resource mix, emissions, and unserved load have changed as a result of hybridizing the fossil plant.
+%We mark these variants of each variable or metric with a prime $'$ when it is based on the result of this redispatch rather than the original baseline.
+%
+%\section{Final metrics}\label{sec:final-metrics}
+%We will use $x_{dt}^*$, $x_{ct}^*$, $x_{flt}^*$, $x_{fet}^*$, $x_{et}^*$, and $x_{gt}^*$ to refer to the combined optimal values from all $\lambda$ years of the \hyperref[sec:anndisp]{annual dispatch}.
+%
+%\subsection{Cost and revenue}\label{subsec:cost-and-revenue}
+%Because of the redispatch for system impacts, and to enable the breakout of specific costs and revenues, we do not use the values of the annual dispatch objective functions to calculate final costs.
+%Rather, we calculate costs based on the original data and $\mathbf{x}^*$.
+%
+%All the metrics in this section discount the costs incurred and revenues earned over the life of the project back to the starting year.
+%Because the costs are real and we use a nominal discount rate $\delta$, we must inflate costs using the inflation rate $\iota$.
+%
+%\begin{subequations}
+%	\begin{align}
+%		                                                                                                        & \text{clean cost} =          & \sum_{\mathcal{J}} \left[k_j + k_u u_j + o_j \sum_{y=0}^{\lambda-1}\left( \frac{1+\iota}{1+\delta} \right)^y \right] x_j^* +
+%		\left[k_s (1-itc) + o_s \sum_{y=0}^{\lambda-1}\left( \frac{1+\iota}{1+{\delta}} \right)^y \right] x_s^* &                                                                                                                                                             \\
+%		                                                                                                        & \text{fossil cost} =         &
+%		\sum_{y=0}^{\lambda-1}\sum_{\mathcal{T}_y} F_{mt}\left( x_{flt}^* + x_{fet}^* \right)\left( \frac{1+\iota}{1+\delta} \right)^y                                                                                                                                        \\
+%		                                                                                                        & \text{fossil cost}' =        &
+%		\sum_{y=0}^{\lambda-1}\sum_{\mathcal{T}_y} F_{mt}\left( x_{flt}^* + F_{bt}' \right)\left( \frac{1+\iota}{1+\delta} \right)^y                                                                                                                                          \\
+%		                                                                                                        & \text{ptc revenue} =         & ptc \sum_{y=0}^{9}\sum_{\mathcal{T}_y}\left( \sum_{\mathcal{J}} p_{jt} x_j^* -
+%		x_{gt}^* - B_{gt} x_{et}^*\right) \left( \frac{1+{\iota}}{1+\delta} \right)^y                                                                                                                                                                                         \\
+%		                                                                                                        & \text{ptc revenue}' =        & ptc \sum_{y=0}^{9}\sum_{\mathcal{T}_y}\left( \sum_{\mathcal{J}} p_{jt} x_j^* -
+%		x_{gt}^* - B_{gt}' x_{et}^*\right) \left( \frac{1+\iota}{1+\delta} \right)^y                                                                                                                                                                                          \\[0.5em]
+%		                                                                                                        & \text{total cost} =          & \text{clean cost} +\text{fossil cost} - \text{ptc revenue}                                                                   \\[0.5em]
+%		                                                                                                        & \text{total cost}' =         & \text{clean cost} +\text{fossil cost}' - \text{ptc revenue}'                                                                 \\[0.5em]
+%		                                                                                                        & \text{clean revenue} =       &
+%		\sum_{y=0}^{\lambda-1}\sum_{\mathcal{T}_y}\beta B_{mt} \left( 1 - B_{gt}\right)
+%		x_{et}^* \left( \frac{1+\iota}{1+\delta} \right)^y                                                                                                                                                                                                                    \\
+%		                                                                                                        & \text{clean revenue}' =      &
+%		\sum_{y=0}^{\lambda-1}\sum_{\mathcal{T}_y}\beta B_{mt}' \left( 1 - B_{gt}'\right)
+%		x_{et}^*\left( \frac{1+\iota}{1+\delta} \right)^y                                                                                                                                                                                                                     \\
+%		                                                                                                        & \text{fossil revenue} =      &
+%		\sum_{y=0}^{\lambda-1}\sum_{\mathcal{T}_y}\beta B_{mt} \left( 1 - B_{gt}\right)
+%		x_{fet}^*\left( \frac{1+\iota}{1+\delta} \right)^y                                                                                                                                                                                                                    \\
+%		                                                                                                        & \text{fossil revenue}' =     &
+%		\sum_{y=0}^{\lambda-1}\sum_{\mathcal{T}_y}\beta B_{mt}' F_{bt}'* \left( \frac{1+\iota}{1+\delta} \right)^y                                                                                                                                                            \\[0.5em]
+%		                                                                                                        & \text{system cost} =         & \sum_{y=0}^{\lambda-1}\sum_{\mathcal{T}_y} B_{Tt} \left( \frac{1+\iota}{1+\delta} \right)^y                                  \\
+%		                                                                                                        & \text{system cost}' =        & \sum_{y=0}^{\lambda-1}\sum_{\mathcal{T}_y}B_{Tt}' \left( \frac{1+\iota}{1+\delta} \right)^y + \text{clean revenue}'          \\
+%		                                                                                                        & \Delta \text{ system cost} = & \text{system cost}' - \text{system cost}
+%	\end{align}
+%\end{subequations}
+%
+%Note that system cost$'$ does not include the full market value of clean exports, but it is haircut by the parameter $\beta$, so that $\Delta$ system cost is lower by the same amount.
+%
+%\subsection{Emissions}\label{subsec:emissions}
+%In~\ref{eqn:em2} we only add project emissions associated with serving load because $B_{Et}'$ includes the emissions of project fossil exports $ F_e F_{bt}'$.
+%
+%\begin{subequations}
+%	\begin{align}
+%		 & \text{load emissions} =     &
+%		\sum_{y=0}^{\lambda-1}\sum_{\mathcal{T}_y} F_e x_{flt}^*                                                                          \\
+%		 & \text{project emissions} =  &
+%		\sum_{y=0}^{\lambda-1}\sum_{\mathcal{T}_y} F_e \left( x_{flt}^* + x_{fet}^* \right)                                               \\
+%		 & \text{project emissions}' = &
+%		\sum_{y=0}^{\lambda-1}\sum_{\mathcal{T}_y} F_e \left( x_{flt}^* + F_{bt}' \right)                                                 \\
+%		 & \text{system emissions} =   & \sum_{y=0}^{\lambda-1}\sum_{\mathcal{T}_y} B_{Et}                                                \\
+%		 & \text{system emissions}' =  & \sum_{y=0}^{\lambda-1}\sum_{\mathcal{T}_y} \left(B_{Et}' + F_e x_{flt}^* \right) \label{eqn:em2} \\
+%		 & \Delta \text{ emissions} =  & \text{system emissions}' - \text{system emissions}
+%	\end{align}
+%\end{subequations}
+%
+%\subsection{Energy}\label{subsec:energy}
+%These discounted energy metrics are used in levelized cost calculations.
+%
+%\begin{subequations}
+%	\begin{align}
+%		 & \text{load} =          &
+%		\sum_{y=0}^{\lambda-1}\sum_{\mathcal{T}_y} 25 \left\lfloor{\frac{x_v^*}{25}}\right\rfloor \left( \frac{1}{1+\delta} \right)^y \\
+%		 & \text{fossil load}=    &
+%		\sum_{y=0}^{\lambda-1}\sum_{\mathcal{T}_y} x_{flt}^* \left( \frac{1}{1+\delta} \right)^y                                      \\
+%		 & \text{clean export}=   &
+%		\sum_{y=0}^{\lambda-1}\sum_{\mathcal{T}_y} x_{et}^* \left( \frac{1}{1+\delta} \right)^y                                       \\
+%		 & \text{fossil export}=  &
+%		\sum_{y=0}^{\lambda-1}\sum_{\mathcal{T}_y} x_{fet}^* \left( \frac{1}{1+\delta} \right)^y                                      \\
+%		 & \text{fossil export}'= &
+%		\sum_{y=0}^{\lambda-1}\sum_{\mathcal{T}_y} F_{bt}' \left( \frac{1}{1+\delta} \right)^y
+%	\end{align}
+%\end{subequations}
+%
+%\subsection{Levelized Cost}\label{subsec:levelized-cost}
+%
+%\begin{subequations}
+%	\begin{align}
+%		 & \text{LCOE} =         &
+%		\frac{\text{total cost} }{\text{load}+\text{clean export}+\text{fossil export}}                \\
+%		 & \text{LCOE}' =        &
+%		\frac{\text{total cost}' }{\text{load}+\text{clean export}+\text{fossil export}'}              \\
+%		 & \text{PPA} =          &
+%		\frac{\text{total cost} - \text{clean revenue} - \text{fossil revenue}}{\text{load}}           \\
+%		 & \text{PPA}' =         &
+%		\frac{\text{total cost} - \text{clean revenue}' - \text{fossil revenue}'}{\text{load}}         \\
+%		 & \text{export LCOE} =  &
+%		\frac{ \text{clean revenue} + \text{fossil revenue}}{\text{clean export}+\text{fossil export}} \\
+%		 & \text{export LCOE}' = &
+%		\frac{ \text{clean revenue}' + \text{fossil revenue}'}{\text{clean export}+\text{fossil export}'}
+%	\end{align}
+%\end{subequations}
+%
+%\subsection{Other metrics}\label{subsec:other-metrics}
+%\begin{subequations}
+%	\begin{align}
+%		 & \text{percent load clean} =  &
+%		1 - \frac{\text{fossil load} }{\text{load}} \\
+%		 & \text{percent curtailment} = &
+%		\frac{\displaystyle \sum_{\mathcal{T}}x_{gt}^* }{\displaystyle\sum_{\mathcal{T}}\sum_{\mathcal{J}} p_{jt} x_j^*}
+%	\end{align}
+%\end{subequations}
+%
+%\renewcommand{\indexname}{Index}
+
+\section{Limitations}
+\begin{enumerate}
+	\item Cost and revenue of baseline incumbent asset is excluded.
+	      We do not attempt to include the cost associated with purchasing the gas plant, or the revenue earned from operating it to serve the grid, including energy, capacity and ancillary service revenue.
+	\item Gas plant heat rate is assumed to be constant affecting both emissions and fuel costs.
+	\item NREL site capacity may not be sufficiently contiguous.
+\end{enumerate}
+\end{document}

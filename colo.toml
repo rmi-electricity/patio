@@ -1,0 +1,128 @@
+[project]
+scenarios = [
+    "moderate",
+#    "moderate_ej",
+    "clean",
+    "dirty",
+#    "low_crit",
+    "pure_surplus",
+    "form",
+#    "form_backup",
+    "form_fos",
+#    "thermal_load"
+]
+# relative to home or user dir
+#data_path = "patio_data/colo_data"
+#colo_json_path = "patio_data/colo_data/colo.json"
+data_path = "patio_data/colo_data_2025_2"
+colo_json_path = "patio_data/colo_data_2025_2/colo.json"
+run_dir_path = "patio_data/colo_{NOW}"
+workers = 5
+plant_ids = []
+
+[scenario.default]
+ix = -1
+setting.run_econ = true
+param.num_crit_hrs = 25
+param.max_pct_fos = 0.2
+param.max_pct_hist_fos = 1.0
+param.mkt_rev_mult = 0.5
+param.fos_load_cost_mult = 3.0
+param.gas_window_max_hrs = 12
+param.gas_window_max_mult = 1.25
+param.stored_fuel_hrs = 48
+# https://www.rila.org/retail-compliance-center/emergency-generator-permitting-matrix
+param.backup_max_hrs_per_year = 250
+param.solar_degrade_per_year = 0.0
+param.life = 30
+param.build_year = 2026
+param.atb_scenario = "Moderate"
+param.ptc = 17.0
+param.itc = 0.3
+dv.FlexLoad = { "uptime" = 0.0 }
+dv.Renewables = {}
+dv.EndogenousDurationStorage = { "pre_charge" = 0.5 }
+dv.CleanExport = {}
+dv.Curtailment = {}
+dv.DCBackupFossil = { "tech" = "rice" }
+
+
+[scenario.moderate]
+ix = 0
+param.max_pct_hist_fos = 20.0
+dv.IncumbentFossil = {}
+
+
+[scenario.moderate_ej]
+ix = 1
+param.max_pct_hist_fos = 1.0
+dv.IncumbentFossil = {}
+
+
+[scenario.clean]
+ix = 2
+param.max_pct_fos = 0.05
+param.max_pct_hist_fos = 1.0
+dv.IncumbentFossil = {}
+
+
+[scenario.dirty]
+ix = 8
+param.max_pct_fos = 0.4
+param.max_pct_hist_fos = 20.0
+dv.IncumbentFossil = {}
+
+
+[scenario.low_crit]
+ix = 9
+param.num_crit_hrs = 10
+param.max_pct_fos = 0.2
+param.max_pct_hist_fos = 5.0
+dv.IncumbentFossil = {}
+
+
+[scenario.pure_surplus]
+ix = 10
+param.num_crit_hrs = 0
+param.max_pct_fos = 0.2
+param.max_pct_hist_fos = 3.0
+dv.ExportOnlyIncumbentFossil = {}
+dv.LoadOnlyFossilWithBackupFuel = { "tech" = "rice" }
+
+
+[scenario.form]
+ix = 11
+param.num_crit_hrs = 0
+param.max_pct_fos = 0.2
+param.max_pct_hist_fos = 1.0
+dv.ExportOnlyIncumbentFossil = {}
+dv.FeStorage = { "pre_charge" = 0.5}
+
+
+[scenario.form_backup]
+ix = 12
+param.num_crit_hrs = 0
+param.max_pct_fos = 0.2
+param.max_pct_hist_fos = 2.0
+dv.ExportOnlyIncumbentFossil = {}
+dv.FeStorage = { "pre_charge" = 0.5, "min_soc_hrs" = 24 }
+
+
+[scenario.form_fos]
+ix = 13
+param.num_crit_hrs = 0
+param.max_pct_fos = 0.2
+param.max_pct_hist_fos = 3.0
+dv.ExportOnlyIncumbentFossil = {}
+dv.FeStorage = { "pre_charge" = 0.5}
+dv.LoadOnlyFossilWithBackupFuel = { "tech" = "rice" }
+
+
+[scenario.thermal_load]
+ix = 14
+param.num_crit_hrs = 25
+param.max_pct_fos = 0.05
+param.max_pct_hist_fos = 1.0
+dv.IncumbentFossil = {}
+dv.Curtailment = { "min_cost" = 0.05}
+dv.ThermalStorageLoad = {}

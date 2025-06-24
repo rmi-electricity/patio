@@ -1,5 +1,5 @@
 ***************************************************************************************
-Cheshire: a Python Template Repository for RMI created by Catalyst Cooperative
+Patio: an electricity model
 ***************************************************************************************
 
 .. image:: https://github.com/rmi-electricity/cheshire/workflows/tox-pytest/badge.svg
@@ -70,6 +70,7 @@ instructions below assume these tools are installed as follows.
    uv tool install tox --with tox-uv
    uv tool install pre-commit --with pre-commit-uv
    uv tool install ruff
+   pre-commit install
 
 In the future, these tools can be upgraded by running ``uv tool upgrade --all``.
 
@@ -81,126 +82,12 @@ In the future, these tools can be upgraded by running ``uv tool upgrade --all``.
   for information on this functionality. To use this feature as it was intended,
   remove ``uv.lock`` from ``.gitignore``.
 
-Create a new repository from this template
----------------------------------------------------------------------------------------
-* Choose a name for the new package that you are creating.
-* The name of the repository should be the same as the name of the new Python package
-  you are going to create. e.g. a repository at ``rmi-electricity/cheshire`` should
-  be used to define a package named ``cheshire``.
-* Click the green ``Use this template`` to create a new Python project repo.
-  See `these instructions for using a template <https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template>`__.
-* Create a release with a version tag if there isn't one already. This is required
-  because various tools use it to set the version dynamically. See
-  `managing releases <https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository>`__
-  for more information.
-* Clone the new repository to your development machine.
-* Create the virtual environment by running ``uv sync --extra dev --extra doc`` in the top level of the repository.
-* Run ``pre-commit install`` in the newly cloned repository to install the `pre-commit hooks <https://pre-commit.com/>`__ defined in ``.pre-commit-config.yaml``.
-* Run ``tox`` from the top level of the repository to verify that everything is working correctly.
-
-
-Rename the package and distribution
----------------------------------------------------------------------------------------
-Once your forked version of the ``cheshire`` package is working, you can change the
-package and distribution names in your new repo to reflect the name of your package.
-The **package name** is determined by the name of the directory under ``src/`` which
-contains the source code, and is the name you'll use to import the package for use in
-a program, script, or notebook. E.g.:
-
-.. code:: python
-
-  import cheshire
-
-The **distribution name** is the name that is used to install the software using a
-program like  ``pip`` or uv. We are using the ``rmi`` namespace for the
-packages that we publish, so the ``dispatch`` package would have the distribution
-name ``rmi.dispatch``. The distribution name is determined by the ``name`` argument
-under ``[project]`` in ``pyproject.toml``. See :pep:`423` for more on Python package
-naming conventions. You will want to search the ``pyproject.toml`` file and replace
-**all** references to ``cheshire`` with your package's name.
-
-The package and distribution names are used throughout the files in the template
-repository, and they all need to be replaced with the name of your new package.
-
-* Rename the ``src/cheshire`` directory to reflect the new package name.
-* Search for ``cheshire`` and replace it as appropriate everywhere.
-  Sometimes this will be with a distribution name like ``rmi.cheshire`` or ``rmi-cheshire`` and  sometimes this will be the importable package name ``cheshire``.
-  You can use ``grep -r`` to search recursively through all of the files for the word ``cheshire`` at the command line, or use the search-and-replace functionality of your IDE / text editor.
-  (Global search in PyCharm is command+shift+f)
-
-Now that everything is renamed, make sure all the renaming worked properly by running
-``tox`` from the top level of the repository to verify that everything is working
-correctly. If it passes, you can commit your new skeleton package and get to work!
-
-.. Warning::
-
-  Unless you have relatively complete tests of your package, you will want to disable
-  ``.github/workflows/bot-auto-merge.yml`` by either commenting out its contents or
-  deleting the file. If you do this, do the same with ``.github/dependabot.yml``.
-
-  If you leave these GitHub Actions in place with insufficient tests, GitHub might break
-  your package by upgrading dependencies to version that are not compatible with your
-  package.
-
-What this template provides
-=======================================================================================
-
-Python Package Skeleton
----------------------------------------------------------------------------------------
-* Dummy code for a skeleton python package with the following structure:
-
-  * The ``src`` directory contains the code that will be packaged and deployed on the
-    user system. That code is in a directory with the same name as the package.
-  * A simple python module (``dummy.py``), and a separate module providing a command
-    line interface to that module (``cli.py``) are included as examples.
-  * A module (``dummy_pudl.py``) that includes an example of how to access PUDL data.
-  * Any files in the ``src/package_data/`` directory will also be packaged and deployed.
-
-* Instructions for ``pip`` on how to install the package and configurations for a
-  number of tools in ``pyproject.toml`` including the following:
-
-  * Package dependencies, including "extras" -- additional optional
-    package dependencies that can be installed in special circumstances: ``dev``,
-    ``doc```, and ``tests``.
-    Note: if you follow the instructions above and install ``ruff``, ``tox``, and ``pre-commit`` globally, you do not need to install the ``tests`` extras yourself.
-  * The CLI deployed using a ``console_script`` entrypoint.
-  * ``setuptools_scm`` to obtain the package's version directly from ``git`` tags.
-  * What files (beyond the code in ``src/`` are included in or excluded from the package
-    on the user's system.
-  * Configurations for ``ruff``, ``doc8``, and ``rstcheck`` described in the
-    `Code Formatting and Linters`_ section below.
-
-Testing Tools
----------------------------------------------------------------------------------------
-
-Pytest Testing Framework
+Setup patio environment
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-* A skeleton `pytest <https://docs.pytest.org/>`_ testing setup is included in the
-  ``tests/`` directory.
-* Session-wide test fixtures, additional command line options, and other pytest
-  configuration can be added to ``tests/conftest.py``
-* Exactly what pytest commands are run during continuous integration is controlled by
-  Tox.
 
-Test Coordination with Tox
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-* We define several different test environments for use with Tox in ``pyproject.toml`` in the sections starting with ``[tool.tox``.
-* `Tox <https://tox.wiki/en/latest/>`__ is used to run pytest in an isolated Python virtual environment.
-* We also use Tox to coordinate running the code linters and building the documentation.
+.. code-block:: zsh
 
-Test Coverage
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-* We use Tox, pytest, and `coverage <https://coverage.readthedocs.io>`__
-  to measure and record what percentage of our codebase is being tested, and to
-  identify which modules, functions, and individual lines of code are not being
-  exercised by the tests.
-* When you run ``tox`` a summary of the test coverage will be printed at the end of
-  the tests (assuming they succeed).
-
-See `GitHub Actions`_ for additional tools that track coverage statistics.
-
-Code Quality Tools
----------------------------------------------------------------------------------------
+   uv sync --extra dev
 
 Git Pre-commit Hooks
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
