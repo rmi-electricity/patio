@@ -8,12 +8,9 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
-import shutil
 from datetime import datetime
 from importlib.metadata import version as importlib_version
 from pathlib import Path
-
-from sphinx.application import Sphinx
 
 DOCS_DIR = Path(__file__).parent.resolve()
 
@@ -25,12 +22,12 @@ DOCS_DIR = Path(__file__).parent.resolve()
 
 # -- Project information -----------------------------------------------------
 
-project = "Cheshire"
+project = "Patio"
 copyright = f"{datetime.today().year}, RMI, CC-BY-4.0"  # noqa: A001
 author = "RMI"
 
 # The full version, including alpha/beta/rc tags
-release = importlib_version("rmi.cheshire")
+release = importlib_version("patio")
 version = ".".join(release.split(".")[:2])
 html_title = f"{project} {version} documentation"
 
@@ -53,7 +50,7 @@ todo_include_todos = True
 # Automatically generate API documentation during the doc build:
 autoapi_type = "python"
 autoapi_dirs = [
-    "../src/cheshire",
+    "../src/patio",
 ]
 autoapi_ignore = [
     "*_test.py",
@@ -62,7 +59,7 @@ autoapi_ignore = [
 autoapi_python_class_content = "both"
 autodoc_typehints = "description"
 # GitHub repo
-issues_github_path = "rmi-electricity/cheshire"
+issues_github_path = "rmi-electricity/patio"
 
 # In order to be able to link directly to documentation for other projects,
 # we need to define these package to URL mappings:
@@ -99,7 +96,7 @@ html_theme_options = {
     "footer_icons": [
         {
             "name": "GitHub",
-            "url": "https://github.com/rmi-electricity/cheshire",
+            "url": "https://github.com/rmi-electricity/patio",
             "html": """
         <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
             <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
@@ -115,7 +112,7 @@ html_theme_options = {
     # },
     "light_logo": "Small_PNG-RMI_logo_PrimaryUse.PNG",
     "dark_logo": "Small_PNG-RMI_logo_PrimaryUse_White_Horizontal.PNG",
-    "source_repository": "https://github.com/rmi-electricity/cheshire/",
+    "source_repository": "https://github.com/rmi-electricity/patio/",
     "source_branch": "main",
     "source_directory": "docs/",
 }
@@ -124,24 +121,3 @@ html_theme_options = {
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
-
-
-# -- Custom build operations -------------------------------------------------
-def cleanup_rsts(app: Sphinx, exception: Exception) -> None:
-    """Remove generated RST files when the build is finished."""
-    (DOCS_DIR / "path/to/temporary/rst/file.rst").unlink()
-
-
-def cleanup_csv_dir(app: Sphinx, exception: Exception) -> None:
-    """Remove generated CSV files when the build is finished."""
-    csv_dir = DOCS_DIR / "path/to/temporary/csv/dir/"
-    if csv_dir.exists() and csv_dir.is_dir():
-        shutil.rmtree(csv_dir)
-
-
-def setup(app: Sphinx) -> None:
-    """Add custom CSS defined in _static/custom.css."""
-    app.add_css_file("custom.css")
-    # Examples of custom docs build steps:
-    # app.connect("build-finished", cleanup_rsts)
-    # app.connect("build-finished", cleanup_csv_dir)

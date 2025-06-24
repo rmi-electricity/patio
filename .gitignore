@@ -31,7 +31,7 @@ share/python-wheels/
 *.egg
 MANIFEST
 _version.py
-uv.lock
+.pixi
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -77,6 +77,13 @@ instance/
 
 # Sphinx documentation
 docs/_build/
+
+# Tex
+*.aux
+*.out
+*.toc
+*.xwm
+*.synctex.gz
 
 # PyBuilder
 target/
@@ -198,3 +205,27 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# Data
+fuel_t/
+re_t/
+temp/
+cems*/
+plants/
+raw_cems/
+*.pkl
+/output_summary*
+/*.r
+/*.rmd
+**/patio_out/*/
+*.xlsx
+*.xlsm
+*.parquet
+*.parquet.gzip
+*.zip
+*.csv
+
+# Allowed Data
+!tests/colo_test_data/data/*.zip
+!src/patio/package_data/*.csv
+!src/patio/package_data/*.parquet*

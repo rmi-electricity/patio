@@ -3,8 +3,7 @@ requires = [ "setuptools>=60", "setuptools_scm>=8" ]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "rmi.cheshire"
-description = "A modified template based on ``catalyst-cooperative/cheshire``."
+name = "patio"
 license = { file = "LICENSE.txt" }
 readme = "README.rst"
 dynamic = [ "version" ]
@@ -14,17 +13,24 @@ classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
-requires-python = ">=3.10,<3.14"
+requires-python = ">=3.13,<3.14"
 dependencies = [
-    "pandas>=1.4,<2.4",
-    # etoolbox provides a number of useful tools for working with data. It also includes
-    # functions and infrastructure for accessing PUDL data stored on GCS so the sqlite
-    # database is not requried
-    "rmi.etoolbox @ git+https://github.com/rmi/etoolbox.git",
+    "rmi.dispatch[viz] @ git+https://github.com/rmi/dispatch.git",
+    "highspy",
+    "pandas[gcp,aws]",
+    "requests",
+    "scipy",
+    "geopandas",
+    "scikit-learn",
+    "cvxpy>=1.6.5,<2",
+    "gurobipy>=12.0.1,<13",
+    "coptpy>=7.2.7,<8",
+    "openpyxl>=3.1.5,<4",
+    "polars[connectorx,fsspec,xlsx2csv,calamine,xlsxwriter]>=1.25.0,<1.29.0",
+    "pypdf>=5.4.0,<6",
+    "tqdm>=4.67.1,<5",
 ]
 
 [project.optional-dependencies]
@@ -49,30 +55,31 @@ qa = [ # in local development these are provided globally, here for GHA
     "ruff>0.0.215,<0.12.1",
 ]
 tooling = [ # in local development these are provided globally
-    "rmi-cheshire[qa]",
+    "patio[qa]",
     "tox>=4.16.0,<4.28",  # Python test environment manager
     "tox-uv>=1.25,<2",
 ]
-tests = [ "rmi-cheshire[dev,tooling]" ]
+tests = [ "patio[dev,tooling]" ]
 types = []
 
 [project.scripts]  # entry points
-winston = "cheshire.cli:main"
+patio = "patio.cli:main"
+patio-colo = "patio.model.colo_core:main"
 
 [tool.setuptools]
 include-package-data = true
 
 [tool.setuptools.dynamic]
-version = { attr = "cheshire._version.__version__" }
+version = { attr = "patio._version.__version__" }
 
 [tool.setuptools_scm]
-write_to = "src/cheshire/_version.py"
+write_to = "src/patio/_version.py"
 
 #######################################################################################
 # Configurations for linters and other tools
 #######################################################################################
 [tool.doc8]
-max-line-length = 88
+max-line-length = 95
 ignore-path = "docs/_build"
 
 [tool.pytest.ini_options]
@@ -95,7 +102,7 @@ ignore_messages = '(Hyperlink target .* is not referenced\.$|Duplicate implicit 
 ignore_directives = [ "bibliography", "todo", "include" ]
 
 [tool.ruff]
-line-length = 88
+line-length = 95
 show-fixes = true
 
 [tool.ruff.format]
@@ -147,6 +154,32 @@ ignore = [
     "COM819",  # prohibited-trailing-comma
     "ISC001",  # single-line-implicit-string-concatenation
     "ISC002",  # multi-line-implicit-string-concatenation
+    "SIM105",  # Use `contextlib.suppress(Exception)` instead of `try`-`except`-`pass`
+    "S610",  # Use of Django `extra` can lead to SQL injection vulnerabilities
+    # Legacy issues not worth addressing now
+    "S110",  # `try`-`except`-`pass` detected, consider logging the exception
+    "D100",  # Missing docstring in public module
+    "D101",  # Missing docstring in public class
+    "D102",  # missing docstring in method
+    "D103",  # missing docstring in function
+    "D104",  # Missing docstring in public package
+    "D105",  # Missing docstring in magic method
+    "D107",  # Missing docstring in `__init__`
+    "D205",  # missing-blank-line-after-summary
+    "D415",  # First line should end with a period, question mark, or exclamation point
+    "E741",  # Ambiguous variable name: `l`
+    "N802",  # Function name should be lowercase
+    "FBT003",  # Boolean positional value in function call
+    "FBT002",  # Boolean default positional argument in function definition
+    "PD008",  # Use `.loc` instead of `.at`. If speed is important, use NumPy.
+    "PD901",  # Avoid using the generic variable name `df` for DataFrames
+    "PD010",  # `.pivot_table` is preferred to `.pivot` or `.unstack`; provides same functionality
+    "RUF015",  # Prefer `next(...)` over single element slice
+    "RUF005",  # Consider iterable unpacking instead of concatenation
+    "W505",  # Doc line too long (89 > 88)
+    "S101",  # Use of `assert` detected
+    "N806",  # Variable `PDATA` in function should be lowercase
+    "RUF012",  # Mutable class attributes should be annotated with `typing.ClassVar`
 ]
 flake8-tidy-imports.ban-relative-imports = "all"
 flake8-type-checking.strict = true
@@ -156,7 +189,7 @@ pydocstyle.convention = "google"
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = [ "F401" ]
 "docs/conf.py" = [ "E501" ]
-"tests/*.py" = [ "S101", "SIM117", "F841", "D100", "D101", "PD901" ]
+"tests/*.py" = [ "S101", "SIM117", "F841", "D100", "D101", "PD901", "PT028", "PD011", "B011", "RUF012", "PT015", "PT006" ]
 
 [tool.tox]
 env_list = [ "linters", "docs", "ci" ]
@@ -193,7 +226,7 @@ commands = [
 description = "un all continuous integration (CI) checks & generate test coverage."
 commands = [
     [ "coverage", "erase" ],
-    [ "coverage", "run", "--source={envsitepackagesdir}/cheshire", "-m", "pytest", "--doctest-modules", "{envsitepackagesdir}/cheshire", "tests" ],
+    [ "coverage", "run", "--source={envsitepackagesdir}/patio", "-m", "pytest", "--doctest-modules", "{envsitepackagesdir}/patio", "tests" ],
     [ "coverage", "lcov", "-o", "coverage.info" ],
     [ "coverage", "report", "--sort=cover" ],
 ]
