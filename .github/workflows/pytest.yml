@@ -15,8 +15,8 @@ jobs:
         with:
           pixi-version: v0.48.0
           manifest-path: pyproject.toml
-          cache: true
-          cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
+      #          cache: true
+      #          cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
       - name: Install global tools
         run: pixi global install pre-commit && pixi global install ruff
       - name: Run CI

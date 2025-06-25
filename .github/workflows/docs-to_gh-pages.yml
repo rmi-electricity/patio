@@ -14,8 +14,8 @@ jobs:
         with:
           pixi-version: v0.48.0
           manifest-path: pyproject.toml
-          cache: true
-          cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
+      #          cache: true
+      #          cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
       - name: Sphinx build
         run: pixi run docs
       - name: Deploy
