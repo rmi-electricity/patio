@@ -2,16 +2,16 @@
 Patio: an electricity model
 ***************************************************************************************
 
-.. image:: https://github.com/rmi-electricity/cheshire/workflows/tox-pytest/badge.svg
-   :target: https://github.com/rmi-electricity/cheshire/actions?query=workflow%3Atox-pytest
+.. image:: https://github.com/rmi-electricity/patio/workflows/pytest/badge.svg
+   :target: https://github.com/rmi-electricity/patio/actions?query=workflow%3Apytest
    :alt: Tox-PyTest Status
 
-.. image:: https://github.com/rmi-electricity/cheshire/workflows/docs/badge.svg
-   :target: https://rmi-electricity.github.io/cheshire/
+.. image:: https://github.com/rmi-electricity/patio/workflows/docs/badge.svg
+   :target: https://rmi-electricity.github.io/patio/
    :alt: GitHub Pages Status
 
-.. image:: https://coveralls.io/repos/github/rmi-electricity/cheshire/badge.svg
-   :target: https://coveralls.io/github/rmi-electricity/cheshire
+.. image:: https://coveralls.io/repos/github/rmi-electricity/patio/badge.svg
+   :target: https://coveralls.io/github/rmi-electricity/patio
 
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
    :target: https://github.com/psf/black>
@@ -21,73 +21,42 @@ Patio: an electricity model
     :target: https://github.com/astral-sh/ruff
     :alt: Ruff
 
-.. image:: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json
-    :target: https://github.com/astral-sh/uv
-    :alt: uv
+.. image:: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/prefix-dev/pixi/main/assets/badge/v0.json
+    :target: https://pixi.sh
+    :alt: pixi
 
 .. contents::
    :depth: 2
 
 .. readme-intro
 
-This template repository helps make new Python projects easier to set up and more
-uniform. It contains a lot of infrastructure surrounding a minimal Python package named
-``cheshire`` (the cat who isn't entirely there...). This template is mostly a lightly
-modified copy of Catalyst Cooperative's
-`cheshire <https://github.com/catalyst-cooperative/cheshire>`_ but with alterations
-for private work and alternative tools.
-
-The goal of this template is to provide a uniform starting point for Python projects,
-with reasonable configurations for a suite of common tools. It is by no means
-comprehensive but generally errs on including a kind of tool rather excluding it. In
-other words, it includes a lot of things that are not necessary and likely not worth
-getting to work for a basic Python project.
-
 Getting Started
 =======================================================================================
-Please read this whole getting started section before beginning.
+See
+`setting up your development environment <https://github.com/rmi-electricity/.github-private/blob/main/profile/notes_on_dev_env.md>`_
+for general tool installation and configuration.
 
-Setup your development machine using uv
----------------------------------------------------------------------------------------
-We recommend using `uv <https://github.com/astral-sh/uv>`__ to manage python
-installations, virtual environments, and packages instead of conda or mamba. If you
-don't have `uv <https://github.com/astral-sh/uv>`__ installed you can install it using
-homebrew with the instructions below. More information and alternative installation
-instructions `here <https://docs.astral.sh/uv/getting-started/installation/>`__.
-
-.. code-block:: zsh
-
-   brew install uv
-   uv python install 3.13
-   uv tool update-shell
-
-There are a number of development tools that we recommend using and installing globally
-using uv. That way they can be installed once and used by multiple projects. The
-instructions below assume these tools are installed as follows.
-
-.. code-block:: zsh
-
-   uv tool install tox --with tox-uv
-   uv tool install pre-commit --with pre-commit-uv
-   uv tool install ruff
-   pre-commit install
-
-In the future, these tools can be upgraded by running ``uv tool upgrade --all``.
-
-.. Note::
-
-  In this repository we effectively disable uv's locking functionality by including
-  ``uv.lock`` in ``.gitignore``. This simplifies library development and dependabot.
-  See `the lockfile <https://docs.astral.sh/uv/concepts/projects/layout/#the-lockfile>`_
-  for information on this functionality. To use this feature as it was intended,
-  remove ``uv.lock`` from ``.gitignore``.
 
 Setup patio environment
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Unfortunately, geopandas doesn't work properly when installed using uv (or pip) so we
+use patio with pixi.
 
 .. code-block:: zsh
 
-   uv sync --extra dev
+   brew install pixi
+
+Navigate to the cloned ``patio`` repository and run the following to setup patio
+with pixi.
+
+.. code-block:: zsh
+
+   pre-commit install
+   pixi install
+
+To setup your IDE to use the pixi environment see these guides
+`PyCharm <https://pixi.sh/v0.20.1/ide_integration/pycharm/>`_,
+`RStudio <https://pixi.sh/v0.20.1/ide_integration/r_studio/>`_.
 
 Git Pre-commit Hooks
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''

@@ -2,15 +2,18 @@ from __future__ import annotations
 
 import datetime
 import logging
+import os
 import subprocess
 import time
 from collections.abc import Callable  # noqa: TC003
 from functools import lru_cache
 from pathlib import Path  # noqa: TC003
 
+import cvxpy as cp
 import numpy as np
 import pandas as pd
 import polars as pl
+from etoolbox.utils.cloud import get
 from etoolbox.utils.misc import all_logging_disabled
 from numba import njit
 from plotly import graph_objs as go  # noqa: TC002
@@ -511,33 +514,21 @@ def _git_commit_info():
         return "no git info found"
 
 
+def bbb_path():
+    bbb_path_ = ROOT_PATH / "BBB Fossil Transition Analysis Inputs.xlsm"
+    if not bbb_path_.exists():
+        get("patio-restricted/BBB Fossil Transition Analysis Inputs.xlsm", ROOT_PATH)
+    return bbb_path_
+
+
 @lru_cache
 def get_year_map(min_year=2021, max_year=2039):
-    # from openpyxl.reader.excel import load_workbook
-    #
-    # wb = load_workbook(ROOT_PATH / "r_data/BBB Fossil Transition Analysis Inputs.xlsm")
-    # ws, reg = list(wb.defined_names["Fossil_Price_Year_Table"].destinations)[0]
-    # ws = wb[ws]
-    # region = ws[reg]
-    bbb = (
-        read_named_range(
-            ROOT_PATH / "r_data/BBB Fossil Transition Analysis Inputs.xlsm",
-            "Fossil_Price_Year_Table",
-        )
-        .set_index("Year")
-        .squeeze()
-    )
+    bbb = read_named_range(bbb_path(), "Fossil_Price_Year_Table").set_index("Year").squeeze()
     LOGGER.warning("Overriding year map 2021 -> 2021, 2022 -> 2022, 2032 -> 2022")
     bbb.loc[2021] = 2021
     bbb.loc[2022] = 2022
     bbb.loc[2032] = 2022
-    return (
-        # pd.DataFrame(
-        #     ([cell.value for cell in row] for row in region[1:]),
-        #     columns=[cell.value for cell in region[0]],
-        # )
-        bbb.loc[min_year:max_year].to_dict()
-    )
+    return bbb.loc[min_year:max_year].to_dict()
 
 
 def generate_projection_from_historical_pl[T: pl.LazyFrame | pl.DataFrame](
@@ -632,3 +623,7 @@ def read_named_range(path, name):
             columns=[cell.value for cell in region[0]],
         )
     return df
+
+
+def solver():
+    return os.environ.get("SOLVER", cp.COPT)

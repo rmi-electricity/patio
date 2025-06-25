@@ -19,7 +19,6 @@ from time import perf_counter
 from types import SimpleNamespace
 from typing import Literal
 
-import cvxpy as cp
 import pandas as pd
 import polars as pl
 import polars.selectors as cs
@@ -77,37 +76,37 @@ def mround(x, base=50):
 
 def run_colo_mp(config, queue, *, mp=True):
     d_dir = Path.home() / config["project"]["data_path"]
-
     if not d_dir.exists():
         raise FileNotFoundError(f"data directory {d_dir} does not exist")
-    colo_json = Path.home() / config["project"]["run_dir_path"] / "colo.json"
-    if not colo_json.exists():
-        raise FileNotFoundError(colo_json)
-
-    with open(colo_json) as f:
-        plant_json = json.load(f)
-    plants_data = plant_json.get("plants")
-    plants_data = [Info(**(v | {"gens": tuple(v.pop("gens"))})) for v in plants_data]
-    if pids := config["project"].get("plant_ids", None):
-        plants_data = [p for p in plants_data if p.pid in pids]
 
     c_dir = Path.home() / config["project"]["run_dir_path"]
     if not (result_dir := c_dir.joinpath("results")).exists():
         result_dir.mkdir()
 
-    config["scenario"]["default"]["param"]["pudl_release"] = plant_json.get(
-        "pudl_release", PATIO_PUDL_RELEASE
-    )
+    colo_json = Path.home() / config["project"]["run_dir_path"] / "colo.json"
+    if not colo_json.exists():
+        raise FileNotFoundError(colo_json)
+    with open(colo_json) as f:
+        plant_json = json.load(f)
 
-    configs = [
-        {"name": k, "ix": config["scenario"][k]["ix"]}
-        | {
-            p: config["scenario"].get("default", {}).get(p, {})
-            | config["scenario"].get(k, {}).get(p, {})
-            for p in ("setting", "param", "dv")
-        }
-        for k in config["project"]["scenarios"]
-    ]
+    configs, plants_data = setup_plants_configs(config, **plant_json)
+    # plants_data = plant_json.get("plants")
+    # plants_data = [Info(**(v | {"gens": tuple(v.pop("gens"))})) for v in plants_data]
+    # if pids := config["project"].get("plant_ids", None):
+    #     plants_data = [p for p in plants_data if p.pid in pids]
+    #
+    # config["scenario"]["default"]["param"]["pudl_release"] = plant_json.get(
+    #     "pudl_release", PATIO_PUDL_RELEASE
+    # )
+    # configs = [
+    #     {"name": k, "ix": config["scenario"][k]["ix"]}
+    #     | {
+    #         p: config["scenario"].get("default", {}).get(p, {})
+    #            | config["scenario"].get(k, {}).get(p, {})
+    #         for p in ("setting", "param", "dv")
+    #     }
+    #     for k in config["project"]["scenarios"]
+    # ]
     workers = config["project"]["workers"]
     LOGGER.warning("%s workers, %s time limit", workers, RLP_TL)
 
@@ -170,6 +169,36 @@ def run_colo_mp(config, queue, *, mp=True):
             continue
         model_colo_config(conf, c_dir, d_dir, info)
     return None
+
+
+def setup_plants_configs(config, plants, pudl_release=PATIO_PUDL_RELEASE, **kwargs):
+    """Combine plant_data and data config from colo_json with scenarios from toml."""
+    plants_data = [Info(**(v | {"gens": tuple(v.pop("gens"))})) for v in plants]
+    if pids := config["project"].get("plant_ids", None):
+        plants_data = [p for p in plants_data if p.pid in pids]
+    config["scenario"]["default"]["param"]["pudl_release"] = pudl_release
+    configs = [
+        {"name": k, "ix": config["scenario"][k]["ix"]}
+        | {
+            p: config["scenario"].get("default", {}).get(p, {})
+            | config["scenario"].get(k, {}).get(p, {})
+            for p in ("setting", "param", "dv")
+        }
+        for k in config["project"]["scenarios"]
+    ]
+    return configs, plants_data
+
+
+def make_configs_from_defaults(config):
+    return [
+        {"name": k, "ix": config["scenario"][k]["ix"]}
+        | {
+            p: config["scenario"].get("default", {}).get(p, {})
+            | config["scenario"].get(k, {}).get(p, {})
+            for p in ("setting", "param", "dv")
+        }
+        for k in config["project"]["scenarios"]
+    ]
 
 
 # noinspection PyUnreachableCode
@@ -311,7 +340,7 @@ def model_colo_load(model: Model, run_econ, saved_select, **kwargs):
             return model
     else:
         with timer() as t:
-            model.select_resources(RLP_TL, cp.COPT)
+            model.select_resources(RLP_TL)
         model.add_to_result_dict(select_time=t())
         if model.status in (FAIL_SELECT, FAIL_SMALL):
             return model
@@ -325,7 +354,7 @@ def model_colo_load(model: Model, run_econ, saved_select, **kwargs):
         )
 
     with timer() as t:
-        model.dispatch_all(DLP_TL, cp.COPT)
+        model.dispatch_all(DLP_TL)
     model.add_to_result_dict(dispatch_time=t())
     if model.status == FAIL_DISPATCH:
         return model
@@ -1035,6 +1064,9 @@ def main(
     rerun=False,
     workers=1,
     combine="",
+    config="",
+    plants="",
+    source_data="",
 ):
     multiprocessing.set_start_method("spawn")
 
@@ -1050,6 +1082,10 @@ def main(
             workers=workers,
             combine=combine,
             assemble=False,
+            config=config,
+            plants=plants,
+            source_data=source_data,
+            saved="",
         )
     else:
         import argparse
@@ -1067,6 +1103,12 @@ def main(
                 "type": str,
                 "default": "",
                 "help": "path to colo.toml config file relative to home",
+            },
+            {
+                "name": "-L, --source-data",
+                "type": str,
+                "default": "",
+                "help": "path from home, overrides `data_path` and `colo_json_path` in colo.toml",
             },
             {
                 "name": "-p, --plants",
@@ -1110,6 +1152,11 @@ def main(
         config["project"]["run_dir_path"] = config["project"]["run_dir_path"].replace(
             "{NOW}", datetime.now().strftime("%Y%m%d%H%M")
         )
+
+    if args.source_data != "":
+        config["project"]["source_data_path"] = Path.home() / args.source_data
+        config["project"]["colo_json_path"] = Path.home() / args.source_data / "colo.json"
+
     colo_dir = Path.home() / config["project"]["run_dir_path"]
     if not colo_dir.exists():
         if not colo_dir.parent.exists():

@@ -1,7 +1,7 @@
 import pandas as pd
 
 # from gencost.package_data import PACKAGE_PATH
-from patio.constants import ROOT_PATH
+from patio.package_data import PACKAGE_DATA_PATH
 
 BA_REPLACE = {
     "GLHB": "MISO",
@@ -141,7 +141,7 @@ def add_ba_code(
     if missing := reqd_cols - set(input_df):
         raise ValueError(f"`input_df` is missing {missing}")
     ferc_match = (
-        pd.read_parquet(ROOT_PATH / "patio/package_data/utility_information.parquet.gzip")
+        pd.read_parquet(PACKAGE_DATA_PATH / "utility_information.parquet.gzip")
         .astype({"respondent_id": "Int64"})[["respondent_id", "utility_id_eia"]]
         .dropna()
         .drop_duplicates()
@@ -164,9 +164,7 @@ def add_ba_code(
 
     if apply_purchaser:
         purchased = (
-            pd.read_parquet(
-                ROOT_PATH / "patio/package_data/f1_purchased_power_tagged.parquet.gzip"
-            )
+            pd.read_parquet(PACKAGE_DATA_PATH / "f1_purchased_power_tagged.parquet.gzip")
             .astype({"respondent_id": "Int64"})
             .query("report_year == 2020 & plant_id_eia.notna()")
             .assign(

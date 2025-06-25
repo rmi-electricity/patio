@@ -1,0 +1,3226 @@
+{
+    "plants": [
+        {
+            "ba": "177",
+            "pid": 7964,
+            "gens": [
+                "GT1",
+                "GT2",
+                "GT3",
+                "GT4"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 240.0
+        },
+        {
+            "ba": "177",
+            "pid": 55234,
+            "gens": [
+                "GT1",
+                "GT2",
+                "GT3",
+                "GT4",
+                "GT5",
+                "GT6",
+                "GT7",
+                "GT8"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 814.4000244140625
+        },
+        {
+            "ba": "177",
+            "pid": 67576,
+            "gens": [
+                "1",
+                "2",
+                "3"
+            ],
+            "tech": "nggt",
+            "status": "proposed",
+            "cap": 648.0
+        },
+        {
+            "ba": "186",
+            "pid": 3804,
+            "gens": [
+                "6A",
+                "6B",
+                "6ST"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 613.0
+        },
+        {
+            "ba": "186",
+            "pid": 7838,
+            "gens": [
+                "1",
+                "2",
+                "3",
+                "4"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 705.5
+        },
+        {
+            "ba": "186",
+            "pid": 56807,
+            "gens": [
+                "1A",
+                "1B",
+                "1C"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 559.0
+        },
+        {
+            "ba": "186",
+            "pid": 58260,
+            "gens": [
+                "CT01",
+                "CT02",
+                "CT03",
+                "ST01"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 1472.2000122070312
+        },
+        {
+            "ba": "186",
+            "pid": 59913,
+            "gens": [
+                "CT01",
+                "CT02",
+                "CT03",
+                "ST01"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 1773.2999877929688
+        },
+        {
+            "ba": "195",
+            "pid": 55029,
+            "gens": [
+                "CT01"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 192.3000030517578
+        },
+        {
+            "ba": "2",
+            "pid": 3,
+            "gens": [
+                "A1CT",
+                "A1CT2",
+                "A1ST",
+                "A2C1",
+                "A2C2",
+                "A2ST"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 1070.8000183105469
+        },
+        {
+            "ba": "2",
+            "pid": 10,
+            "gens": [
+                "GT10",
+                "GT2",
+                "GT3",
+                "GT4",
+                "GT5",
+                "GT6",
+                "GT7",
+                "GT8",
+                "GT9"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 720.0
+        },
+        {
+            "ba": "2",
+            "pid": 7721,
+            "gens": [
+                "1",
+                "2"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 317.4000015258789
+        },
+        {
+            "ba": "2",
+            "pid": 55409,
+            "gens": [
+                "CAL1",
+                "CAL2",
+                "CAL3",
+                "CAL4"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 748.0
+        },
+        {
+            "ba": "2",
+            "pid": 55411,
+            "gens": [
+                "HEC1",
+                "HEC2",
+                "HECS"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 822.7999877929688
+        },
+        {
+            "ba": "2",
+            "pid": 55440,
+            "gens": [
+                "CTG1",
+                "CTG2",
+                "CTG3",
+                "ST1"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 927.1000061035156
+        },
+        {
+            "ba": "210",
+            "pid": 7985,
+            "gens": [
+                "GT1",
+                "GT2",
+                "ST1"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 576.2999877929688
+        },
+        {
+            "ba": "22",
+            "pid": 1396,
+            "gens": [
+                "U6CT",
+                "U72",
+                "U7CT"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 566.0999908447266
+        },
+        {
+            "ba": "22",
+            "pid": 55173,
+            "gens": [
+                "CT11",
+                "CT12",
+                "CT24",
+                "CT25",
+                "ST13",
+                "ST26"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 1389.2000122070312
+        },
+        {
+            "ba": "552",
+            "pid": 55063,
+            "gens": [
+                "CTG1",
+                "CTG2",
+                "CTG3",
+                "STG1",
+                "STG2",
+                "STG3"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 891.0
+        },
+        {
+            "ba": "569",
+            "pid": 7813,
+            "gens": [
+                "1",
+                "2",
+                "3",
+                "4"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 570.0
+        },
+        {
+            "ba": "569",
+            "pid": 7829,
+            "gens": [
+                "1",
+                "2"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 242.0
+        },
+        {
+            "ba": "569",
+            "pid": 7917,
+            "gens": [
+                "1",
+                "2",
+                "3"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 539.6999969482422
+        },
+        {
+            "ba": "569",
+            "pid": 55141,
+            "gens": [
+                "CT1",
+                "CT2",
+                "CT3"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 495.0
+        },
+        {
+            "ba": "569",
+            "pid": 55244,
+            "gens": [
+                "CTG1",
+                "CTG2",
+                "CTG3",
+                "CTG4",
+                "CTG5"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 409.0
+        },
+        {
+            "ba": "569",
+            "pid": 55382,
+            "gens": [
+                "1GT1",
+                "1GT2",
+                "1STG",
+                "2GT1",
+                "2GT2",
+                "2STG"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 1192.0
+        },
+        {
+            "ba": "57",
+            "pid": 710,
+            "gens": [
+                "4",
+                "5",
+                "5ACT",
+                "5BCT",
+                "6",
+                "6ACT",
+                "6BCT",
+                "CT4A",
+                "CT4B"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 2764.7999267578125
+        },
+        {
+            "ba": "57",
+            "pid": 728,
+            "gens": [
+                "10",
+                "8",
+                "9"
+            ],
+            "tech": "nggt",
+            "status": "proposed",
+            "cap": 1448.3999633789062
+        },
+        {
+            "ba": "57",
+            "pid": 56150,
+            "gens": [
+                "10ST",
+                "11ST",
+                "C10A",
+                "C10B",
+                "C11A",
+                "C11B"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 1376.5999755859375
+        },
+        {
+            "ba": "AECI",
+            "pid": 7604,
+            "gens": [
+                "1",
+                "2"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 506.6000061035156
+        },
+        {
+            "ba": "AECI",
+            "pid": 7754,
+            "gens": [
+                "1",
+                "2"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 315.6000061035156
+        },
+        {
+            "ba": "AECI",
+            "pid": 7757,
+            "gens": [
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 1069.6000061035156
+        },
+        {
+            "ba": "AECI",
+            "pid": 7848,
+            "gens": [
+                "11",
+                "12",
+                "13"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 321.2999954223633
+        },
+        {
+            "ba": "AECI",
+            "pid": 55340,
+            "gens": [
+                "CTG1",
+                "CTG2",
+                "STG"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 679.1000061035156
+        },
+        {
+            "ba": "AECI",
+            "pid": 67262,
+            "gens": [
+                "RP1"
+            ],
+            "tech": "nggt",
+            "status": "proposed",
+            "cap": 419.0
+        },
+        {
+            "ba": "AECI",
+            "pid": 67263,
+            "gens": [
+                "TN1"
+            ],
+            "tech": "nggt",
+            "status": "proposed",
+            "cap": 419.0
+        },
+        {
+            "ba": "APS",
+            "pid": 117,
+            "gens": [
+                "C4-1",
+                "C4-2",
+                "C5-1",
+                "C5-2",
+                "C5-3"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 704.5999984741211
+        },
+        {
+            "ba": "APS",
+            "pid": 55455,
+            "gens": [
+                "CT1A",
+                "CT1B",
+                "CT2A",
+                "CT2B",
+                "ST1",
+                "ST2"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 1140.3000183105469
+        },
+        {
+            "ba": "APS",
+            "pid": 59471,
+            "gens": [
+                "CTG01",
+                "CTG02",
+                "CTG03",
+                "CTG04",
+                "CTG05",
+                "CTG06"
+            ],
+            "tech": "nggt",
+            "status": "proposed",
+            "cap": 652.1999816894531
+        },
+        {
+            "ba": "CAISO",
+            "pid": 56298,
+            "gens": [
+                "1",
+                "2",
+                "3"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 165.0
+        },
+        {
+            "ba": "DUKE",
+            "pid": 2720,
+            "gens": [
+                "CT11",
+                "CT12",
+                "ST10"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 697.8999938964844
+        },
+        {
+            "ba": "DUKE",
+            "pid": 2723,
+            "gens": [
+                "CT8",
+                "CT9",
+                "ST7"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 697.8999938964844
+        },
+        {
+            "ba": "DUKE",
+            "pid": 3264,
+            "gens": [
+                "CT11",
+                "CT12",
+                "ST10"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 846.7000122070312
+        },
+        {
+            "ba": "DUKE",
+            "pid": 7277,
+            "gens": [
+                "1",
+                "10",
+                "11",
+                "12",
+                "13",
+                "14",
+                "15",
+                "16",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 1753.5999755859375
+        },
+        {
+            "ba": "DUKE",
+            "pid": 7981,
+            "gens": [
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 799.2000122070312
+        },
+        {
+            "ba": "DUKE",
+            "pid": 55116,
+            "gens": [
+                "CT1",
+                "CT2",
+                "CT3",
+                "CT4",
+                "CT5"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 977.5
+        },
+        {
+            "ba": "DUKE",
+            "pid": 55166,
+            "gens": [
+                "CT01",
+                "CT02",
+                "CT03",
+                "CT04",
+                "CT05"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 985.0
+        },
+        {
+            "ba": "DUKE",
+            "pid": 56249,
+            "gens": [
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 343.7999954223633
+        },
+        {
+            "ba": "DUKE",
+            "pid": 56292,
+            "gens": [
+                "ES1",
+                "ES2",
+                "ES3",
+                "ES4",
+                "ES5",
+                "ES6"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 343.7999954223633
+        },
+        {
+            "ba": "DUKE",
+            "pid": 58215,
+            "gens": [
+                "1A",
+                "1B",
+                "1C",
+                "ST1"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 1068.0
+        },
+        {
+            "ba": "DUKE",
+            "pid": 59325,
+            "gens": [
+                "KMEC1",
+                "KMEC2"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 543.9000091552734
+        },
+        {
+            "ba": "DUKE",
+            "pid": 61240,
+            "gens": [
+                "REC",
+                "REC2"
+            ],
+            "tech": "ngcc",
+            "status": "proposed",
+            "cap": 543.9000091552734
+        },
+        {
+            "ba": "EPE",
+            "pid": 3456,
+            "gens": [
+                "5CA1",
+                "5CT1",
+                "5CT2"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 307.0
+        },
+        {
+            "ba": "EPE",
+            "pid": 58562,
+            "gens": [
+                "GT-1",
+                "GT-2",
+                "GT-3",
+                "GT-4"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 527.2000122070312
+        },
+        {
+            "ba": "ERCO",
+            "pid": 3443,
+            "gens": [
+                "7"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 196.89999389648438
+        },
+        {
+            "ba": "ERCO",
+            "pid": 3489,
+            "gens": [
+                "CT1",
+                "CT2",
+                "ST1"
+            ],
+            "tech": "ngcc",
+            "status": "proposed",
+            "cap": 853.5
+        },
+        {
+            "ba": "ERCO",
+            "pid": 3502,
+            "gens": [
+                "CT1"
+            ],
+            "tech": "nggt",
+            "status": "proposed",
+            "cap": 235.5
+        },
+        {
+            "ba": "ERCO",
+            "pid": 3506,
+            "gens": [
+                "CT1",
+                "CT2"
+            ],
+            "tech": "nggt",
+            "status": "proposed",
+            "cap": 471.0
+        },
+        {
+            "ba": "ERCO",
+            "pid": 3609,
+            "gens": [
+                "CGT1",
+                "CGT2",
+                "CGT3",
+                "CGT4"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 229.60000610351562
+        },
+        {
+            "ba": "ERCO",
+            "pid": 3612,
+            "gens": [
+                "5",
+                "6",
+                "7",
+                "8"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 244.0
+        },
+        {
+            "ba": "ERCO",
+            "pid": 3631,
+            "gens": [
+                "10",
+                "7",
+                "8",
+                "9"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 189.60000228881836
+        },
+        {
+            "ba": "ERCO",
+            "pid": 4937,
+            "gens": [
+                "CT-1",
+                "CT-2",
+                "STG"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 574.6000061035156
+        },
+        {
+            "ba": "ERCO",
+            "pid": 7512,
+            "gens": [
+                "1",
+                "2",
+                "3"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 575.0
+        },
+        {
+            "ba": "ERCO",
+            "pid": 7900,
+            "gens": [
+                "5A",
+                "5C"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 388.0
+        },
+        {
+            "ba": "ERCO",
+            "pid": 7900,
+            "gens": [
+                "SH1",
+                "SH2",
+                "SH3",
+                "SH4",
+                "SH6",
+                "SH7"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 308.40000915527344
+        },
+        {
+            "ba": "ERCO",
+            "pid": 8063,
+            "gens": [
+                "CT5",
+                "CT6"
+            ],
+            "tech": "nggt",
+            "status": "proposed",
+            "cap": 471.0
+        },
+        {
+            "ba": "ERCO",
+            "pid": 54817,
+            "gens": [
+                "GT-1",
+                "ST-1"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 282.5999984741211
+        },
+        {
+            "ba": "ERCO",
+            "pid": 55097,
+            "gens": [
+                "CTG1",
+                "CTG2",
+                "CTG3",
+                "CTG4",
+                "STG1",
+                "STG2"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 1112.6000061035156
+        },
+        {
+            "ba": "ERCO",
+            "pid": 55153,
+            "gens": [
+                "CTG1",
+                "CTG2",
+                "CTG3",
+                "CTG4",
+                "STG1",
+                "STG2"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 1088.2000122070312
+        },
+        {
+            "ba": "ERCO",
+            "pid": 55153,
+            "gens": [
+                "CTGP1",
+                "CTGP2"
+            ],
+            "tech": "nggt",
+            "status": "proposed",
+            "cap": 320.0
+        },
+        {
+            "ba": "ERCO",
+            "pid": 55154,
+            "gens": [
+                "CTA",
+                "CTB",
+                "ST"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 609.0
+        },
+        {
+            "ba": "ERCO",
+            "pid": 55168,
+            "gens": [
+                "1",
+                "2",
+                "3"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 618.6999969482422
+        },
+        {
+            "ba": "ERCO",
+            "pid": 55172,
+            "gens": [
+                "GT-1",
+                "GT-2",
+                "GT-3",
+                "ST-4",
+                "ST-5"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 807.0
+        },
+        {
+            "ba": "ERCO",
+            "pid": 55215,
+            "gens": [
+                "CTG1",
+                "CTG2",
+                "CTG3",
+                "CTG4",
+                "STG1",
+                "STG2"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 1152.7999877929688
+        },
+        {
+            "ba": "ERCO",
+            "pid": 55230,
+            "gens": [
+                "CT1",
+                "CT2",
+                "CT3",
+                "CT4",
+                "ST1",
+                "ST2"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 1280.0
+        },
+        {
+            "ba": "ERCO",
+            "pid": 55365,
+            "gens": [
+                "GT1",
+                "GT2",
+                "GT3",
+                "GT4"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 236.0
+        },
+        {
+            "ba": "ERCO",
+            "pid": 55480,
+            "gens": [
+                "ST1",
+                "ST2",
+                "U1",
+                "U2",
+                "U3",
+                "U4",
+                "U5",
+                "U6"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 1894.1999816894531
+        },
+        {
+            "ba": "ERCO",
+            "pid": 55545,
+            "gens": [
+                "CTG1",
+                "CTG2",
+                "STG1"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 551.3000183105469
+        },
+        {
+            "ba": "ERCO",
+            "pid": 56349,
+            "gens": [
+                "CT1A",
+                "CT1B",
+                "CT2A",
+                "CT2B",
+                "ST1",
+                "ST2"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 550.3999938964844
+        },
+        {
+            "ba": "ERCO",
+            "pid": 56350,
+            "gens": [
+                "CT1A",
+                "CT1B",
+                "CT2A",
+                "CT2B",
+                "ST1",
+                "ST2"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 580.0999984741211
+        },
+        {
+            "ba": "ERCO",
+            "pid": 56674,
+            "gens": [
+                "CGT1",
+                "CGT2",
+                "CGT3",
+                "CGT4"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 242.0
+        },
+        {
+            "ba": "ERCO",
+            "pid": 58001,
+            "gens": [
+                "CTG-1",
+                "CTG-2",
+                "CTG-3",
+                "CTG-4",
+                "STG-1",
+                "STG-2"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 1606.4000244140625
+        },
+        {
+            "ba": "ERCO",
+            "pid": 58005,
+            "gens": [
+                "CTG-1",
+                "CTG-2",
+                "STG-1"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 803.2000122070312
+        },
+        {
+            "ba": "ERCO",
+            "pid": 58471,
+            "gens": [
+                "CTG1",
+                "CTG2"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 358.79998779296875
+        },
+        {
+            "ba": "ERCO",
+            "pid": 58930,
+            "gens": [
+                "CA1",
+                "GT1",
+                "GT2"
+            ],
+            "tech": "ngcc",
+            "status": "proposed",
+            "cap": 743.0
+        },
+        {
+            "ba": "ERCO",
+            "pid": 58931,
+            "gens": [
+                "CA1",
+                "GT1",
+                "GT2"
+            ],
+            "tech": "ngcc",
+            "status": "proposed",
+            "cap": 743.0
+        },
+        {
+            "ba": "ERCO",
+            "pid": 59298,
+            "gens": [
+                "PCEC1",
+                "PCEC2"
+            ],
+            "tech": "nggt",
+            "status": "proposed",
+            "cap": 343.6000061035156
+        },
+        {
+            "ba": "ERCO",
+            "pid": 59615,
+            "gens": [
+                "CTG-1",
+                "CTG-2",
+                "CTG-3"
+            ],
+            "tech": "nggt",
+            "status": "proposed",
+            "cap": 549.0
+        },
+        {
+            "ba": "ERCO",
+            "pid": 59616,
+            "gens": [
+                "CTG-1",
+                "CTG-2",
+                "CTG-3"
+            ],
+            "tech": "nggt",
+            "status": "proposed",
+            "cap": 549.0
+        },
+        {
+            "ba": "ERCO",
+            "pid": 59617,
+            "gens": [
+                "CTG-1",
+                "CTG-2",
+                "CTG-3"
+            ],
+            "tech": "nggt",
+            "status": "proposed",
+            "cap": 549.0
+        },
+        {
+            "ba": "ERCO",
+            "pid": 59716,
+            "gens": [
+                "CTG1",
+                "CTG2"
+            ],
+            "tech": "nggt",
+            "status": "proposed",
+            "cap": 464.0
+        },
+        {
+            "ba": "ERCO",
+            "pid": 59923,
+            "gens": [
+                "CTG-1",
+                "CTG-2",
+                "STG"
+            ],
+            "tech": "ngcc",
+            "status": "proposed",
+            "cap": 753.0
+        },
+        {
+            "ba": "ERCO",
+            "pid": 59924,
+            "gens": [
+                "CTG-1",
+                "CTG-2",
+                "STG-1"
+            ],
+            "tech": "ngcc",
+            "status": "proposed",
+            "cap": 1282.0
+        },
+        {
+            "ba": "ERCO",
+            "pid": 60194,
+            "gens": [
+                "CT1",
+                "CT2",
+                "CT3",
+                "CT4"
+            ],
+            "tech": "nggt",
+            "status": "proposed",
+            "cap": 928.0
+        },
+        {
+            "ba": "ERCO",
+            "pid": 60221,
+            "gens": [
+                "TBN1",
+                "TBN2"
+            ],
+            "tech": "nggt",
+            "status": "proposed",
+            "cap": 354.0
+        },
+        {
+            "ba": "ERCO",
+            "pid": 60264,
+            "gens": [
+                "BCGT1",
+                "BCGT2",
+                "BCGT3",
+                "BCGT4",
+                "BCGT5",
+                "BCGT6"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 427.1999816894531
+        },
+        {
+            "ba": "ERCO",
+            "pid": 60264,
+            "gens": [
+                "CLGT1",
+                "CLGT2",
+                "CLGT3",
+                "CLGT4",
+                "CLGT5",
+                "CLGT6"
+            ],
+            "tech": "nggt",
+            "status": "proposed",
+            "cap": 427.1999816894531
+        },
+        {
+            "ba": "ERCO",
+            "pid": 60268,
+            "gens": [
+                "TBN1",
+                "TBN2"
+            ],
+            "tech": "nggt",
+            "status": "proposed",
+            "cap": 464.0
+        },
+        {
+            "ba": "ERCO",
+            "pid": 62684,
+            "gens": [
+                "PP-1",
+                "PP-2",
+                "PP-3",
+                "PP-4"
+            ],
+            "tech": "nggt",
+            "status": "proposed",
+            "cap": 200.0
+        },
+        {
+            "ba": "ERCO",
+            "pid": 62685,
+            "gens": [
+                "SP-1",
+                "SP-2",
+                "SP-3",
+                "SP-4"
+            ],
+            "tech": "nggt",
+            "status": "proposed",
+            "cap": 200.0
+        },
+        {
+            "ba": "ERCO",
+            "pid": 63335,
+            "gens": [
+                "CTG-1",
+                "CTG-2",
+                "CTG-3",
+                "CTG-4",
+                "CTG-5",
+                "CTG-6",
+                "CTG-7",
+                "CTG-8"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 484.0
+        },
+        {
+            "ba": "ERCO",
+            "pid": 63688,
+            "gens": [
+                "CTG-1",
+                "CTG-2",
+                "CTG-3",
+                "CTG-4",
+                "CTG-5",
+                "CTG-6",
+                "CTG-7",
+                "CTG-8",
+                "CTG-9",
+                "CTG10"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 605.0
+        },
+        {
+            "ba": "ERCO",
+            "pid": 66601,
+            "gens": [
+                "GT61",
+                "GT62"
+            ],
+            "tech": "nggt",
+            "status": "proposed",
+            "cap": 377.3999938964844
+        },
+        {
+            "ba": "ETR",
+            "pid": 1391,
+            "gens": [
+                "5A"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 173.3000030517578
+        },
+        {
+            "ba": "ETR",
+            "pid": 1403,
+            "gens": [
+                "6A",
+                "6B",
+                "6C"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 649.5
+        },
+        {
+            "ba": "ETR",
+            "pid": 55165,
+            "gens": [
+                "G101",
+                "G102"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 358.8000030517578
+        },
+        {
+            "ba": "ETR",
+            "pid": 55218,
+            "gens": [
+                "H01",
+                "H02",
+                "H03"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 551.3000183105469
+        },
+        {
+            "ba": "ETR",
+            "pid": 55220,
+            "gens": [
+                "A01",
+                "A02",
+                "A03"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 551.3000183105469
+        },
+        {
+            "ba": "ETR",
+            "pid": 55380,
+            "gens": [
+                "CTG1",
+                "CTG2",
+                "CTG3",
+                "CTG4",
+                "CTG5",
+                "CTG6",
+                "CTG7",
+                "CTG8",
+                "STG1",
+                "STG2",
+                "STG3",
+                "STG4"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 2428.0
+        },
+        {
+            "ba": "ETR",
+            "pid": 55418,
+            "gens": [
+                "CT1",
+                "CT2",
+                "ST1"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 714.7999877929688
+        },
+        {
+            "ba": "ETR",
+            "pid": 55467,
+            "gens": [
+                "CTG1",
+                "CTG2",
+                "CTG3",
+                "STG1",
+                "STG2",
+                "STG3"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 903.9000091552734
+        },
+        {
+            "ba": "ETR",
+            "pid": 55486,
+            "gens": [
+                "CTG01",
+                "CTG02"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 399.6000061035156
+        },
+        {
+            "ba": "ETR",
+            "pid": 55620,
+            "gens": [
+                "CT-1",
+                "CT-2",
+                "ST-1"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 637.8999938964844
+        },
+        {
+            "ba": "ETR",
+            "pid": 55620,
+            "gens": [
+                "2-CT"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 186.1999969482422
+        },
+        {
+            "ba": "ETR",
+            "pid": 56604,
+            "gens": [
+                "HC1",
+                "HC2"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 173.0
+        },
+        {
+            "ba": "ETR",
+            "pid": 60925,
+            "gens": [
+                "1A",
+                "1B",
+                "1C"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 1000.0
+        },
+        {
+            "ba": "ETR",
+            "pid": 60926,
+            "gens": [
+                "1A",
+                "1B",
+                "1C"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 1000.0
+        },
+        {
+            "ba": "ETR",
+            "pid": 60927,
+            "gens": [
+                "1A",
+                "1B",
+                "1C"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 1000.0
+        },
+        {
+            "ba": "ETR",
+            "pid": 66621,
+            "gens": [
+                "1A",
+                "1B",
+                "1C"
+            ],
+            "tech": "ngcc",
+            "status": "proposed",
+            "cap": 1306.0
+        },
+        {
+            "ba": "ETR",
+            "pid": 67914,
+            "gens": [
+                "1A",
+                "1B"
+            ],
+            "tech": "ngcc",
+            "status": "proposed",
+            "cap": 964.0
+        },
+        {
+            "ba": "EVRG",
+            "pid": 1240,
+            "gens": [
+                "GT1",
+                "GT2",
+                "GT3"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 375.1000061035156
+        },
+        {
+            "ba": "EVRG",
+            "pid": 7929,
+            "gens": [
+                "1",
+                "2",
+                "3",
+                "4"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 408.0
+        },
+        {
+            "ba": "EVRG",
+            "pid": 56502,
+            "gens": [
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 730.1999816894531
+        },
+        {
+            "ba": "FMPP",
+            "pid": 564,
+            "gens": [
+                "B",
+                "B1"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 333.0
+        },
+        {
+            "ba": "FMPP",
+            "pid": 676,
+            "gens": [
+                "5CT",
+                "5ST"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 384.0
+        },
+        {
+            "ba": "FMPP",
+            "pid": 56400,
+            "gens": [
+                "CT1",
+                "ST1"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 411.40000915527344
+        },
+        {
+            "ba": "FPC",
+            "pid": 628,
+            "gens": [
+                "1GTA",
+                "1GTB",
+                "2GTA",
+                "2GTB",
+                "CC1ST",
+                "CC2ST"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 1970.5999755859375
+        },
+        {
+            "ba": "FPC",
+            "pid": 634,
+            "gens": [
+                "4AGT",
+                "4BGT",
+                "4CGT",
+                "4DGT",
+                "4ST"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 1254.0
+        },
+        {
+            "ba": "FPC",
+            "pid": 7302,
+            "gens": [
+                "1GT",
+                "1GT2",
+                "1ST",
+                "2GT",
+                "2GT2",
+                "2ST",
+                "3GT",
+                "3GT2",
+                "3ST",
+                "4GT",
+                "4GT2",
+                "4ST"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 2266.2999877929688
+        },
+        {
+            "ba": "FPC",
+            "pid": 7699,
+            "gens": [
+                "CT1",
+                "CW1"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 278.0999984741211
+        },
+        {
+            "ba": "FPC",
+            "pid": 8049,
+            "gens": [
+                "P12",
+                "P13",
+                "P14"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 294.59999084472656
+        },
+        {
+            "ba": "FPC",
+            "pid": 54365,
+            "gens": [
+                "APC1",
+                "APC2",
+                "APC3"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 157.20000076293945
+        },
+        {
+            "ba": "FPC",
+            "pid": 55821,
+            "gens": [
+                "A",
+                "B",
+                "C"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 688.2999877929688
+        },
+        {
+            "ba": "FPC",
+            "pid": 60138,
+            "gens": [
+                "1GTA",
+                "1GTB",
+                "2GTA",
+                "2GTB",
+                "CC1ST",
+                "CC2ST"
+            ],
+            "tech": "ngcc",
+            "status": "proposed",
+            "cap": 1970.5999755859375
+        },
+        {
+            "ba": "FPC",
+            "pid": 63802,
+            "gens": [
+                "G001"
+            ],
+            "tech": "ngcc",
+            "status": "proposed",
+            "cap": 612.0
+        },
+        {
+            "ba": "FPL",
+            "pid": 609,
+            "gens": [
+                "3A",
+                "3B",
+                "3C",
+                "3ST"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 1295.0
+        },
+        {
+            "ba": "FPL",
+            "pid": 612,
+            "gens": [
+                "2A",
+                "2B",
+                "2C",
+                "2D",
+                "2E",
+                "2F"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 1129.1999816894531
+        },
+        {
+            "ba": "FPL",
+            "pid": 612,
+            "gens": [
+                "CT1",
+                "CT2",
+                "PFM3C",
+                "PFM3D"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 835.3999938964844
+        },
+        {
+            "ba": "FPL",
+            "pid": 613,
+            "gens": [
+                "6A",
+                "6B",
+                "6C",
+                "6D",
+                "6E"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 1147.5
+        },
+        {
+            "ba": "FPL",
+            "pid": 617,
+            "gens": [
+                "5A",
+                "5B",
+                "5C",
+                "5ST"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 1352.0
+        },
+        {
+            "ba": "FPL",
+            "pid": 619,
+            "gens": [
+                "5A",
+                "5B",
+                "5C",
+                "5ST"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 1295.0
+        },
+        {
+            "ba": "FPL",
+            "pid": 621,
+            "gens": [
+                "5CA",
+                "5CTA",
+                "5CTB",
+                "5CTC",
+                "5CTD"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 1224.0
+        },
+        {
+            "ba": "FPL",
+            "pid": 6042,
+            "gens": [
+                "3",
+                "A",
+                "B",
+                "C",
+                "D"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 1224.5999755859375
+        },
+        {
+            "ba": "FPL",
+            "pid": 6043,
+            "gens": [
+                "8",
+                "8A",
+                "8B",
+                "8C",
+                "8D"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 1224.5
+        },
+        {
+            "ba": "FPL",
+            "pid": 55242,
+            "gens": [
+                "CT01",
+                "ST01"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 274.5
+        },
+        {
+            "ba": "FPL",
+            "pid": 55286,
+            "gens": [
+                "OG1",
+                "OG2",
+                "OG3",
+                "OG4",
+                "OG5"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 994.3999786376953
+        },
+        {
+            "ba": "FPL",
+            "pid": 56407,
+            "gens": [
+                "1A",
+                "1B",
+                "1C",
+                "1ST",
+                "2A",
+                "2B",
+                "2C",
+                "2ST",
+                "3A",
+                "3B",
+                "3C",
+                "3ST"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 4263.0
+        },
+        {
+            "ba": "JEA",
+            "pid": 666,
+            "gens": [
+                "GT37",
+                "GT38"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 370.0
+        },
+        {
+            "ba": "JEA",
+            "pid": 7846,
+            "gens": [
+                "2",
+                "3",
+                "4"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 598.1000061035156
+        },
+        {
+            "ba": "JEA",
+            "pid": 7846,
+            "gens": [
+                "1"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 185.0
+        },
+        {
+            "ba": "JEA",
+            "pid": 56799,
+            "gens": [
+                "1",
+                "2"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 380.79998779296875
+        },
+        {
+            "ba": "LDWP",
+            "pid": 399,
+            "gens": [
+                "10A",
+                "10B",
+                "5"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 245.60000610351562
+        },
+        {
+            "ba": "LDWP",
+            "pid": 399,
+            "gens": [
+                "GT10",
+                "GT11",
+                "GT12",
+                "GT13",
+                "GT14"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 302.5
+        },
+        {
+            "ba": "LDWP",
+            "pid": 404,
+            "gens": [
+                "4",
+                "5"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 335.7999954223633
+        },
+        {
+            "ba": "LDWP",
+            "pid": 404,
+            "gens": [
+                "8",
+                "9"
+            ],
+            "tech": "ngcc",
+            "status": "proposed",
+            "cap": 346.0
+        },
+        {
+            "ba": "LDWP",
+            "pid": 404,
+            "gens": [
+                "6",
+                "7"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 213.8000030517578
+        },
+        {
+            "ba": "LDWP",
+            "pid": 408,
+            "gens": [
+                "6",
+                "7",
+                "8"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 630.0
+        },
+        {
+            "ba": "LDWP",
+            "pid": 56046,
+            "gens": [
+                "1",
+                "2"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 387.59999084472656
+        },
+        {
+            "ba": "LGEE",
+            "pid": 1355,
+            "gens": [
+                "10",
+                "11",
+                "5",
+                "6",
+                "7",
+                "8"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 854.6000061035156
+        },
+        {
+            "ba": "LGEE",
+            "pid": 1363,
+            "gens": [
+                "7A",
+                "7B",
+                "7S"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 807.0
+        },
+        {
+            "ba": "LGEE",
+            "pid": 1366,
+            "gens": [
+                "13"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 178.0
+        },
+        {
+            "ba": "LGEE",
+            "pid": 6071,
+            "gens": [
+                "10",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 1194.0
+        },
+        {
+            "ba": "MISO",
+            "pid": 990,
+            "gens": [
+                "GT5",
+                "GT6"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 244.0
+        },
+        {
+            "ba": "MISO",
+            "pid": 1007,
+            "gens": [
+                "3",
+                "4",
+                "5"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 183.0
+        },
+        {
+            "ba": "MISO",
+            "pid": 1904,
+            "gens": [
+                "6"
+            ],
+            "tech": "ngcc",
+            "status": "proposed",
+            "cap": 360.0
+        },
+        {
+            "ba": "MISO",
+            "pid": 1904,
+            "gens": [
+                "6-1"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 238.0
+        },
+        {
+            "ba": "MISO",
+            "pid": 1912,
+            "gens": [
+                "7",
+                "8",
+                "9"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 644.0
+        },
+        {
+            "ba": "MISO",
+            "pid": 1927,
+            "gens": [
+                "10",
+                "9"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 421.20001220703125
+        },
+        {
+            "ba": "MISO",
+            "pid": 4040,
+            "gens": [
+                "1CT1",
+                "1CT2",
+                "2CT1",
+                "2CT2",
+                "ST1",
+                "ST2"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 1229.6000366210938
+        },
+        {
+            "ba": "MISO",
+            "pid": 6034,
+            "gens": [
+                "12-1",
+                "12-2",
+                "13-1"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 255.90000915527344
+        },
+        {
+            "ba": "MISO",
+            "pid": 6035,
+            "gens": [
+                "11-1",
+                "11-2",
+                "11-3"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 255.90000915527344
+        },
+        {
+            "ba": "MISO",
+            "pid": 6137,
+            "gens": [
+                "6",
+                "7"
+            ],
+            "tech": "nggt",
+            "status": "proposed",
+            "cap": 496.6000061035156
+        },
+        {
+            "ba": "MISO",
+            "pid": 7237,
+            "gens": [
+                "4"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 166.3000030517578
+        },
+        {
+            "ba": "MISO",
+            "pid": 7270,
+            "gens": [
+                "1",
+                "2",
+                "3",
+                "4"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 381.6000061035156
+        },
+        {
+            "ba": "MISO",
+            "pid": 7759,
+            "gens": [
+                "GT1",
+                "GT2",
+                "GT3",
+                "GT4"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 340.0
+        },
+        {
+            "ba": "MISO",
+            "pid": 7763,
+            "gens": [
+                "1",
+                "2",
+                "3"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 181.5
+        },
+        {
+            "ba": "MISO",
+            "pid": 7991,
+            "gens": [
+                "1",
+                "CT2",
+                "STG1"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 169.29999923706055
+        },
+        {
+            "ba": "MISO",
+            "pid": 8027,
+            "gens": [
+                "7",
+                "8"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 332.6000061035156
+        },
+        {
+            "ba": "MISO",
+            "pid": 8031,
+            "gens": [
+                "11",
+                "12",
+                "ST1"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 602.7999877929688
+        },
+        {
+            "ba": "MISO",
+            "pid": 55011,
+            "gens": [
+                "CTG1",
+                "STG1"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 283.5
+        },
+        {
+            "ba": "MISO",
+            "pid": 55087,
+            "gens": [
+                "2A",
+                "2B",
+                "2C"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 590.7999877929688
+        },
+        {
+            "ba": "MISO",
+            "pid": 55087,
+            "gens": [
+                "1A",
+                "1B"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 377.3999938964844
+        },
+        {
+            "ba": "MISO",
+            "pid": 55224,
+            "gens": [
+                "CTG1",
+                "CTG2",
+                "CTG3",
+                "CTG4"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 500.3999938964844
+        },
+        {
+            "ba": "MISO",
+            "pid": 55270,
+            "gens": [
+                "7EA",
+                "LM1",
+                "LM2",
+                "LM3",
+                "LM4",
+                "LM5",
+                "LM6",
+                "ST1",
+                "ST2"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 649.0
+        },
+        {
+            "ba": "MISO",
+            "pid": 55402,
+            "gens": [
+                "CT1",
+                "CT2",
+                "CT3",
+                "CT4"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 782.0
+        },
+        {
+            "ba": "MISO",
+            "pid": 55641,
+            "gens": [
+                "CTG1",
+                "CTG2",
+                "STG1"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 674.8999938964844
+        },
+        {
+            "ba": "MISO",
+            "pid": 55718,
+            "gens": [
+                "GT1",
+                "GT2",
+                "GT3",
+                "GT4"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 357.6000061035156
+        },
+        {
+            "ba": "MISO",
+            "pid": 58236,
+            "gens": [
+                "CTG1",
+                "CTG2",
+                "STG1"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 705.8999938964844
+        },
+        {
+            "ba": "MISO",
+            "pid": 61144,
+            "gens": [
+                "1"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 349.0
+        },
+        {
+            "ba": "MISO",
+            "pid": 62192,
+            "gens": [
+                "11",
+                "12"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 788.7999877929688
+        },
+        {
+            "ba": "NEVP",
+            "pid": 2322,
+            "gens": [
+                "11",
+                "12",
+                "13",
+                "14",
+                "15",
+                "16",
+                "17",
+                "18",
+                "19",
+                "20",
+                "21",
+                "22"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 724.4000015258789
+        },
+        {
+            "ba": "NEVP",
+            "pid": 2336,
+            "gens": [
+                "10",
+                "5",
+                "8",
+                "9"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 673.4000129699707
+        },
+        {
+            "ba": "NEVP",
+            "pid": 7082,
+            "gens": [
+                "5",
+                "6",
+                "7"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 558.5
+        },
+        {
+            "ba": "NEVP",
+            "pid": 7082,
+            "gens": [
+                "GT1",
+                "GT4"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 186.5
+        },
+        {
+            "ba": "NEVP",
+            "pid": 10761,
+            "gens": [
+                "GEN3",
+                "GEN4",
+                "GEN5",
+                "GEN6",
+                "GEN7",
+                "GEN8"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 297.5999984741211
+        },
+        {
+            "ba": "NEVP",
+            "pid": 55322,
+            "gens": [
+                "CTG1",
+                "CTG2",
+                "CTG3",
+                "CTG4",
+                "ST1",
+                "ST2"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 1465.5999755859375
+        },
+        {
+            "ba": "NEVP",
+            "pid": 55687,
+            "gens": [
+                "A01",
+                "A02",
+                "ST1"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 688.3999938964844
+        },
+        {
+            "ba": "NEVP",
+            "pid": 55841,
+            "gens": [
+                "CT1",
+                "CT2",
+                "ST1"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 664.6999816894531
+        },
+        {
+            "ba": "PAC",
+            "pid": 56102,
+            "gens": [
+                "CT1A",
+                "CT1B",
+                "ST1"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 566.8999938964844
+        },
+        {
+            "ba": "PAC",
+            "pid": 56237,
+            "gens": [
+                "CT01",
+                "CT02",
+                "CT21",
+                "CT22",
+                "ST01",
+                "ST2"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 1246.4999694824219
+        },
+        {
+            "ba": "PNM",
+            "pid": 7975,
+            "gens": [
+                "1",
+                "2",
+                "3",
+                "4"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 186.0
+        },
+        {
+            "ba": "PNM",
+            "pid": 55343,
+            "gens": [
+                "CTG1",
+                "CTG2",
+                "STG1"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 650.0
+        },
+        {
+            "ba": "PNM",
+            "pid": 55802,
+            "gens": [
+                "CTG1"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 159.5
+        },
+        {
+            "ba": "PNM",
+            "pid": 63281,
+            "gens": [
+                "GT1",
+                "GT2",
+                "GT3",
+                "GT4",
+                "GT5",
+                "GT6",
+                "GT7"
+            ],
+            "tech": "nggt",
+            "status": "proposed",
+            "cap": 292.5999946594238
+        },
+        {
+            "ba": "PNW",
+            "pid": 7953,
+            "gens": [
+                "1",
+                "2",
+                "3"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 270.90000915527344
+        },
+        {
+            "ba": "PNW",
+            "pid": 55733,
+            "gens": [
+                "1"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 172.8000030517578
+        },
+        {
+            "ba": "PNW",
+            "pid": 57028,
+            "gens": [
+                "GTG",
+                "STG"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 318.5
+        },
+        {
+            "ba": "PNW",
+            "pid": 59721,
+            "gens": [
+                "GT1",
+                "GT2",
+                "GT3",
+                "GT4"
+            ],
+            "tech": "nggt",
+            "status": "proposed",
+            "cap": 424.0
+        },
+        {
+            "ba": "PSCO",
+            "pid": 469,
+            "gens": [
+                "5",
+                "6",
+                "7"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 625.6000061035156
+        },
+        {
+            "ba": "PSCO",
+            "pid": 6112,
+            "gens": [
+                "1",
+                "2",
+                "3",
+                "4"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 867.9000244140625
+        },
+        {
+            "ba": "PSCO",
+            "pid": 6112,
+            "gens": [
+                "5",
+                "6"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 280.6000061035156
+        },
+        {
+            "ba": "PSCO",
+            "pid": 6761,
+            "gens": [
+                "A",
+                "B",
+                "C",
+                "D",
+                "F"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 506.8000183105469
+        },
+        {
+            "ba": "PSCO",
+            "pid": 55127,
+            "gens": [
+                "UN1",
+                "UN2"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 300.0
+        },
+        {
+            "ba": "PSCO",
+            "pid": 55200,
+            "gens": [
+                "UN5",
+                "UN6",
+                "UN7"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 193.99999618530273
+        },
+        {
+            "ba": "PSCO",
+            "pid": 55453,
+            "gens": [
+                "S1",
+                "S2",
+                "S3",
+                "S4",
+                "S5",
+                "S6"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 228.0
+        },
+        {
+            "ba": "PSCO",
+            "pid": 55505,
+            "gens": [
+                "BR1",
+                "BR2"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 154.1999969482422
+        },
+        {
+            "ba": "PSCO",
+            "pid": 55645,
+            "gens": [
+                "CT01",
+                "CT02"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 397.79998779296875
+        },
+        {
+            "ba": "PSCO",
+            "pid": 55835,
+            "gens": [
+                "CTG1",
+                "CTG2",
+                "STG1"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 685.1000061035156
+        },
+        {
+            "ba": "PSCO",
+            "pid": 56445,
+            "gens": [
+                "GEN1",
+                "GEN2"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 420.0
+        },
+        {
+            "ba": "SCEG",
+            "pid": 3295,
+            "gens": [
+                "CT1",
+                "CT2"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 397.79998779296875
+        },
+        {
+            "ba": "SCEG",
+            "pid": 55386,
+            "gens": [
+                "CT1",
+                "CT2",
+                "ST1"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 668.5
+        },
+        {
+            "ba": "SCEG",
+            "pid": 55927,
+            "gens": [
+                "CT1",
+                "CT2",
+                "CT3",
+                "ST1"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 1068.2000122070312
+        },
+        {
+            "ba": "SOCO",
+            "pid": 6073,
+            "gens": [
+                "3",
+                "3CT",
+                "3ST",
+                "4",
+                "4CT",
+                "4ST"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 1132.3999938964844
+        },
+        {
+            "ba": "SOCO",
+            "pid": 7764,
+            "gens": [
+                "1",
+                "2"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 386.09999084472656
+        },
+        {
+            "ba": "SOCO",
+            "pid": 55672,
+            "gens": [
+                "CT1",
+                "CT2",
+                "CT3",
+                "CT4",
+                "CT5",
+                "CT6",
+                "CT7",
+                "CT8"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 692.0
+        },
+        {
+            "ba": "SOCO",
+            "pid": 57037,
+            "gens": [
+                "1A",
+                "1B",
+                "1C"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 840.0
+        },
+        {
+            "ba": "SWPP",
+            "pid": 2963,
+            "gens": [
+                "1A",
+                "1B"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 357.0
+        },
+        {
+            "ba": "SWPP",
+            "pid": 2964,
+            "gens": [
+                "4",
+                "5"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 173.0
+        },
+        {
+            "ba": "SWPP",
+            "pid": 3482,
+            "gens": [
+                "3",
+                "4"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 365.3999938964844
+        },
+        {
+            "ba": "SWPP",
+            "pid": 4940,
+            "gens": [
+                "3",
+                "4"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 173.0
+        },
+        {
+            "ba": "SWPP",
+            "pid": 56565,
+            "gens": [
+                "6A",
+                "6B",
+                "6STG"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 624.0
+        },
+        {
+            "ba": "SWPP",
+            "pid": 60697,
+            "gens": [
+                "GC-1"
+            ],
+            "tech": "nggt",
+            "status": "proposed",
+            "cap": 225.0
+        },
+        {
+            "ba": "TEC",
+            "pid": 645,
+            "gens": [
+                "GT5",
+                "GT6"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 795.5999755859375
+        },
+        {
+            "ba": "TEC",
+            "pid": 7242,
+            "gens": [
+                "1CA",
+                "1CT",
+                "2",
+                "2CC",
+                "3",
+                "4",
+                "5"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 1492.5
+        },
+        {
+            "ba": "TEC",
+            "pid": 7873,
+            "gens": [
+                "1A",
+                "1B",
+                "1C",
+                "2A",
+                "2B",
+                "2C",
+                "2D"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 1392.5999755859375
+        },
+        {
+            "ba": "TEC",
+            "pid": 7873,
+            "gens": [
+                "3",
+                "4",
+                "5",
+                "6"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 279.6000061035156
+        },
+        {
+            "ba": "TEC",
+            "pid": 55412,
+            "gens": [
+                "OEC1",
+                "OEC2",
+                "OECS"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 644.2000122070312
+        },
+        {
+            "ba": "TEC",
+            "pid": 56352,
+            "gens": [
+                "1",
+                "2"
+            ],
+            "tech": "nggt",
+            "status": "proposed",
+            "cap": 440.0
+        },
+        {
+            "ba": "TVA",
+            "pid": 1378,
+            "gens": [
+                "CTG1",
+                "CTG2",
+                "CTG3",
+                "STG1"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 1160.0
+        },
+        {
+            "ba": "TVA",
+            "pid": 3406,
+            "gens": [
+                "G17",
+                "G18",
+                "G19",
+                "G20"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 338.0
+        },
+        {
+            "ba": "TVA",
+            "pid": 7845,
+            "gens": [
+                "CTG1",
+                "CTG2",
+                "STG1"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 604.3999938964844
+        },
+        {
+            "ba": "TVA",
+            "pid": 7845,
+            "gens": [
+                "GT1",
+                "GT10",
+                "GT11",
+                "GT12",
+                "GT2",
+                "GT3",
+                "GT4",
+                "GT5",
+                "GT6",
+                "GT7",
+                "GT8",
+                "GT9"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 1020.7999877929688
+        },
+        {
+            "ba": "TVA",
+            "pid": 55081,
+            "gens": [
+                "1",
+                "2",
+                "3",
+                "4"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 460.0
+        },
+        {
+            "ba": "TVA",
+            "pid": 55197,
+            "gens": [
+                "CTG1",
+                "CTG2",
+                "CTG3",
+                "STG1",
+                "STG2",
+                "STG3"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 801.0
+        },
+        {
+            "ba": "TVA",
+            "pid": 55232,
+            "gens": [
+                "CT1",
+                "CT2",
+                "CT3",
+                "CT4",
+                "CT5",
+                "CT6",
+                "CT7",
+                "CT8"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 688.0
+        },
+        {
+            "ba": "TVA",
+            "pid": 55251,
+            "gens": [
+                "CTG1",
+                "CTG2",
+                "CTG3"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 567.7999877929688
+        },
+        {
+            "ba": "TVA",
+            "pid": 55292,
+            "gens": [
+                "CTG1",
+                "CTG2",
+                "CTG3",
+                "STG1"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 902.4000091552734
+        },
+        {
+            "ba": "TVA",
+            "pid": 55293,
+            "gens": [
+                "CTG1",
+                "CTG2",
+                "CTG3",
+                "STG1"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 900.0
+        },
+        {
+            "ba": "TVA",
+            "pid": 55451,
+            "gens": [
+                "CTG1",
+                "CTG2",
+                "CTG3",
+                "STG1",
+                "STG2",
+                "STG3"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 1003.5
+        },
+        {
+            "ba": "TVA",
+            "pid": 55694,
+            "gens": [
+                "CT1",
+                "CT2",
+                "ST1"
+            ],
+            "tech": "ngcc",
+            "status": "existing",
+            "cap": 850.5
+        },
+        {
+            "ba": "TVA",
+            "pid": 60671,
+            "gens": [
+                "CTG1",
+                "CTG2",
+                "STG1"
+            ],
+            "tech": "ngcc",
+            "status": "proposed",
+            "cap": 1170.8999938964844
+        },
+        {
+            "ba": "WACM",
+            "pid": 55504,
+            "gens": [
+                "L1",
+                "L2"
+            ],
+            "tech": "nggt",
+            "status": "existing",
+            "cap": 154.1999969482422
+        }
+    ],
+    "regime": "reference",
+    "pudl_release": "v2025.2.0",
+    "created": "202505051627",
+    "data_commit": "77a4a49 Fri, 2 May 2025 12:11:36 -0600"
+}

@@ -18,7 +18,7 @@ from plotly import graph_objs as go  # noqa: TC002
 from scipy.optimize import LinearConstraint, linprog, minimize
 
 from patio.constants import COLORS, MTDF, PERMUTATIONS, ROOT_PATH
-from patio.helpers import agg_profile
+from patio.helpers import agg_profile, solver
 from patio.pkl import save_pickle
 
 if TYPE_CHECKING:
@@ -633,7 +633,8 @@ def objective(re_cap: np.ndarray, re_prof: np.ndarray, target: np.ndarray):
     return -np.nansum(np.minimum(target, re_prof @ re_cap))
 
 
-def optimize_equal_energy(re_profs, target, Ab_ub, Ab_eq, solver=cp.GUROBI):  # noqa: N803
+def optimize_equal_energy(re_profs, target, Ab_ub, Ab_eq):  # noqa: N803
+    solver_ = solver()
     options = {
         cp.GUROBI: {
             "TimeLimit": 60,
@@ -642,7 +643,7 @@ def optimize_equal_energy(re_profs, target, Ab_ub, Ab_eq, solver=cp.GUROBI):  # 
         },
         cp.HIGHS: {"time_limit": 60, "parallel": "on"},
         cp.COPT: {"TimeLimit": 60},
-    }[solver]
+    }[solver_]
 
     Ab_ub = Ab_ub.fillna(0.0).to_numpy()
     Ab_eq = Ab_eq.fillna(0.0).to_numpy()
@@ -660,7 +661,7 @@ def optimize_equal_energy(re_profs, target, Ab_ub, Ab_eq, solver=cp.GUROBI):  # 
             x >= 0.0,
         ],
     )
-    p.solve(solver, **options)
+    p.solve(solver_, **options)
     if not p.status == cp.OPTIMAL:  # noqa: SIM201
         return False, p.status
     return True, pd.Series(x.value, index=list(re_profs))
