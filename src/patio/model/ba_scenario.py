@@ -39,8 +39,7 @@ from patio.model.base import (
     fuel_auc,
     optimize_equal_energy,
 )
-from patio.model.colo_core import BAD_COLO_BAS, run_colo_mp
-from patio.pkl import load_pickle
+from patio.model.colo_core import BAD_COLO_BAS
 
 LOGGER = logging.getLogger("patio")
 MIN_HIST_FOSSIL = 0.05
@@ -2187,38 +2186,6 @@ class BAScenario:
                 json_plants["plants"].extend(plants_data)
                 with open(json_path, "w") as cjson:
                     json.dump(json_plants, cjson, indent=4)
-
-    def run_colo_analysis(self):
-        result_dir = Path.home() / self.ba.colo_dir / "results"
-        hourly_dir = result_dir / "hourly"
-        coef_ts_dir = result_dir / "coef_ts"
-        coef_mw_dir = result_dir / "coef_mw"
-        with tqdm_logging_redirect():
-            run_colo_mp(f"{self.ba.colo_dir}/colo.json", self.ba.queue)
-            to_df = [
-                pl.DataFrame(load_pickle(file))
-                for file in result_dir.glob(f"{self.ba.ba_code}_*.pkl")
-            ]
-            LOGGER.info("Worker results loaded")
-
-        if to_df:
-            self.colo_summary = self.outputs_wrapper_pl(
-                pl.concat(to_df, how="diagonal_relaxed")
-            )
-            if any(hourly_dir.glob(f"{self.ba.ba_code}_*.parquet")):
-                self.colo_hourly = self.outputs_wrapper_pl(pl.scan_parquet(hourly_dir))
-            if any(coef_ts_dir.glob(f"{self.ba.ba_code}_*.parquet")):
-                self.colo_coef_ts = self.outputs_wrapper_pl(pl.scan_parquet(coef_ts_dir))
-            if any(coef_mw_dir.glob(f"{self.ba.ba_code}_*.parquet")):
-                self.colo_coef_mw = self.outputs_wrapper_pl(
-                    pl.concat(
-                        (
-                            pl.scan_parquet(file)
-                            for file in coef_mw_dir.glob(f"{self.ba.ba_code}_*.parquet")
-                        ),
-                        how="diagonal_relaxed",
-                    )
-                )
 
     def setup_ba_colo_data(self, first_year):
         self.dm[0].dispatchable_specs = self.dm[0].dispatchable_specs.assign(

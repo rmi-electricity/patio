@@ -86,8 +86,8 @@ class TestPowerCouple:
             info=plants_data[0],
             regime="reference",
         )
-        if result["status"] != "SUCCESS":
-            raise AssertionError(f"run failed with {result['status']}")
+        if result["run_status"] != "SUCCESS":
+            raise AssertionError(f"run failed with {result['run_status']}")
         bad = []
         for name in self.test_keys:
             if result.get(name, None) != expected[name]:
