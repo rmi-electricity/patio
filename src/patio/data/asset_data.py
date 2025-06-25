@@ -1418,7 +1418,7 @@ class AssetData:
         )
 
     def _fuel_cost_setup(self):
-        with fs.open("az://patio-data/20241031/final_fuel_costs.parquet") as f:
+        with fs.open(f"az://patio-data/{PATIO_DATA_RELEASE}/final_fuel_costs.parquet") as f:
             fuel = (
                 pl.scan_parquet(f)
                 .select(
@@ -2790,11 +2790,13 @@ def cost_comparison():
         "om_per_mwh",
     ]
     c_cfl = pd.read_parquet(
-        "az://patio-data/20241031/python_inputs_data.parquet", filesystem=fs
+        f"az://patio-data/{PATIO_DATA_RELEASE}/python_inputs_data.parquet", filesystem=fs
     )
 
     gencost = (
-        pd.read_parquet(PACKAGE_DATA_PATH / "epd_w_vom_fom_som.parquet")
+        pd.read_parquet(
+            f"az://patio-data/{PATIO_DATA_RELEASE}/epd_w_vom_fom_som.parquet", filesystem=fs
+        )
         .rename(columns={"report_date": "datetime"})
         .query("technology_description in @FOSSIL_TECH & datetime.dt.year >= 2008")
         .merge(
@@ -2941,7 +2943,9 @@ def add_plant_role(df: pd.DataFrame) -> pd.DataFrame:
 
 def master_unit_list(xl=None):
     try:
-        return pd.read_parquet(PACKAGE_DATA_PATH / "static_unit_list.parquet")
+        return pd.read_parquet(
+            f"az://patio-data/{PATIO_DATA_RELEASE}/static_unit_list.parquet", filesystem=fs
+        )
     except FileNotFoundError:
         sul_map = {
             "Utility_ID": "utility_id",
@@ -3001,7 +3005,7 @@ def read_ferc860():
         cost = pd.read_parquet(cache_file)
     except FileNotFoundError:
         with fs.open(
-            "patio-data/20241031/FERC_860_matching_cost_regressions_values.xlsx"
+            f"az://patio-data/{PATIO_DATA_RELEASE}/FERC_860_matching_cost_regressions_values.xlsx"
         ) as f:
             cost = pd.read_excel(f, header=0)
         if not cache_file.parent.exists():

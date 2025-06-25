@@ -66,7 +66,7 @@ class TestPowerCouple:
     )
     def test_colo_config(self, os_solver, test_dir, temp_dir, pid, scenario, expected):
         """Validate colo model on select plants / configs."""
-        set_timeout(600)
+        set_timeout(1800)
 
         expected = dict(zip(self.test_keys, expected, strict=False))
         with open(test_dir.parent / "colo.toml", "rb") as f:
