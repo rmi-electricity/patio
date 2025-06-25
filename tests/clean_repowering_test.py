@@ -4,7 +4,7 @@ from patio.model import BAs
 
 
 @pytest.mark.script_launch_mode("inprocess")
-def test_patio_entry_point_i(script_runner):
+def test_patio_entry_point(script_runner):
     """Test ``cepm`` entry point."""
     ret = script_runner.run(["patio", "-b", "57", "-l"], print_result=True)
     assert ret.success

@@ -17,9 +17,8 @@ from plotly import express as px
 from plotly import graph_objs as go  # noqa: TC002
 from scipy.optimize import LinearConstraint, linprog, minimize
 
-from patio.constants import COLORS, MTDF, PERMUTATIONS, ROOT_PATH
+from patio.constants import COLORS, MTDF, PERMUTATIONS
 from patio.helpers import agg_profile, solver
-from patio.pkl import save_pickle
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -506,9 +505,6 @@ class BaseProfileMatch:
             .update_layout(xaxis_title=None, yaxis_title="MWh", legend_title=None)
             .update_traces(marker_line_width=0)
         )
-
-    def to_pkl(self):
-        save_pickle(self, ROOT_PATH / f"plants/{'_'.join(map(str, self.ix))}")
 
     def copy(self):
         return deepcopy(self)
