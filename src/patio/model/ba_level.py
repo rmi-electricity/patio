@@ -66,7 +66,7 @@ from patio.exceptions import (
     PatioData,
     ScenarioError,
 )
-from patio.helpers import _git_commit_info, make_core_lhs_rhs, pl_distance
+from patio.helpers import _git_commit_info, make_core_lhs_rhs, pl_distance, solver
 from patio.model.ba_scenario import BAScenario
 from patio.model.base import ScenarioConfig
 from patio.model.colo_common import capture_stderr, capture_stdout
@@ -739,9 +739,9 @@ class BA(IOMixin):
         Ab_ub: pd.DataFrame | None = None,  # noqa: N803
         c: pd.Series | None = None,
         lb: np.ndarray | None = None,
-        solver=cp.GUROBI,
         time_limit=120,
     ) -> tuple[bool, pd.Series | str]:
+        solver_ = solver()
         options = {
             cp.GUROBI: {
                 "TimeLimit": time_limit,
@@ -751,7 +751,7 @@ class BA(IOMixin):
             },
             cp.HIGHS: {"time_limit": time_limit, "parallel": "on"},
             cp.COPT: {"TimeLimit": time_limit},
-        }[solver]
+        }[solver_]
 
         Ab_ub = self.Ab if Ab_ub is None else pd.concat([self.Ab, Ab_ub])
         c = -1 * self.re_plant_specs.avoided_cost if c is None else c
@@ -773,7 +773,7 @@ class BA(IOMixin):
             cons.append(A_eq @ x == b_eq)
 
         p = cp.Problem(cp.Minimize(c.to_numpy() @ x), cons)
-        p.solve(solver, **options)
+        p.solve(solver_, **options)
         if p.status == cp.OPTIMAL:
             return True, pd.Series(
                 x.value,
@@ -812,7 +812,6 @@ class BA(IOMixin):
         time_limit: float = 60,
         mip_rel_gap=1.5e-4,
         desc: str = "",
-        solver=cp.GUROBI,
         **kwargs,
     ) -> tuple[bool, pd.Series | str]:
         c_ = -1 * self.re_plant_specs.avoided_cost if c is None else c
@@ -820,6 +819,7 @@ class BA(IOMixin):
         lb = np.zeros_like(c_) if lb is None else lb
         if isinstance(lb, pd.Series):
             lb = lb.to_numpy()
+        solver_ = solver()
         options = {
             cp.GUROBI: {
                 "TimeLimit": time_limit,
@@ -830,7 +830,7 @@ class BA(IOMixin):
             },
             cp.HIGHS: {"time_limit": time_limit, "parallel": "on", "mip_rel_gap": mip_rel_gap},
             cp.COPT: {"TimeLimit": time_limit},
-        }[solver]
+        }[solver_]
 
         ub = (
             self.re_plant_specs.capacity_max_re_scen
@@ -899,7 +899,7 @@ class BA(IOMixin):
             ]
             p = cp.Problem(cp.Minimize(c_.to_numpy() @ x), cp_con)
             with capture_stdout() as c_out, capture_stderr() as err:
-                p.solve(solver, **options, verbose=True)
+                p.solve(solver_, **options, verbose=True)
             try:
                 if p.status != cp.OPTIMAL:
                     LOGGER.debug("\n %s", "\n".join((c_out.getvalue(), err.getvalue())))
@@ -938,7 +938,6 @@ class BA(IOMixin):
                     lb=lb,
                     wind_lb=wind_lb / 2,
                     desc=desc,
-                    solver=solver,
                     time_limit=time_limit,
                     mip_rel_gap=mip_rel_gap,
                 )

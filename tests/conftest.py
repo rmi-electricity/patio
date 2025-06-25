@@ -1,3 +1,4 @@
+import os
 import shutil
 from pathlib import Path
 
@@ -9,16 +10,19 @@ from patio.data.profile_data import ProfileData
 
 @pytest.fixture(scope="session")
 def copt_license_etc():
-    import os
+    for var in ("COPT_HOME", "COPT_LICENSE_DIR"):
+        os.environ[var] = str(Path.home() / "Applications/copt72")
 
-    for var, val in {
-        "COPT_HOME": "/Users/aengel/Applications/copt72",
-        "COPT_LICENSE_DIR": "/Users/aengel/Applications/copt72",
-        # "DYLD_LIBRARY_PATH": ""
-    }.items():
-        # if var not in os.environ:
-        #     val = subprocess.getoutput(["echo", f"${var}"])
-        os.environ[var] = val
+
+@pytest.fixture
+def os_solver():
+    o_solver = os.environ.get("SOLVER", None)
+    os.environ["SOLVER"] = "HIGHS"
+    yield None
+    if o_solver is not None:
+        os.environ["SOLVER"] = o_solver
+    else:
+        del os.environ["SOLVER"]
 
 
 @pytest.fixture(scope="session")
@@ -29,11 +33,6 @@ def asset_data():
 @pytest.fixture(scope="session")
 def profile_data(asset_data):
     return ProfileData(asset_data, solar_ilr=1.34, regime="reference")
-
-
-@pytest.fixture(scope="session")
-def profile_data_limited(asset_data):
-    return ProfileData(asset_data, solar_ilr=1.34, regime="limited")
 
 
 @pytest.fixture(scope="session")
@@ -49,11 +48,12 @@ def test_dir() -> Path:
 
 
 @pytest.fixture(scope="session")
-def temp_dir(test_dir) -> Path:
+def temp_dir(test_dir):
     """Return the path to a temp directory that gets deleted on teardown."""
     out = test_dir / "temp"
     if out.exists():
         shutil.rmtree(out)
     out.mkdir(exist_ok=True)
-    return out
-    # shutil.rmtree(out)
+    out.joinpath("results").mkdir()
+    yield out
+    shutil.rmtree(out)

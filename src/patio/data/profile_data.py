@@ -17,7 +17,7 @@ import plotly.express as px
 import polars as pl
 import pyarrow as pa
 from etoolbox.datazip import DataZip
-from etoolbox.utils.cloud import put
+from etoolbox.utils.cloud import get, put
 from etoolbox.utils.misc import download
 from pandas.util import hash_pandas_object
 from tqdm.auto import tqdm
@@ -47,6 +47,7 @@ from patio.exceptions import (
     PatioData,
 )
 from patio.helpers import (
+    bbb_path,
     generate_projection_from_historical,
     generate_projection_from_historical_pl,
     get_year_map,
@@ -56,6 +57,9 @@ from patio.helpers import (
 )
 
 __all__ = ["ProfileData"]
+
+from patio.package_data import PACKAGE_DATA_PATH
+
 LOGGER = logging.getLogger("patio")
 
 # if not (PATIO_DOC_PATH / "data").exists():
@@ -325,10 +329,7 @@ def choose_years_for_map(h_range=(2008, 2021), f_range0=(2021, 2036), f_range1=(
 @lru_cache
 def patio_clean_op_date():
     return (
-        read_named_range(
-            ROOT_PATH / "r_data/BBB Fossil Transition Analysis Inputs.xlsm",
-            "Tax_Equity_Params",
-        )
+        read_named_range(bbb_path(), "Tax_Equity_Params")
         .assign(
             technology_description=lambda x: x.Technology.map(
                 {
@@ -357,7 +358,6 @@ def select_re_profiles(specs, profiles, id_cols=("plant_id_prof_site", "generato
 class ProfileData:
     ad: AssetData
     solar_ilr: float = 1.34
-    # _all_re_profiles: pd.DataFrame | None = None
     _cems: pd.DataFrame | None = None
     _dfs: dict[str, pd.DataFrame] = field(default_factory=dict, repr=False)
     year_mapper: dict = field(default_factory=dict, repr=False)
@@ -366,25 +366,6 @@ class ProfileData:
     def __post_init__(self):
         self.norm_cems = {}
         self.year_mapper: dict = get_year_map(max_year=2039)
-        # self.fuel_curve = generate_projection_from_historical_pl(
-        #     pl.scan_parquet(ROOT_PATH / "r_data/fuel_supply_curve.parquet")
-        #     .select(
-        #         "ba_code",
-        #         pl.col("plant_id_eia").cast(int),
-        #         pl.col("fuel_group_code").alias("fuel_group"),
-        #         pl.col("report_date").alias("datetime").cast(pl.Datetime),
-        #         pl.col("fuel_source_flag"),
-        #         pl.col("fuel_cost_per_mmbtu"),
-        #         pl.col("final_fuel_cost_per_mmbtu"),
-        #         pl.col("fuel_consumed_mmbtu_frc_level_cumsum").alias("cumsum_mmbtu"),
-        #         pl.col("fuel_consumed_mmbtu_frc_level").alias("mthly_mmbtu"),
-        #         "percent_fuel_consumed",
-        #         # "outlier_min_fuel_consumed",
-        #     )
-        #     .filter(pl.col("fuel_group") == "natural_gas")
-        #     .collect(),
-        #     year_mapper=self.year_mapper,
-        # ).with_columns(series=pl.lit("curve"))
 
     def get_ba_data(
         self,
@@ -1516,8 +1497,6 @@ class ProfileData:
 
     def ba_re_maker(self, compression=ZIP_STORED, test=False, max_distance=50):
         """Create re_data.zip for all BAs."""
-        from etoolbox.utils.cloud import get
-
         meta_path = CACHE_PATH / "re_curve_to_fossil.parquet"
         if (age := seconds_since_touch(meta_path)) > 3600:
             LOGGER.warning("making nrel curve, this could take a few minutes")
@@ -1588,93 +1567,6 @@ class ProfileData:
                     z.reset_ids()
         if not test:
             put(file, f"patio-data/{PATIO_DATA_RELEASE}/")
-
-    # def hyperlocal_re_maker(self):
-    #     mp = self.really_modelable_plants().drop_duplicates(subset=["plant_id_eia"])
-    #     mods = pd.concat(
-    #         [mp.assign(rtype="solar"), mp.assign(rtype="onshore_wind")]
-    #     ).sort_values("plant_id_eia")
-    #     hl_re_sites = (
-    #         self.ad.re_dist()
-    #         .query("distance <= 65")
-    #         .sort_values("distance")
-    #         .rename(
-    #             columns={
-    #                 "technology_description_r": "rtype",
-    #                 "plant_id_eia_l": "plant_id_eia",
-    #             }
-    #         )
-    #         .groupby(["plant_id_eia", "rtype"])
-    #         .first()
-    #         .reset_index()
-    #         .merge(
-    #             mods,
-    #             on=["plant_id_eia", "rtype"],
-    #             how="right",
-    #         )
-    #         .assign(
-    #             re_id=lambda x: x.plant_id_eia_r.fillna(-x.plant_id_eia).astype(int)
-    #         )
-    #     )
-    #     try:
-    #         all_profs = pl.read_parquet(
-    #             PATIO_DOC_PATH / "data/all_re.parquet",
-    #             # parallel="row_groups",
-    #             use_statistics=True,
-    #             use_pyarrow=True,
-    #             memory_map=True,
-    #         ).lazy()
-    #     except FileNotFoundError as exc:
-    #         raise RuntimeError(
-    #             "Put `all_re.parquet` in `~/Documents/patio/data` dir, you can download it from from "
-    #             "https://rockmtnins.sharepoint.com/:f:/s/UTF/EmfCaHhei6NMtDuXhMhu_NsB_3GF_tM4FW546-2M1JxRZg?e=nUX0y3"
-    #         ) from exc
-    #
-    #     def load_hourly_re(pid, rtype_):
-    #         return (
-    #             all_profs.filter(
-    #                 (pl.col("plant_id_eia") == pid)
-    #                 & (pl.col("re_type") == rtype_)
-    #                 & (pl.col("datetime") >= pl.date(self.ad.years[0], 1, 1))
-    #             )
-    #             .select(["datetime", "generation"])
-    #             .rename({"generation": rtype_})
-    #             .collect()
-    #             .to_pandas()
-    #             .set_index("datetime")
-    #         )
-    #
-    #     all_re = []
-    #     missing = []
-    #     with logging_redirect_tqdm():
-    #         for fos_id in tqdm(hl_re_sites.plant_id_eia.unique()):
-    #             ids = (
-    #                 hl_re_sites.query("plant_id_eia == @fos_id")
-    #                 .set_index("rtype")
-    #                 .re_id.to_dict()
-    #             )
-    #             one = []
-    #             for rtype, re_id in ids.items():
-    #                 try:
-    #                     _one = load_hourly_re(re_id, rtype)
-    #                 except Exception as exc:
-    #                     LOGGER.error(
-    #                         "could not load %s for plant %s, %r", rtype, fos_id, exc
-    #                     )
-    #                     missing.append((fos_id, rtype, re_id, repr(exc)))
-    #                 else:
-    #                     one.append(_one)
-    #             if one:
-    #                 all_re.append(
-    #                     pd.concat(one, axis=1)
-    #                     .assign(plant_id_eia=fos_id)
-    #                     .reset_index(names="datetime")
-    #                 )
-    #
-    #     print(missing)
-    #     pd.concat(all_re, axis=0).to_parquet(
-    #         PATIO_DOC_PATH / "data/hyperlocal_re.parquet"
-    #     )
 
     def _hourly_re_by_plant(
         self, ba_code: str, re_meta: pl.DataFrame, all_profs: pl.LazyFrame
@@ -1993,7 +1885,7 @@ class ProfileData:
         )
 
     @staticmethod
-    def re_to_parquet2():
+    def re_to_parquet():
         import pyarrow.parquet as pq
 
         full = pl.scan_parquet(Path.home() / "patio_data/all_re_new_too_big.parquet")
@@ -2054,7 +1946,7 @@ class ProfileData:
                 )
 
     @staticmethod
-    def re_to_parquet():
+    def re_to_parquet_old():
         # inspiration?
         # https://github.com/catalyst-cooperative/pudl/blob/a19bd57dea11fb63eee2ae4d7a03bb8e8e6ce83d/src/pudl/etl/epacems_assets.py#L103
         LOGGER.warning("reading new profiles")
@@ -2070,25 +1962,6 @@ class ProfileData:
             "wind_speed",
         ]
         glob = list(ROOT_PATH.glob("temp/re/*.parquet"))
-        # dfs = []
-        # for f in tqdm(glob):
-        #     df = pl.scan_parquet(f).with_columns(
-        #         pl.col("plant_id_eia").cast(pl.Int64),
-        #         pl.col("__index_level_0__")
-        #         .dt.replace_time_zone("UTC")
-        #         .alias("datetime"),
-        #         pl.col("plant_id_eia").alias("plant_id_in_data").cast(pl.Int64),
-        #     )
-        #     df = df.with_columns(
-        #         **{
-        #             x: pl.lit(None).cast(pl.Float64)
-        #             for x in cols
-        #             if x not in df.columns
-        #         }
-        #     ).select(cols)
-        #     dfs.append(df)
-        # new = pl.concat(dfs)
-        # print(new.columns)
         LOGGER.warning("this can take multiple minutes without providing any feedback")
         sol = (
             pl.scan_parquet(ROOT_PATH / "temp/re/*solar.parquet")
@@ -2132,8 +2005,6 @@ class ProfileData:
         LOGGER.warning("wind scanned")
 
         LOGGER.warning("this can take multiple minutes without providing any feedback")
-        # pl_len = len(new.select(["plant_id_eia", "re_type"]).unique().collect())
-        # assert pl_len == len(glob), "we don't seem to have read all the files properly"
 
         if (Path.home() / "patio_data/all_re.parquet").exists():
             (Path.home() / "patio_data/all_re.parquet").rename(
@@ -2142,17 +2013,10 @@ class ProfileData:
 
         old = pl.scan_parquet(Path.home() / "patio_data/all_re_old.parquet").select(cols)
         LOGGER.warning("old scanned")
-        # old = old.with_columns(
-        #     # pl.col("plant_id_eia").cast(pl.Int64),
-        #     # pl.col("plant_id_in_data").cast(pl.Int64),
-        #     # **{x: pl.lit(None).cast(pl.Float64) for x in cols if x not in old.columns},
-        # )
         full = pl.concat([old, win, sol], parallel=True).sort(
             ["plant_id_eia", "re_type", "datetime"]
         )
         LOGGER.warning("concat added to plan")
-        # full_len = len(full.select(["plant_id_eia", "re_type"]).unique())
-        # LOGGER.warning("FULL RE HAS %s FACILITIES, %s IN NEW", full_len, pl_len)
         LOGGER.warning("sinking result")
         full.sink_parquet(Path.home() / "patio_data/all_re.parquet", statistics=True)
         LOGGER.warning(
@@ -2301,7 +2165,7 @@ class ProfileData:
         )
 
         old_ids = pl.read_csv(
-            ROOT_PATH / "patio/package_data/re_site_ids.csv",
+            PACKAGE_DATA_PATH / "re_site_ids.csv",
             dtypes={
                 "plant_id_eia": pl.Int64,
                 "re_type": pl.Utf8,
@@ -2330,457 +2194,9 @@ class ProfileData:
         ).write_image(ROOT_PATH / "temp/re_sites.pdf")
 
         pl.concat([old_ids, pl.from_pandas(final).select(old_ids.columns)]).write_csv(
-            ROOT_PATH / "patio/package_data/re_site_ids.csv"
+            PACKAGE_DATA_PATH / "re_site_ids.csv"
         )
 
         final.to_parquet(ROOT_PATH / "temp/to_dl.parquet")
 
         return final
-
-    # def make_existing_re_profile(self, missing, re_profiles):
-    #     existing_re = (
-    #         missing.query(
-    #             "technology_description in @RE_TECH & category != 'old_clean'"
-    #         )
-    #         .reset_index()[["plant_id_eia", "generator_id", "technology_description"]]
-    #         .drop_duplicates()
-    #     )
-    #     if existing_re.empty:
-    #         return generate_projection_from_historical(
-    #             pd.DataFrame(0, index=re_profiles.index, columns=["mwh"]),
-    #             year_mapper=self.year_mapper,
-    #         )
-    #
-    #     re = pl.from_pandas(
-    #         re_profiles.T.groupby(level="generator_id")
-    #         .mean()
-    #         .T.rename(columns=RE_TECH_R)
-    #         .reset_index()
-    #     ).lazy()
-    #     out = (
-    #         generate_projection_from_historical_pl(
-    #             pl.from_pandas(existing_re)
-    #             .lazy()
-    #             .join(
-    #                 re.melt(
-    #                     id_vars="datetime",
-    #                     value_vars=[x for x in re.columns if x != "datetime"],
-    #                     value_name="mwh",
-    #                     variable_name="technology_description",
-    #                 ).with_columns(
-    #                     report_date=pl.col("datetime").dt.month_start().cast(pl.Date)
-    #                 ),
-    #                 on=["technology_description"],
-    #             )
-    #             .with_columns(
-    #                 mwh=pl.col("mwh")
-    #                 / pl.sum("mwh").over("plant_id_eia", "generator_id", "report_date")
-    #             )
-    #             .join(
-    #                 self.ad.df923m_clean,
-    #                 on=["plant_id_eia", "generator_id", "report_date"],
-    #                 how="inner",
-    #             )
-    #             .with_columns(mwh=pl.col("mwh") * pl.col("net_generation_mwh"))
-    #             .groupby("datetime")
-    #             .agg(pl.sum("mwh"))
-    #             .sort("datetime")
-    #             .collect(),
-    #             year_mapper=self.year_mapper,
-    #         )
-    #         .to_pandas()
-    #         .set_index("datetime")
-    #     )
-    #
-    #     # out1 = (
-    #     #     generate_projection_from_historical_pl(
-    #     #         pl.from_pandas(existing_re)
-    #     #         .lazy()
-    #     #         .join(
-    #     #             re.melt(
-    #     #                 id_vars="datetime",
-    #     #                 value_vars=[x for x in re.columns if x != "datetime"],
-    #     #                 value_name="mwh",
-    #     #                 variable_name="technology_description",
-    #     #             ).with_columns(
-    #     #                 report_date=pl.col("datetime").dt.month_start().cast(pl.Date)
-    #     #             ),
-    #     #             on=["technology_description"],
-    #     #         )
-    #     #         .with_columns(
-    #     #             mwh=pl.col("mwh")
-    #     #             / pl.sum("mwh").over("plant_id_eia", "generator_id", "report_date")
-    #     #         )
-    #     #         .join(
-    #     #             self.ad.df923m_clean,
-    #     #             on=["plant_id_eia", "generator_id", "report_date"],
-    #     #             how="inner",
-    #     #         )
-    #     #         .with_columns(mwh=pl.col("mwh") * pl.col("net_generation_mwh"))
-    #     #         .sort("plant_id_eia", "generator_id", "datetime")
-    #     #         .groupby_dynamic(
-    #     #             index_column="datetime",
-    #     #             every="1y",
-    #     #             period="1y",
-    #     #             by=["plant_id_eia", "generator_id"],
-    #     #         )
-    #     #
-    #     #         .agg(pl.sum("mwh"), pl.first('report_date'))
-    #     #         .join(
-    #     #             self.ad.df923m_clean.groupby_dynamic(
-    #     #             index_column="report_date",
-    #     #             every="1y",
-    #     #             period="1y",
-    #     #             by=["plant_id_eia", "generator_id"],
-    #     #         ).agg(pl.sum('net_generation_mwh').alias("mo_mwh")),
-    #     #             on=["plant_id_eia", "generator_id", "report_date"],
-    #     #             how="inner",
-    #     #         )
-    #     #         .collect(),
-    #     #         year_mapper=self.year_mapper,
-    #     #     )
-    #     #     .to_pandas()
-    #     #     .set_index(["plant_id_eia", "generator_id", "datetime"])
-    #     # )
-    #
-    #     ore = (
-    #         missing.query("technology_description in @RE_TECH")
-    #         .groupby(pd.Grouper(level=2, freq="YS"))
-    #         .net_generation_mwh_og.sum()
-    #     )
-    #     ore1 = out.groupby(pd.Grouper(freq="YS")).sum().squeeze()
-    #     if not np.isclose(ore, ore1).all():
-    #         if not ((ore1 < ore) | np.isclose(ore, ore1)).all():
-    #             raise RuntimeError(
-    #                 "existing_xpatio profiles are greater than annual data used in outputs"
-    #             )
-    #         LOGGER.warning(
-    #             "existing_xpatio profiles do not match annual data used in outputs"
-    #         )
-    #     return out
-
-    # def counterfactual_re_2(self, ba_code, re_profiles):
-    #     fyr, lyr = self.ad.years
-    #
-    #     mean_profiles = (
-    #         pl.from_pandas(re_profiles.T.groupby(level=1).mean().T.reset_index())
-    #         .lazy()
-    #         .melt(
-    #             id_vars="datetime",
-    #             value_vars=list(
-    #                 re_profiles.columns.get_level_values("generator_id").unique()
-    #             ),
-    #             value_name="mwh",
-    #             variable_name="technology_description",
-    #         )
-    #         .with_columns(pl.col("technology_description").map_dict(RE_TECH_R))
-    #     )
-    #
-    #     mo_vs_mo_avg = (
-    #         mean_profiles.groupby_dynamic(
-    #             index_column="datetime",
-    #             every="1mo",
-    #             period="1mo",
-    #             by="technology_description",
-    #         )
-    #         .agg(pl.sum("mwh"))
-    #         .with_columns(
-    #             adj=pl.col("mwh")
-    #             / pl.col("mwh")
-    #             .mean()
-    #             .over("technology_description", pl.col("datetime").dt.month()),
-    #             month=pl.col("datetime").dt.month(),
-    #         )
-    #     )
-    #     re_mo = (
-    #         self.ad.df923m_clean.join(
-    #             pl.from_pandas(
-    #                 self.ad.gens.query(
-    #                     "final_ba_code == @ba_code"
-    #                     "& technology_description in @RE_TECH "
-    #                     "& operating_date.dt.year >= @fyr & operating_date.dt.year < @lyr"
-    #                 )
-    #                 .pipe(check_lat_lons)
-    #                 .query("safe_lat_lon | technology_description == 'offshore_wind'")
-    #             )
-    #             .select(
-    #                 "plant_id_eia",
-    #                 "generator_id",
-    #                 "technology_description",
-    #                 "operating_date",
-    #                 pl.col("retirement_date").fill_null(datetime(2100, 1, 1)),
-    #             )
-    #             .lazy(),
-    #             on=["plant_id_eia", "generator_id"],
-    #             how="inner",
-    #         )
-    #         .filter(
-    #             (pl.col("report_date") > pl.col("operating_date"))
-    #             & (pl.col("report_date") < pl.col("retirement_date"))
-    #         )
-    #         .groupby(
-    #             "plant_id_eia",
-    #             "generator_id",
-    #             pl.col("report_date").dt.month().alias("month"),
-    #         )
-    #         .agg(
-    #             pl.first("technology_description"),
-    #             pl.first("operating_date"),
-    #             pl.mean("net_generation_mwh"),
-    #         )
-    #         .join(mo_vs_mo_avg, on=["technology_description", "month"])
-    #         .filter(pl.col("datetime") < pl.col("operating_date"))
-    #         .select(
-    #             "plant_id_eia",
-    #             "generator_id",
-    #             "technology_description",
-    #             pl.col("datetime").cast(pl.Date).alias("date"),
-    #             (pl.col("net_generation_mwh") * pl.col("adj")).alias(
-    #                 "net_generation_mwh"
-    #             ),
-    #         )
-    #     )
-    #
-    #     synth_profiles = (
-    #         mean_profiles.with_columns(
-    #             date=pl.col("datetime").dt.month_start().cast(pl.Date)
-    #         )
-    #         .with_columns(
-    #             mwh=pl.col("mwh") / pl.sum("mwh").over("technology_description", "date")
-    #         )
-    #         .join(re_mo, on=["date", "technology_description"], how="inner")
-    #         .select(
-    #             "datetime",
-    #             "plant_id_eia",
-    #             "generator_id",
-    #             "technology_description",
-    #             net_generation_mwh=(pl.col("net_generation_mwh") * pl.col("mwh")),
-    #         )
-    #     )
-    #
-    #     old_clean_prof = (
-    #         synth_profiles.groupby("datetime")
-    #         .agg(pl.sum("net_generation_mwh"))
-    #         .sort("datetime")
-    #     )
-    #     old_clean_monthly = (
-    #         synth_profiles.groupby_dynamic(
-    #             index_column="datetime",
-    #             every="1y",
-    #             period="1y",
-    #             by=["plant_id_eia", "generator_id"],
-    #         )
-    #         .agg(pl.sum("net_generation_mwh"))
-    #         .sort("plant_id_eia", "generator_id", "datetime")
-    #     )
-    #     return (
-    #         generate_projection_from_historical_pl(
-    #             old_clean_prof.collect(), year_mapper=self.year_mapper
-    #         )
-    #         .to_pandas()
-    #         .set_index("datetime"),
-    #         old_clean_monthly.collect()
-    #         .to_pandas()
-    #         .merge(
-    #             self.ad.gens,
-    #             on=["plant_id_eia", "generator_id"],
-    #             how="left",
-    #             validate="m:1",
-    #         )
-    #         .assign(category="old_clean"),
-    #     )
-
-    # def counterfactual_re(self, ba_code, re_data):
-    #     """this is RE that is only there to turn net load from past historical years
-    #     into net load for weather years"""
-    #     try:
-    #         a = self.ad.counterfactual_re().loc[:, ba_code]
-    #         locs = a.columns.intersection(re_data.columns)
-    #         if locs.empty:
-    #             raise KeyError(
-    #                 "No intersection between RE profiles and counterfactual RE"
-    #             )
-    #         if len(locs) < a.shape[1]:
-    #             all = a.groupby(level=1, axis=1).sum().iloc[0, :]
-    #             used = a.loc[:, locs].groupby(level=1, axis=1).sum()
-    #             coverage = used.max() / all
-    #             if np.any(coverage < 0.65):
-    #                 raise KeyError(
-    #                     f"RE coverage < 70%, no counterfactual RE will be added: {coverage.to_dict()}"
-    #                 )
-    #             if np.any(coverage < 0.95):
-    #                 LOGGER.warning(
-    #                     "%s Some RE coverage < 95%%: %s", ba_code, coverage.to_dict()
-    #                 )
-    #
-    #     except KeyError as exc:
-    #         LOGGER.warning("%s counterfactual RE missing %r", ba_code, exc)
-    #         s = pd.DataFrame(
-    #             {
-    #                 "plant_id_eia": [-555],
-    #                 "generator_id": ["solar"],
-    #                 "capacity_mw": [0.0],
-    #                 "ilr": [1.3],
-    #                 "operating_date": [re_data.index.min() - timedelta(30)],
-    #                 "retirement_date": [pd.NaT],
-    #                 "category": ["old_clean"],
-    #                 "technology_description": ["Solar Photovoltaic"],
-    #             },
-    #         ).set_index(["plant_id_eia", "generator_id"])
-    #         return pd.DataFrame(0.0, index=re_data.index, columns=s.index), s
-    #     else:
-    #         c = (
-    #             (
-    #                 re_data.loc[:, locs]
-    #                 * a.loc[:, locs]
-    #                 .reindex(index=re_data.index, method="ffill")
-    #                 .to_numpy()
-    #             )
-    #             .groupby(level=1, axis=1)
-    #             .sum()
-    #         )
-    #         s = (
-    #             c.max()
-    #             .to_frame("capacity_mw")
-    #             .reset_index()
-    #             .assign(
-    #                 technology_description=lambda x: x.generator_id.map(RE_TECH_R),
-    #                 operating_date=re_data.index.min() - timedelta(30),
-    #                 retirement_date=pd.NaT,
-    #                 ilr=lambda x: np.where(
-    #                     x.technology_description == "solar", self.solar_ilr, 1
-    #                 ),
-    #                 plant_id_eia=-555,
-    #                 category="old_clean",
-    #             )
-    #             .set_index(["plant_id_eia", "generator_id"])
-    #         )
-    #         c = c.set_axis(s.index, axis=1)
-    #         return c / c.max(), s
-    #
-    # def get_re_for_dl(self, final_year=2022):
-    #     # re_dist = list(self.ad.re_dist.query("distance <= 500").plant_id_eia_r.dropna().unique())
-    #     # re = self.ad.re[self.ad.re.plant_id_eia.isin(re_dist)].copy()
-    #     if (ROOT_PATH / "temp/re").exists():
-    #         assert (ROOT_PATH / "temp/re").is_dir()
-    #         raise RuntimeError(
-    #             "Run ProfileData.re_to_parquet before trying to determine what "
-    #             "profiles need to be downloaded. After running it either delete or "
-    #             "rename temp/re"
-    #         )
-    #
-    #     cfl = (
-    #         self.ad.counterfactual_re()
-    #         .columns.to_frame()
-    #         .reset_index(drop=True)
-    #         .merge(
-    #             self.ad.re()[
-    #                 ["latitude", "longitude", "plant_id_eia"]
-    #             ].drop_duplicates(),
-    #             on="plant_id_eia",
-    #             validate="m:1",
-    #             how="left",
-    #         )
-    #         .drop(columns=["final_ba_code"])
-    #         .drop_duplicates()
-    #     )
-    #     # hyper = self.get_hyperlocal_re_for_dl()
-    #     m_cols = ["plant_id_eia", "technology_description"]
-    #     re = (
-    #         self.ad.close_re_meta(drop_lcoe_na=False)
-    #         .groupby(m_cols)[["latitude", "longitude"]]
-    #         .first()
-    #         .sort_index()
-    #         .reset_index()
-    #     )
-    #     re = re.merge(
-    #         cfl, on=[*m_cols, "latitude", "longitude"], how="outer", validate="1:1"
-    #     )#.merge(
-    #     #     hyper[[*m_cols, "latitude", "longitude"]],
-    #     #     on=[*m_cols, "latitude", "longitude"],
-    #     #     how="outer",
-    #     #     validate="1:1",
-    #     # )
-    #
-    #     # all_sites = (
-    #     #     re[["plant_id_eia", "latitude", "longitude"]]
-    #     #     .drop_duplicates()
-    #     #     .merge(
-    #     #         self.ad.modelable_generators[
-    #     #             ["plant_id_eia", "latitude", "longitude"]
-    #     #         ].drop_duplicates().dropna(axis=0),
-    #     #         on=["plant_id_eia", "latitude", "longitude"],
-    #     #         how='outer'
-    #     #     ).sort_values('plant_id_eia').reset_index(drop=True)
-    #     # )
-    #
-    #     dl_re = (
-    #         pl.scan_parquet(PATIO_DOC_PATH / "data/all_re.parquet", use_statistics=True)
-    #         .groupby(["plant_id_eia", "re_type"])
-    #         .agg(
-    #             pl.col("datetime").dt.year().min().alias("first_year"),
-    #             pl.col("datetime").dt.year().max().alias("last_year"),
-    #         )
-    #         .sort(["plant_id_eia", "re_type"])
-    #         .rename({"re_type": "technology_description"})
-    #         .collect()
-    #         .to_pandas()
-    #     )
-    #
-    #     f = (
-    #         dl_re.astype({"first_year": "Int64", "last_year": "Int64"})
-    #         .merge(re, on=m_cols, how="right", validate="1:1")
-    #         .assign(
-    #             dl_first=lambda x: x.last_year.fillna(2005) + 1,
-    #             dl_last=final_year,
-    #             years=lambda x: x[["dl_first", "dl_last"]]
-    #             .astype(str)
-    #             .agg("-".join, axis=1)
-    #             .mask(x.dl_first > x.dl_last, "drop"),
-    #         )
-    #         .query("years != 'drop'")
-    #     )
-    #     return f
-    #
-    # def get_hyperlocal_re_for_dl(self):
-    #     missing_map = {
-    #         "onshore_wind": "solar",
-    #         "solar": "onshore_wind",
-    #         "onshore_wind,solar": pd.NA,
-    #         "offshore_wind,solar": pd.NA,
-    #         "offshore_wind,onshore_wind,solar": pd.NA,
-    #     }
-    #     allf = self.really_modelable_plants().drop_duplicates(subset=["plant_id_eia"])
-    #     re_for_all = pd.concat(
-    #         [
-    #             allf.assign(technology_description="solar"),
-    #             allf.assign(technology_description="onshore_wind"),
-    #         ]
-    #     ).assign(plant_id_eia=lambda x: -x.plant_id_eia)[
-    #         ["plant_id_eia", "technology_description", "latitude", "longitude", "state"]
-    #     ]
-    #     final = (
-    #         self.ad.re_dist()
-    #         .query("distance <= 60")
-    #         .sort_values("distance")
-    #         .groupby(["plant_id_eia_l", "technology_description_r"])
-    #         .first()
-    #         .reset_index()
-    #         .assign(
-    #             technology_description=lambda x: x.groupby("plant_id_eia_l")
-    #             .technology_description_r.transform(",".join)
-    #             .map(missing_map),
-    #             plant_id_eia=lambda x: -x.plant_id_eia_l,
-    #             latitude=lambda x: x.latitude_l,
-    #             longitude=lambda x: x.longitude_l,
-    #             distance=0.0,
-    #         )
-    #         .query("technology_description.notna() & state_r not in ('AK', 'HI')")
-    #         .merge(
-    #             re_for_all,
-    #             on=["plant_id_eia", "technology_description", "latitude", "longitude"],
-    #             how="inner",
-    #             validate="1:1",
-    #         )
-    #     )
-    #     return final[[x for x in final if all(("_r" not in x, "_l" not in x))]]

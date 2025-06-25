@@ -31,7 +31,6 @@ share/python-wheels/
 *.egg
 MANIFEST
 _version.py
-.pixi
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -124,6 +123,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.pixi
+pixi.lock
 
 # Spyder project settings
 .spyderproject
@@ -226,6 +227,6 @@ raw_cems/
 *.csv
 
 # Allowed Data
-!tests/colo_test_data/data/*.zip
+!tests/colo_test_data/*.zip
 !src/patio/package_data/*.csv
 !src/patio/package_data/*.parquet*

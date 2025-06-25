@@ -27,15 +27,6 @@ from etoolbox.utils.pudl_helpers import (
     month_year_to_date,
     simplify_columns,
 )
-
-# from gencost.atb import get_atb as get_atb
-# from gencost.constants import (
-#     CARB_INTENSITY,
-#     COST_FLOOR,
-#     FUEL_GROUP_MAP,
-#     UDAY_FOSSIL_FUEL_MAP,
-# )
-# from gencost.waterfall import fix_cc_in_prime
 from platformdirs import user_cache_path, user_data_path
 from tqdm import tqdm
 
@@ -51,7 +42,6 @@ from patio.constants import (
     PATIO_DATA_RELEASE,
     PATIO_PUDL_RELEASE,
     RE_TECH,
-    ROOT_PATH,
     UDAY_FOSSIL_FUEL_MAP,
 )
 from patio.data.entity_ids import add_ba_code
@@ -61,12 +51,13 @@ from patio.helpers import (
     pl_distance,
     round_coordinates,
 )
+from patio.package_data import PACKAGE_DATA_PATH
 
 LOGGER = logging.getLogger("patio")
 __all__ = ["AssetData"]
-# setup_gencost_data()
 
 _ = OTHER_TD_MAP
+fs = rmi_cloud_fs()
 
 
 def fix_cc_in_prime(df, old_col="prime_mover_code"):
@@ -404,7 +395,6 @@ class AssetData:
     years: tuple[int, int] = (2008, 2022)
     cutoff: float = 0.99
     state_cutoff: float = 0.95
-    max_re_sites: int = 2
     addl_fuels: bool = (
         False  # augments the 860 gen list to include duplicate plant/primes with 2nd/3rd fuels
     )
@@ -452,12 +442,12 @@ class AssetData:
         )
         offsets = offsets[offsets.utc_offset.dt.total_seconds() < 0]
         offsets = offsets.set_index("plant_id_eia").utc_offset.to_dict()
-        rules = pd.read_csv(ROOT_PATH / "patio/package_data/ba_rules.csv").drop_duplicates()
+        rules = pd.read_csv(PACKAGE_DATA_PATH / "ba_rules.csv").drop_duplicates()
         LOGGER.warning("WE DROP ALL OF AK AND HI.")
 
         def retirement_fixes(df):
             df_ = df.copy()  # noqa: F841
-            new = pd.read_csv(ROOT_PATH / "patio/package_data/retirement_fixes.csv").rename(
+            new = pd.read_csv(PACKAGE_DATA_PATH / "retirement_fixes.csv").rename(
                 columns={"planned_retirement_date": "planned_generator_retirement_date"}
             )
             in_cols = df.columns
@@ -712,11 +702,13 @@ class AssetData:
             )
         )
 
-        self.en_com = (
-            pd.read_parquet(ROOT_PATH / "patio_data/re_sites_w_energy_community.parquet")
-            .reset_index()[["plant_id_eia", "energy_community"]]
-            .drop_duplicates(subset="plant_id_eia")
-        )
+        # self.en_com = (
+        #     pd.read_parquet(
+        #         "az://patio-data/20241031/re_sites_w_energy_community.parquet", filesystem=fs
+        #     )
+        #     .reset_index()[["plant_id_eia", "energy_community"]]
+        #     .drop_duplicates(subset="plant_id_eia")
+        # )
         self.df923m_clean = (
             pl_scan_pudl("out_eia923__monthly_generation_fuel_by_generator", self.pudl_release)
             .select(
@@ -777,8 +769,12 @@ class AssetData:
             )
         )
 
-        c_hist = pd.read_parquet(ROOT_PATH / "r_data/python_inputs_data_hist.parquet")
-        c_cfl = pd.read_parquet(ROOT_PATH / "r_data/python_inputs_data.parquet")
+        c_hist = pd.read_parquet(
+            "az://patio-data/20241031/python_inputs_data_hist.parquet", filesystem=fs
+        )
+        c_cfl = pd.read_parquet(
+            "az://patio-data/20241031/python_inputs_data.parquet", filesystem=fs
+        )
         act_cost = read_ferc860()[["Plant", "Prime", "report_year", "capex_per_kW"]].rename(
             columns={"Plant": "plant_id_eia"}
         )
@@ -887,25 +883,25 @@ class AssetData:
             )
             .assign(datetime=lambda x: x.datetime_)
         )
-
-        curve = (
-            pl.read_parquet(ROOT_PATH / "r_data/fuel_supply_curve.parquet")
-            .filter(
-                (pl.col("fuel_group_code") == "natural_gas")
-                & (pl.col("fuel_consumed_mmbtu_cumsum") <= pl.col("top_percent_mmbtu"))
+        with fs.open(f"az://patio-data/{PATIO_DATA_RELEASE}/fuel_supply_curve.parquet") as f:
+            curve = (
+                pl.read_parquet(f)
+                .filter(
+                    (pl.col("fuel_group_code") == "natural_gas")
+                    & (pl.col("fuel_consumed_mmbtu_cumsum") <= pl.col("top_percent_mmbtu"))
+                )
+                .select(
+                    "ba_code",
+                    pl.col("fuel_group_code").alias("fuel_group"),
+                    pl.col("report_date").cast(pl.Datetime).alias("datetime"),
+                    pl.col("final_fuel_cost_per_mmbtu").alias("cost_per_mmbtu"),
+                    pl.col("fuel_consumed_mmbtu").alias("consumed_mmbtu"),
+                    pl.col("fuel_consumed_mmbtu_cumsum").alias("fuel_mmbtu_cumsum"),
+                    pl.col("top_percent_mmbtu").alias("fuel_mmbtu_max"),
+                    pl.col("final_fuel_price_increase_per_mmbtu").alias("slope"),
+                )
+                .sort(["ba_code", "datetime", "cost_per_mmbtu"])
             )
-            .select(
-                "ba_code",
-                pl.col("fuel_group_code").alias("fuel_group"),
-                pl.col("report_date").cast(pl.Datetime).alias("datetime"),
-                pl.col("final_fuel_cost_per_mmbtu").alias("cost_per_mmbtu"),
-                pl.col("fuel_consumed_mmbtu").alias("consumed_mmbtu"),
-                pl.col("fuel_consumed_mmbtu_cumsum").alias("fuel_mmbtu_cumsum"),
-                pl.col("top_percent_mmbtu").alias("fuel_mmbtu_max"),
-                pl.col("final_fuel_price_increase_per_mmbtu").alias("slope"),
-            )
-            .sort(["ba_code", "datetime", "cost_per_mmbtu"])
-        )
 
         assert curve.filter(pl.col("slope").is_null()).is_empty()
 
@@ -1007,9 +1003,7 @@ class AssetData:
 
         assert self.costs.index.is_unique
 
-        with rmi_cloud_fs().open(
-            f"az://patio-data/{PATIO_DATA_RELEASE}/utility_ids.parquet"
-        ) as f:
+        with fs.open(f"az://patio-data/{PATIO_DATA_RELEASE}/utility_ids.parquet") as f:
             parent = (
                 pl.read_parquet(f)
                 .filter(pl.col("utility_id_eia").is_not_null())
@@ -1424,19 +1418,20 @@ class AssetData:
         )
 
     def _fuel_cost_setup(self):
-        fuel = (
-            pl.scan_parquet(ROOT_PATH / "r_data/final_fuel_costs.parquet")
-            .select(
-                pl.col("plant_id_eia").cast(int),
-                pl.col("prime_mover_code").alias("prime_mover"),
-                pl.col("fuel_group_code").alias("fuel_group"),
-                pl.col("report_date").alias("datetime").dt.replace_time_zone(None),
-                "final_fuel_cost_per_mmbtu",
-                pl.col("year").cast(int),
+        with fs.open("az://patio-data/20241031/final_fuel_costs.parquet") as f:
+            fuel = (
+                pl.scan_parquet(f)
+                .select(
+                    pl.col("plant_id_eia").cast(int),
+                    pl.col("prime_mover_code").alias("prime_mover"),
+                    pl.col("fuel_group_code").alias("fuel_group"),
+                    pl.col("report_date").alias("datetime").dt.replace_time_zone(None),
+                    "final_fuel_cost_per_mmbtu",
+                    pl.col("year").cast(int),
+                )
+                .collect()
+                .to_pandas()
             )
-            .collect()
-            .to_pandas()
-        )
         assert not fuel.duplicated(
             ["plant_id_eia", "prime_mover", "fuel_group", "datetime"]
         ).any()
@@ -1659,9 +1654,7 @@ class AssetData:
     def proposed_atb_class(self, gens):
         cache_path = CACHE_PATH / "proposed_atb.parquet"
         if not cache_path.exists():
-            pl.read_csv(ROOT_PATH / "patio/package_data/proposed_atb.csv").write_parquet(
-                cache_path
-            )
+            pl.read_csv(PACKAGE_DATA_PATH / "proposed_atb.csv").write_parquet(cache_path)
 
         re_codes = {
             "Solar Photovoltaic": 1,
@@ -1912,7 +1905,7 @@ class AssetData:
                     "longitude",
                 ),
                 pl.read_csv(
-                    ROOT_PATH / "patio/package_data/re_site_ids.csv",
+                    PACKAGE_DATA_PATH / "re_site_ids.csv",
                     dtypes={
                         "plant_id_eia": pl.Int64,
                         "re_type": pl.Utf8,
@@ -2423,50 +2416,12 @@ class AssetData:
                         "WACM": 30151,
                     }
                 ).astype(int),
-                # final_ba_code=lambda x: x.final_ba_code.replace(
-                #     {"186": "PJM", "ETR": "MISO"}
-                # ),
             )
-        return (
-            pd.concat([self.gens, irp]).query(
-                "final_ba_code.notna() & final_ba_code != '<NA>' "
-                "& (category in ('existing_fossil', 'proposed_fossil', 'proposed_clean')"
-                # "| technology_description in @ES_TECHS)"
-                ")"
-            )
-            # .astype(
-            #     {
-            #         # "final_ba_code": str,
-            #         "state": "category",
-            #         "respondent_name": "category",
-            #         "balancing_authority_code_eia": "category",
-            #         "prime_mover_code": "category",
-            #         "prime_mover": "category",
-            #         "technology_description": "category",
-            #         # "energy_source_code_860m": "category",
-            #         # "fuel_group_energy_source_code_860m": "category",
-            #         "energy_source_code_860m": "category",
-            #         # "rmi_energy_source_code_2": "category",
-            #         # "rmi_energy_source_code_3": "category",
-            #         "fuel_group": "category",
-            #         # "fuel_group_rmi_energy_source_code_2": "category",
-            #         # "fuel_group_rmi_energy_source_code_3": "category",
-            #         # "status_860m": "category",
-            #         "operational_status": "category",
-            #         "plant_role": "category",
-            #         "final_ba_code": "category",
-            #     }
-            # )
+        return pd.concat([self.gens, irp]).query(
+            "final_ba_code.notna() & final_ba_code != '<NA>' "
+            "& (category in ('existing_fossil', 'proposed_fossil', 'proposed_clean')"
+            ")"
         )
-
-    # def all_modelable_bas(self) -> dict[str, pd.DataFrame]:
-    #     if "all_modelable_bas" not in self._dfs:
-    #         df = self.modelable_generators().set_index(["plant_id_eia", "generator_id"])
-    #         self._dfs["all_modelable_bas"] = {
-    #             k: df.query("final_ba_code == @k")
-    #             for k in sorted(df.final_ba_code.unique())
-    #         }
-    #     return self._dfs["all_modelable_bas"]
 
     def all_modelable_generators(self) -> pd.DataFrame:
         if "all_modelable_generators" not in self._dfs:
@@ -2654,7 +2609,7 @@ class AssetData:
                 pd.concat(
                     [
                         self.gens.query("technology_description in @RE_TECH").copy(),
-                        pd.read_csv(ROOT_PATH / "patio_data/re_queue.csv", header=0),
+                        pd.read_csv(PACKAGE_DATA_PATH / "re_queue.csv", header=0),
                     ]
                 )
                 .replace({"technology_description": RE_TECH})
@@ -2683,223 +2638,6 @@ class AssetData:
                 ~re.safe_lat_lon & (re.technology_description != "offshore_wind")
             ]
         return self._dfs["re"]
-
-    # def re_dist(self):
-    #     if "re_dist" not in self._dfs:
-    #         cols = ["plant_id_eia", "latitude", "longitude"]
-    #
-    #         re_cf = (
-    #             pl.scan_parquet(PATIO_DOC_PATH / "data/all_re.parquet")
-    #             .groupby(["plant_id_eia", "re_type"])
-    #             .agg(pl.mean("generation").alias("cf"))
-    #             .select(
-    #                 "plant_id_eia",
-    #                 pl.col("re_type").alias("technology_description"),
-    #                 "cf",
-    #             )
-    #             .collect()
-    #             .to_pandas()
-    #         )
-    #         crf = (0.08 * 1.08**30) / (1.08**30 - 1)
-    #         re = get_atb(
-    #             self.re()
-    #             .copy()
-    #             .merge(
-    #                 re_cf,
-    #                 on=["plant_id_eia", "technology_description"],
-    #                 how="left",
-    #                 validate="1:1",
-    #             )
-    #             .merge(self.en_com, on="plant_id_eia", how="left", validate="m:1")
-    #             .assign(
-    #                 technology_description_=lambda x: x.technology_description,
-    #                 technology_description=lambda x: x.technology_description.map(
-    #                     RE_TECH_R
-    #                 ),
-    #                 operating_date=pd.to_datetime("2025-01-01"),
-    #             ),
-    #             (2028, 2029),
-    #         ).assign(technology_description=lambda x: x.technology_description_)
-    #
-    #         df = df_product(
-    #             self.modelable_generators()
-    #             .dropna(subset=cols, how="any")
-    #             .groupby("plant_id_eia")[["latitude", "longitude"]]
-    #             .first()
-    #             .reset_index(),
-    #             re[
-    #                 [
-    #                     *cols,
-    #                     "technology_description",
-    #                     "capacity_mw",
-    #                     "state",
-    #                     "cf",
-    #                     "energy_community",
-    #                     "capex_per_kw",
-    #                     "fom_per_kw",
-    #                 ]
-    #             ].copy(),
-    #         )
-    #         df["distance"] = distance_arrays(
-    #             df[["latitude_l", "longitude_l"]].to_numpy(),
-    #             df[["latitude_r", "longitude_r"]].to_numpy(),
-    #         )
-    #         self._dfs["re_dist"] = (
-    #             df.query("distance < 1000")
-    #             .fillna({"energy_community_r": False})
-    #             .assign(
-    #                 itc=lambda x: x[["technology_description_r", "energy_community_r"]]
-    #                 .astype(str)
-    #                 .agg("".join, axis=1)
-    #                 .map({"offshore_windTrue": 0.4, "offshore_windFalse": 0.3})
-    #                 .fillna(0.0),
-    #                 ptc=lambda x: x.technology_description_r.map(
-    #                     {"onshore_wind": 17.99, "solar": 16.63}
-    #                 ).fillna(0.0)
-    #                 * np.where(x.energy_community_r, 1.1, 1.0),
-    #                 lcoe=lambda x: (
-    #                     (x.capex_per_kw_r * (1 - x.itc) + 1.854 * x.distance) * crf
-    #                     + x.fom_per_kw_r
-    #                 )
-    #                 / (x.cf_r * 8.76)
-    #                 - x.ptc,
-    #             )
-    #             .sort_values(["plant_id_eia_l", "technology_description_r", "lcoe"])
-    #         )
-    #     return self._dfs["re_dist"]
-
-    # def close_re_ba_by_gen(self, ba_code, drop_lcoe_na):
-    #     plants = (
-    #         self.all_modelable_bas()[ba_code]
-    #         .query("plant_id_eia > 0")
-    #         .capacity_mw.dropna()
-    #     )
-    #     t_dict = []
-    #     for (pid, gen), cap in plants.items():
-    #         try:
-    #             t_dict.append(
-    #                 self.close_re(pid, drop_lcoe_na=drop_lcoe_na).assign(
-    #                     fos_id=pid, fos_gen=gen, capacity_mw=cap
-    #                 )
-    #             )
-    #         except Exception as exc:
-    #             if ba_code != "Alaska":
-    #                 LOGGER.error("%s %s %r", ba_code, cap, exc)
-    #     cols = list(
-    #         dict.fromkeys(("fos_id", "fos_gen", "capacity_mw"))
-    #         | dict.fromkeys(t_dict[0])
-    #     )
-    #     return (
-    #         pd.concat(t_dict)[cols]
-    #         .assign(
-    #             capacity_for_weight=lambda x: x.groupby(
-    #                 ["technology_description", "fos_id", "fos_gen"]
-    #             ).capacity_mw.transform("sum")
-    #             / x.groupby(["technology_description"]).capacity_mw.transform("sum"),
-    #             ba_weight=lambda x: x.capacity_for_weight * x.weight,
-    #             ba_distance=lambda x: x.ba_weight * x.distance,
-    #         )
-    #         # .drop(columns="level_3")
-    #         .sort_values(["technology_description", "plant_id_eia", "ba_weight"])
-    #         .reset_index(drop=True)
-    #     )
-
-    # def close_re_meta(self, drop_lcoe_na):
-    #     if "re_meta" not in self._dfs:
-    #         # try:
-    #         #     self._dfs["re_meta"] = pd.read_parquet(CACHE_PATH / "re_meta.parquet")
-    #         # except FileNotFoundError:
-    #         #     with logging_redirect_tqdm():
-    #         out = pd.concat(
-    #             (
-    #                 self.close_re_ba_by_gen(k, drop_lcoe_na=drop_lcoe_na).assign(
-    #                     ba_code=k
-    #                 )
-    #                 for k in tqdm(self.all_modelable_bas(), desc="close_re_meta")
-    #             ),
-    #             axis=0,
-    #         )
-    #         # out.to_parquet(CACHE_PATH / "re_meta.parquet")
-    #         self._dfs["re_meta"] = out
-    #     return self._dfs["re_meta"]
-
-    # def close_re(self, plant_id, drop_lcoe_na):
-    #     """find re resources close to ``plant_id``, trying 250, 500, and then 1000 km
-    #     until solar and wind are found, returns the resources and their weights"""
-    #     # if plant_id not in self.gens_to_model.plant_id_eia:
-    #     #     raise RuntimeError(f"{plant_id} not in set of fossil plants")
-    #     full = self.re_dist().query("plant_id_eia_l == @plant_id")
-    #     if drop_lcoe_na:
-    #         full = full[full.lcoe.notna()]
-    #     close = (
-    #         full.query("distance <= 250")
-    #         .copy()
-    #         .pipe(self._close_re_helper, dist=250, max_num=self.max_re_sites)
-    #     )
-    #     techs = close.technology_description.unique()
-    #     if "solar" in techs and ("onshore_wind" in techs or "offshore_wind" in techs):
-    #         return close
-    #     missing_techs = list({"solar", "onshore_wind", "offshore_wind"} - set(techs))
-    #     missing = (
-    #         full.query("technology_description_r in @missing_techs & distance <= 500")
-    #         .copy()
-    #         .pipe(self._close_re_helper, dist=500, max_num=self.max_re_sites)
-    #     )
-    #     if missing.empty:
-    #         missing = full.query("technology_description_r in @missing_techs")
-    #         min_dist = missing.distance.min()
-    #         missing = (
-    #             missing.query("distance == @min_dist")
-    #             .copy()
-    #             .pipe(self._close_re_helper, dist=min_dist, max_num=self.max_re_sites)
-    #         )
-    #         if missing.empty:
-    #             raise NoREData(f"{plant_id} has no {missing_techs} within 1000 km")
-    #         LOGGER.info(
-    #             "%s closest %s is %s km",
-    #             plant_id,
-    #             missing.technology_description[0],
-    #             min_dist,
-    #         )
-    #     if not all(
-    #         [close[close.latitude.isna()].empty, missing[missing.latitude.isna()].empty]
-    #     ):
-    #         raise AssertionError(f"missing RE latitudes for {plant_id}")
-    #     return (
-    #         pd.concat([close, missing], axis=0, ignore_index=True)
-    #         .groupby(["technology_description", "plant_id_eia"])
-    #         .agg(
-    #             {
-    #                 "distance": "first",
-    #                 "weight": np.sum,
-    #                 "latitude": "first",
-    #                 "longitude": "first",
-    #                 "state": "first",
-    #                 "lcoe": "first",
-    #             }
-    #         )
-    #         .sort_index()
-    #         .reset_index()
-    #     )
-
-    # def all_re_dists(self, plant_ids=None) -> pd.DataFrame:
-    #     """the weighted distance of wind and solar for each fossil plant in ``plant_ids``"""
-    #     if plant_ids is None:
-    #         plant_ids = sorted({v["plant_id"] for v in self.all_modelable.values()})
-    #     dfs = {}
-    #     for pid in plant_ids:
-    #         try:
-    #             dfs.update({pid: self.close_re(pid, drop_lcoe_na=True)})
-    #         except NoREData as exc:
-    #             LOGGER.error("%r", exc)
-    #     return (
-    #         pd.concat(dfs, axis=0, names=["plant_id_eia"])
-    #         .drop(["plant_id_eia"], axis=1)
-    #         .assign(wd=lambda d: d.weight * d.distance)
-    #         .reset_index()
-    #         .groupby(["plant_id_eia", "technology_description"])
-    #         .agg({"wd": np.sum})
-    #     )
 
     @staticmethod
     def _close_re_helper(close, dist, max_num):
@@ -2940,77 +2678,6 @@ class AssetData:
                 }
             )
         )
-
-    # def gens_by_cr_cat(self):
-    #     df860 = (
-    #         self.pdl.gens_eia860()
-    #         .merge(
-    #             self.pdl.plants_eia860()[
-    #                 ["plant_id_eia", "report_date", "balancing_authority_code_eia"]
-    #             ],
-    #             on=["plant_id_eia", "report_date"],
-    #             validate="m:1",
-    #         )
-    #         .assign(fuel_group=lambda x: x.energy_source_code_1.map(FUEL_GROUP_MAP))
-    #     )
-    #     df923 = (
-    #         self.pdl.gen_fuel_by_generator_eia923()
-    #         .groupby(
-    #             [
-    #                 "plant_id_eia",
-    #                 "generator_id",
-    #                 pd.Grouper(key="report_date", freq="YS"),
-    #             ]
-    #         )
-    #         .net_generation_mwh.sum()
-    #         .reset_index()
-    #     )
-    #     df923 = df923[df923.report_date.dt.year == 2021]
-    #     return (
-    #         # df860[
-    #         #     df860.prime_mover_code.isin(("CC", "CS", "CA", "CT", "GT", "ST", "IC"))
-    #         #     & df860.fuel_group.isin(self.fos_fuels)
-    #         #     & df860.operational_status.isin(["existing", "retired"])
-    #         #     & (df860.report_date.dt.year == 2021)
-    #         # ]
-    #         self.gens[self.gens.category.str.contains("fossil")]
-    #         .drop(columns=["category"])
-    #         .merge(
-    #             df923,
-    #             on=["plant_id_eia", "generator_id"],
-    #             validate="1:1",
-    #             how="left",
-    #             suffixes=("", "_923"),
-    #         )
-    #         .assign(
-    #             # cf=lambda x:  x.net_generation_mwh / (x.capacity_mw * 8760),
-    #             category=lambda x: np.where(
-    #                 x.operational_status == "retired",
-    #                 "retired",
-    #                 np.where(
-    #                     x.retirement_date.notnull(),
-    #                     "retiring",
-    #                     np.where(
-    #                         (x.net_generation_mwh / (x.capacity_mw * 8760)) < 0.25,
-    #                         "low_cf",
-    #                         "high_cf",
-    #                     ),
-    #                 ),
-    #             ),
-    #             ba_code=lambda x: x.final_ba_code,
-    #         )[
-    #             [
-    #                 "ba_code",
-    #                 "balancing_authority_code_eia",
-    #                 "plant_id_eia",
-    #                 "generator_id",
-    #                 "category",
-    #                 "capacity_mw",
-    #                 "utility_id_eia",
-    #                 "utility_name_eia",
-    #             ]
-    #         ]
-    #     )
 
 
 @lru_cache
@@ -3122,10 +2789,12 @@ def cost_comparison():
         "fom",
         "om_per_mwh",
     ]
-    c_cfl = pd.read_parquet(ROOT_PATH / "r_data/python_inputs_data.parquet")
+    c_cfl = pd.read_parquet(
+        "az://patio-data/20241031/python_inputs_data.parquet", filesystem=fs
+    )
 
     gencost = (
-        pd.read_parquet(ROOT_PATH / "patio/package_data/epd_w_vom_fom_som.parquet")
+        pd.read_parquet(PACKAGE_DATA_PATH / "epd_w_vom_fom_som.parquet")
         .rename(columns={"report_date": "datetime"})
         .query("technology_description in @FOSSIL_TECH & datetime.dt.year >= 2008")
         .merge(
@@ -3272,7 +2941,7 @@ def add_plant_role(df: pd.DataFrame) -> pd.DataFrame:
 
 def master_unit_list(xl=None):
     try:
-        return pd.read_parquet(ROOT_PATH / "patio_data/static_unit_list.parquet")
+        return pd.read_parquet(PACKAGE_DATA_PATH / "static_unit_list.parquet")
     except FileNotFoundError:
         sul_map = {
             "Utility_ID": "utility_id",
@@ -3325,14 +2994,16 @@ def master_unit_list(xl=None):
 
 
 def read_ferc860():
-    cache_file = user_cache_path("patio", "rmi") / "860_FERC_matching_cost_regressions.parquet"
+    cache_file = (
+        user_cache_path("patio", "rmi") / "FERC_860_matching_cost_regressions_values.parquet"
+    )
     try:
         cost = pd.read_parquet(cache_file)
     except FileNotFoundError:
-        cost = pd.read_excel(
-            ROOT_PATH / "r_data/860_FERC_matching_cost_regressions - values.xlsx",
-            header=0,
-        )
+        with fs.open(
+            "patio-data/20241031/FERC_860_matching_cost_regressions_values.xlsx"
+        ) as f:
+            cost = pd.read_excel(f, header=0)
         if not cache_file.parent.exists():
             cache_file.parent.mkdir()
         cost.to_parquet(cache_file)

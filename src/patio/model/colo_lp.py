@@ -36,6 +36,7 @@ from patio.helpers import (
 )
 from patio.helpers import (
     make_core_lhs_rhs,
+    solver,
 )
 from patio.model.base import adjust_profiles, calc_redispatch_cost
 from patio.model.colo_common import (
@@ -70,7 +71,6 @@ from patio.model.colo_resources import (
 )
 
 OPT_THREADS = 2
-SOLVER = cp.COPT
 
 
 def encode_param(self, _, item):
@@ -664,11 +664,12 @@ class Model(IOMixin):
             self.status = FAIL_SMALL
         return self
 
-    def select_resources(self, time_limit=1000, solver=SOLVER):
+    def select_resources(self, time_limit=1000):
         if self.selected is None:
             self.selected = cp.Problem(
                 self.objective(self.i.years), self.constraints(self.i.years)
             )
+        solver_ = solver()
         options = {
             cp.GUROBI: {
                 "TimeLimit": time_limit,
@@ -678,16 +679,16 @@ class Model(IOMixin):
             },
             cp.HIGHS: {"time_limit": time_limit, "parallel": "on"},
             cp.COPT: {"TimeLimit": time_limit},
-        }[solver]
+        }[solver_]
         with (
             capture_stdout() as c_out,
             capture_stderr() as err,
             catch_warnings(record=True) as w_list,
         ):
             try:
-                self.selected.solve(solver, **options, verbose=True)
-                if self.selected.status != cp.OPTIMAL and solver == cp.GUROBI:
-                    self.selected.solve(solver, **options, verbose=True, BarHomogeneous=1)
+                self.selected.solve(solver_, **options, verbose=True)
+                if self.selected.status != cp.OPTIMAL and solver_ == cp.GUROBI:
+                    self.selected.solve(solver_, **options, verbose=True, BarHomogeneous=1)
 
             except (cp.SolverError, ValueError) as exc:
                 self.errors.append(
@@ -729,10 +730,11 @@ class Model(IOMixin):
         for dv in self:
             dv.round()
 
-    def dispatch(self, yr, time_limit=1000, solver=SOLVER):
+    def dispatch(self, yr, time_limit=1000):
         yrt = (yr,)
         if yr not in self.dispatchs:
             self.dispatchs[yr] = cp.Problem(self.objective(yrt), self.constraints(yrt))
+        solver_ = solver()
         options = {
             cp.GUROBI: {
                 "TimeLimit": time_limit,
@@ -742,13 +744,15 @@ class Model(IOMixin):
             },
             cp.HIGHS: {"time_limit": time_limit, "parallel": "on"},
             cp.COPT: {"TimeLimit": time_limit},
-        }[solver]
+        }[solver_]
 
         with capture_stdout() as c_out, capture_stderr() as c_err:
             try:
-                self.dispatchs[yr].solve(solver, **options, verbose=True)
-                if self.dispatchs[yr].status != cp.OPTIMAL and solver == cp.GUROBI:
-                    self.dispatchs[yr].solve(solver, **options, verbose=True, BarHomogeneous=1)
+                self.dispatchs[yr].solve(solver_, **options, verbose=True)
+                if self.dispatchs[yr].status != cp.OPTIMAL and solver_ == cp.GUROBI:
+                    self.dispatchs[yr].solve(
+                        solver_, **options, verbose=True, BarHomogeneous=1
+                    )
             except cp.SolverError as exc:
                 self.errors.append(repr(exc))
         try:
@@ -768,11 +772,11 @@ class Model(IOMixin):
             )
         return self
 
-    def dispatch_all(self, time_limit, solver=SOLVER):
+    def dispatch_all(self, time_limit):
         if not any(dv.x_cap.value for dv in self.dvs.values() if dv.x_cap is not None):
             raise RuntimeError("must run select_resources first or use Model.from_run")
         for yr in self.d.opt_years:
-            self.dispatch(yr, time_limit, solver)
+            self.dispatch(yr, time_limit)
             if self.status == FAIL_DISPATCH:
                 break
         return self

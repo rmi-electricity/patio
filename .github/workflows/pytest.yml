@@ -1,0 +1,51 @@
+name: tox-pytest
+
+on: [push, pull_request]
+
+jobs:
+  ci-test:
+    name: ci-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Install pixi
+        uses: prefix-dev/setup-pixi@v0.6.0
+        with:
+          pixi-version: v0.48.0
+          manifest-path: pyproject.toml
+          cache: true
+          cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
+      - name: Install global tools
+        run: pixi global install pre-commit && pixi global install ruff
+      - name: Run CI
+        env:
+          ETB_AZURE_SAS_TOKEN: ${{ secrets.ETB_AZURE_SAS_TOKEN }}
+          ETB_AZURE_ACCOUNT_NAME: ${{ secrets.ETB_AZURE_ACCOUNT_NAME }}
+        run: pixi run ci
+
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: ./coverage.info
+
+  finish:
+    needs: ci-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Coveralls Finished
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.github_token }}
+          parallel-finished: true
+
+  collector:
+    needs: [ci-test]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: check for failures
+        if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
+        run: echo job failed && exit 1
