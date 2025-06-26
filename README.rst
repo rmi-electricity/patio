@@ -54,7 +54,7 @@ with pixi.
    pixi install
 
 If the pixi command is not recognized after restarting the terminal you may need to
-add it to your path/
+add it to your path.
 
 .. code-block:: zsh
 
@@ -83,14 +83,15 @@ The value can be retrieved in R using its key:
 Using RStudio
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 For RStudio to use the patio environment created in the previous step,
-you must open it from the terminal with the following command:
+you must open it from the terminal with the following command. The first time
+running this may take a long time as additional R packages are downloaded and compiled.
 
 .. code-block:: zsh
 
    pixi run rstudio
 
 
-To setup your IDE to use the pixi environment see these guides
+Additional information on setting up your IDE to use the pixi environment see these guides
 `PyCharm <https://pixi.sh/v0.20.1/ide_integration/pycharm/>`_,
 `RStudio <https://pixi.sh/v0.20.1/ide_integration/r_studio/>`_.
 
