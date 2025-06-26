@@ -1,0 +1,137 @@
+patio.exceptions
+================
+
+.. py:module:: patio.exceptions
+
+
+Exceptions
+----------
+
+.. autoapisummary::
+
+   patio.exceptions.PatioData
+   patio.exceptions.NoNonZeroCEMS
+   patio.exceptions.NoCEMS
+   patio.exceptions.NoREData
+   patio.exceptions.NoNonZero923
+   patio.exceptions.NoFiniteNonZeroCapAdj
+   patio.exceptions.NoMatchingPlantsAndCEMS
+   patio.exceptions.CEMSExtensionError
+   patio.exceptions.NoEligibleCleanRepowering
+   patio.exceptions.ScenarioError
+   patio.exceptions.NoMaxRE
+
+
+Module Contents
+---------------
+
+.. py:exception:: PatioData
+
+   Bases: :py:obj:`RuntimeError`
+
+
+   Unspecified run-time error.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:exception:: NoNonZeroCEMS
+
+   Bases: :py:obj:`PatioData`
+
+
+   Unspecified run-time error.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:exception:: NoCEMS
+
+   Bases: :py:obj:`PatioData`
+
+
+   Unspecified run-time error.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:exception:: NoREData
+
+   Bases: :py:obj:`PatioData`
+
+
+   Unspecified run-time error.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:exception:: NoNonZero923
+
+   Bases: :py:obj:`PatioData`
+
+
+   Unspecified run-time error.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:exception:: NoFiniteNonZeroCapAdj
+
+   Bases: :py:obj:`PatioData`
+
+
+   Unspecified run-time error.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:exception:: NoMatchingPlantsAndCEMS
+
+   Bases: :py:obj:`PatioData`
+
+
+   Unspecified run-time error.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:exception:: CEMSExtensionError
+
+   Bases: :py:obj:`PatioData`
+
+
+   Unspecified run-time error.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:exception:: NoEligibleCleanRepowering
+
+   Bases: :py:obj:`PatioData`
+
+
+   Unspecified run-time error.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:exception:: ScenarioError
+
+   Bases: :py:obj:`RuntimeError`
+
+
+   Duplicate or broken scenario.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:exception:: NoMaxRE
+
+   Bases: :py:obj:`RuntimeError`
+
+
+   Duplicate or broken scenario.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+

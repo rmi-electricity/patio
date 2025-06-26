@@ -1,0 +1,156 @@
+patio.data.asset_data
+=====================
+
+.. py:module:: patio.data.asset_data
+
+.. autoapi-nested-parse::
+
+   a model I first heard of while on a patio
+
+   This module contains the objects and specific methods to set up and manage data.
+
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   patio.data.asset_data.AssetData
+
+
+Module Contents
+---------------
+
+.. py:class:: AssetData
+
+   .. py:attribute:: years
+      :type:  tuple[int, int]
+      :value: (2008, 2022)
+
+
+
+   .. py:attribute:: cutoff
+      :type:  float
+      :value: 0.99
+
+
+
+   .. py:attribute:: state_cutoff
+      :type:  float
+      :value: 0.95
+
+
+
+   .. py:attribute:: addl_fuels
+      :type:  bool
+      :value: False
+
+
+
+   .. py:attribute:: overrides
+      :type:  dict[str, dict[int, tuple]] | None
+      :value: None
+
+
+
+   .. py:attribute:: pudl_release
+      :type:  str
+      :value: 'v2024.11.0'
+
+
+
+   .. py:attribute:: _dfs
+      :type:  dict[str, pandas.DataFrame | dict]
+
+
+   .. py:method:: __post_init__()
+
+
+   .. py:method:: add_regulatory_ranking(gens)
+
+
+   .. py:method:: _fuel_cost_setup()
+
+
+   .. py:method:: raw_curves(atb_year, regime)
+
+
+   .. py:method:: proposed_atb_class(gens)
+
+
+   .. py:method:: re_sites_for_encom()
+
+
+   .. py:method:: curve_for_site_selection(atb_year, assumed_ilr, regime = None)
+
+
+   .. py:method:: re_curve(atb_year, assumed_ilr)
+
+
+   .. py:method:: temp_nuke_replacements()
+
+      Screen for plants with high CF that could be replaced by nuclear.
+
+
+
+   .. py:method:: temp_ccs_conversion()
+
+      Screen for plants with high CF that could be replaced by nuclear.
+
+
+
+   .. py:method:: _ba_overrides(df)
+
+
+   .. py:method:: historical_cost()
+
+
+   .. py:method:: counterfactual_cost()
+
+
+   .. py:method:: problem_cost_explorer()
+
+      Code for finding weird cost data.
+
+
+
+   .. py:method:: unsafe_plants()
+
+      Plants whose lat/lon is outside state bounds
+
+
+
+   .. py:method:: utility_codes()
+
+
+   .. py:method:: get_missing_generators(ba_code, plant_data)
+
+
+   .. py:method:: modelable_generators()
+
+
+   .. py:method:: all_modelable_generators()
+
+
+   .. py:method:: get_generator_data(ba_code, cost_type, solar_ilr)
+
+
+   .. py:method:: pl_counterfactual_re()
+
+
+   .. py:method:: counterfactual_re()
+
+
+   .. py:method:: re()
+
+      All operating renewable generators that would generate unique
+      profiles from renewables.ninja
+
+
+
+   .. py:method:: _close_re_helper(close, dist, max_num)
+      :staticmethod:
+
+
+

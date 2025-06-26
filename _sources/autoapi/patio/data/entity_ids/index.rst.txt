@@ -1,0 +1,87 @@
+patio.data.entity_ids
+=====================
+
+.. py:module:: patio.data.entity_ids
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   patio.data.entity_ids.BA_REPLACE
+   patio.data.entity_ids.RESPS_TO_KEEP
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   patio.data.entity_ids.add_ba_code
+   patio.data.entity_ids.adjust_ba_codes
+
+
+Module Contents
+---------------
+
+.. py:data:: BA_REPLACE
+
+.. py:data:: RESPS_TO_KEEP
+   :value: (130, 177, 186, 195, 210, 22, 531, 552, 556, 58, 656, 658)
+
+
+.. py:function:: add_ba_code(input_df, new_ba_col = 'final_ba_code', *, ba_rollup_only = False, drop_interim = False, apply_purchaser = True)
+
+   Add respondent and final ba_codes.
+
+   Steps if ``ba_rollup_only`` is False. If it is True, we simply apply the
+   :const:`BA_REPLACE` map to ``balancing_authority_code_eia``.
+   1.  First we read in UTH utility information which associates ``utility_id_eia``
+       to FERC ``respondent_id``. In that dataset we grab those two columns, drop rows
+       where either is null and remove duplicates. For the next step it is critical
+       that a given ``utility_id_eia`` map to one and only one ``respondent_id``,
+       though multiple ``utility_id_eia`` can map to single a ``respondent_id``.
+   2.  We then merge the result of (1) onto the incoming :class:`pandas.DataFrame`
+   3.  [Optional if applying purchaser data] Read in UTH purchased power data, select
+       only purchase data from 2020 (the last manually tagged year) where
+       ``plant_id_eia`` is not null, i.e. cases where the purchased power tagging
+       found a plant-level match. This data will allow us to associate
+       ``plant_id_eia`` with the ``respondent_id`` that purchases its power. To make
+       this unique we require that the ``respondent_id`` purchases ≥90% of power that
+       the plant sells (NOTE: this is not as a % of the total plant generation, just
+       that plant's sales that we have identified in the purchase power tagging
+       process). We then merge this onto the result of (2) on ``plant_id_eia``. The
+       resulting ``final_respondent_id`` for a ``plant_id_eia`` only uses the
+       ``respondent_id_purchaser`` if that ``plant_id_eia`` did not have a
+       ``respondent_id`` assigned in step (2).
+   4.  The final step is to adjust the final ba codes using :func:`.adjust_ba_codes`.
+       This process attempts to group the rows of ``input_df`` into planning areas by
+       doing one of the following:
+
+       1.  Using the ``final_respondent_id`` irrespective of a given row's
+           ``balancing_authority_code_eia``.
+       2.  Using the ``balancing_authority_code_eia`` irrespective of a given row's
+           ``final_respondent_id``.
+       2.  Combining one or more ``balancing_authority_code_eia`` into a single new
+           region.
+       3.  Doing something more complicated (see :func:`.adjust_ba_codes` body for the
+           8 special cases).
+
+
+   :param input_df: frame to add BA / respondent columns to
+   :param new_ba_col: name of ultimate BA code column
+   :param ba_rollup_only: if True, we only rollup EIA BA codes using :const:`BA_REPLACE`
+   :param drop_interim: if True, drop all the intermediate respondent / BA code columns
+   :param apply_purchaser: if True, change respondent to respondent of purchaser,
+                           requires plant_id_eia
+
+   Returns:
+
+
+
+.. py:function:: adjust_ba_codes(df, new_ba_col='final_ba_code')
+
+   Process for assigning plants to EIA BA codes and FERC 1 Respondent IDs.
+
+

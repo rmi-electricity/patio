@@ -1,0 +1,18 @@
+patio.data
+==========
+
+.. py:module:: patio.data
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/patio/data/asset_data/index
+   /autoapi/patio/data/cems/index
+   /autoapi/patio/data/entity_ids/index
+   /autoapi/patio/data/profile_data/index
+
+
