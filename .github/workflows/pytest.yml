@@ -6,6 +6,7 @@ jobs:
   ci-test:
     name: ci-test
     runs-on: ubuntu-latest
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
         with:
@@ -17,8 +18,10 @@ jobs:
           manifest-path: pyproject.toml
       #          cache: true
       #          cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
+      - name: Add uv tools to path
+        run: pixi exec uv tool update-shell
       - name: Install global tools
-        run: pixi global install pre-commit && pixi global install ruff
+        run: pixi exec uv tool install pre-commit --with pre-commit-uv && pixi global install ruff
       - name: Run CI
         env:
           ETB_AZURE_SAS_TOKEN: ${{ secrets.ETB_AZURE_SAS_TOKEN }}

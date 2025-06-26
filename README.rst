@@ -54,7 +54,7 @@ with pixi.
    pixi install
 
 If the pixi command is not recognized after restarting the terminal you may need to
-add it to your path/
+add it to your path.
 
 .. code-block:: zsh
 
