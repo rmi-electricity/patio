@@ -1,4 +1,4 @@
-name: tox-pytest
+name: pytest
 
 on: [push, pull_request]
 
@@ -23,6 +23,8 @@ jobs:
         env:
           ETB_AZURE_SAS_TOKEN: ${{ secrets.ETB_AZURE_SAS_TOKEN }}
           ETB_AZURE_ACCOUNT_NAME: ${{ secrets.ETB_AZURE_ACCOUNT_NAME }}
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+          BLS_KEY: ${{ secrets.BLS_KEY }}
         run: pixi run ci
 
       - name: Coveralls

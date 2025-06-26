@@ -83,28 +83,29 @@ scipy = "*"
 pixi-pycharm = ">=0.0.8,<0.0.9"
 
 [tool.pixi.environments]
-default = {features = ["dev"], solve-group = "default"}
+default = {features = ["dev", "econ"], solve-group = "default"}
 
-#[tool.pixi.feature.econ.dependencies]
-#r-base = ">=4.4.3,<4.5"
-#r-rcurl = ">=1.98_1.16,<2"
-#r-lubridate = ">=1.9.4,<2"
-#r-arrow = ">=19.0.1,<20"
-#r-readxl = ">=1.4.5,<2"
-#r-dplyr = ">=1.1.4,<2"
-#r-lmtest = ">=0.9_40,<0.10"
-#r-ggplot2 = ">=3.5.2,<4"
-#r-broom = ">=1.0.8,<2"
-#r-tidyr = ">=1.3.1,<2"
-#r-janitor = ">=2.2.1,<3"
-#r-purrr = ">=1.0.4,<2"
-#r-stringr = ">=1.5.1,<2"
-#r-rsqlite = ">=2.3.11,<3"
-#r-bit64 = ">=4.6.0_1,<5"
-#r-fredr = ">=2.1.0,<3"
-#r-reticulate = ">=1.42.0,<2"
-#r-jsonlite = ">=2.0.0,<3"
-#r-pak = ">=0.9.0,<0.10"
+[tool.pixi.feature.econ.dependencies]
+r-base = ">=4.4.3,<4.5"
+r-rcurl = ">=1.98_1.16,<2"
+r-lubridate = ">=1.9.4,<2"
+r-arrow = ">=19.0.1,<20"
+r-readxl = ">=1.4.5,<2"
+r-dplyr = ">=1.1.4,<2"
+r-lmtest = ">=0.9_40,<0.10"
+r-ggplot2 = ">=3.5.2,<4"
+r-broom = ">=1.0.8,<2"
+r-tidyr = ">=1.3.1,<2"
+r-janitor = ">=2.2.1,<3"
+r-purrr = ">=1.0.4,<2"
+r-stringr = ">=1.5.1,<2"
+r-rsqlite = ">=2.3.11,<3"
+r-bit64 = ">=4.6.0_1,<5"
+r-fredr = ">=2.1.0,<3"
+r-reticulate = ">=1.42.0,<2"
+r-jsonlite = ">=2.0.0,<3"
+r-pak = ">=0.9.0,<0.10"
+r-styler = ">=1.10.3,<2"
 
 [tool.pixi.tasks]
 pre_commit = { cmd = [
@@ -132,6 +133,16 @@ test = { cmd = [
 ] }
 ci = { depends-on = [ "lint", "docs", "test" ] }
 
+[tool.pixi.target.linux.tasks]
+rstudio = "rstudio"
+
+[tool.pixi.target.osx.tasks]
+rstudio = "open -a rstudio"
+
+[tool.pixi.activation]
+# this is needed because r-reticulate needs conda-meta/history that pixi doesn't provide
+# we also need to download the BBB....xlsm config file
+scripts = [ ".setup.sh" ]
 
 [tool.uv]
 constraint-dependencies = ["kaleido!=0.2.1.post1"]

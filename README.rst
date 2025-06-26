@@ -36,7 +36,6 @@ See
 `setting up your development environment <https://github.com/rmi-electricity/.github-private/blob/main/profile/notes_on_dev_env.md>`_
 for general tool installation and configuration.
 
-
 Setup patio environment
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Unfortunately, geopandas doesn't work properly when installed using uv (or pip) so we
@@ -53,6 +52,43 @@ with pixi.
 
    pre-commit install
    pixi install
+
+If the pixi command is not recognized after restarting the terminal you may need to
+add it to your path/
+
+.. code-block:: zsh
+
+   echo 'export PATH=~/.pixi/bin:$PATH'  >> ~/.zshenv
+
+If you have not yet initialized `etoolbox <https://github.com/RMI/etoolbox>`__ on your
+computer, run this command and follow the instructions:
+
+.. code-block:: zsh
+
+   pixi run etb cloud init
+
+The FRED_API_KEY and BLS_KEY must be set as environment variables.
+To set the environment variable ``FRED_API_KEY`` with the value ``abcd1234``, use the following command:
+
+.. code-block:: zsh
+
+   echo 'export FRED_API_KEY=abcd1234' >> ~/.zshenv
+
+The value can be retrieved in R using its key:
+
+.. code-block:: R
+
+   FRED_API_KEY <- Sys.getenv("FRED_API_KEY")
+
+Using RStudio
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+For RStudio to use the patio environment created in the previous step,
+you must open it from the terminal with the following command:
+
+.. code-block:: zsh
+
+   pixi run rstudio
+
 
 To setup your IDE to use the pixi environment see these guides
 `PyCharm <https://pixi.sh/v0.20.1/ide_integration/pycharm/>`_,
