@@ -136,7 +136,10 @@ r-bit64 = ">=4.6.0_1,<5"
 r-fredr = ">=2.1.0,<3"
 r-reticulate = ">=1.42.0,<2"
 r-jsonlite = ">=2.0.0,<3"
+r-stringdist = ">=0.9.15,<0.10"
 r-styler = ">=1.10.3,<2"
+r-miniui = ">=0.1.2,<0.2"
+r-shiny = ">=1.11.0,<2"
 
 [tool.pixi.feature.econ]
 target.linux.tasks.rstudio = "rstudio"
