@@ -1,23 +1,21 @@
 # Utilities Inputs
-
-library(RCurl)
 library(lubridate)
-library(arrow)
-library(readxl)
 library(dplyr)
 library(lmtest)
 library(ggplot2)
 library(broom)
 library(tidyr)
-library(tidyxl)
 library(janitor)
-library(RSQLite)
-library(stringdist)
-library(stringr)
-library(reticulate)
 
-# Set working directory
-patio_results <- "202504270143"
+options(show.error.locations = TRUE)
+args <- commandArgs(trailingOnly = TRUE)
+if (length(args) == 1) {
+  patio_results <- args
+} else {
+  warning("No patio result datestr supplied")
+  patio_results <- "202504270143"
+}
+print(paste("Creating utility inputs for", patio_results))
 junk_pattern <- "[_&#$\\.,:;\\*/@]|\\(\\w*\\)|llc"
 utility_delim <- "[\\.,:;]|\\scooperative|\\scoop|\\sinc|\\sco-op"
 delim_string <- paste(
@@ -32,17 +30,12 @@ delim_string <- paste(
 IRA_on <- TRUE
 
 # python integration instructions here: https://rmi.github.io/etoolbox/etb_and_r.html#setup-etoolbox-with-uv
-use_python(gsub("lib/R", "bin/python", R.home()))
-platformdirs <- import("platformdirs")
-constants <- import("patio.constants")
-cloud <- import("etoolbox.utils.cloud")
-cache_dir <- paste(
-  platformdirs$user_cache_dir("patio", ensure_exists = TRUE),
-  patio_results,
-  sep = "/"
-)
-mkdir(cache_dir)
-root_dir <- paste(constants$ROOT_PATH)
+reticulate::use_python(gsub("lib/R", "bin/python", R.home()))
+platformdirs <- reticulate::import("platformdirs")
+constants <- reticulate::import("patio.constants")
+cloud <- reticulate::import("etoolbox.utils.cloud")
+cache_dir <- platformdirs$user_cache_dir("patio", ensure_exists = TRUE)
+root_dir <- paste(constants$ROOT_PATH) # paste converts py_path to string
 results <- cloud$read_patio_resource_results(patio_results)
 
 # Define functions for string cleaning and fuzzy matching and extraction
@@ -54,18 +47,18 @@ clean_name_string <- Vectorize(function(
   strip_all_numbers = FALSE,
   strip_large_numbers = FALSE
 ) {
-  clean_name <- str_remove_all(tolower(string_to_clean), delim_string)
+  clean_name <- stringr::str_remove_all(tolower(string_to_clean), delim_string)
   if (is.na(clean_name) | clean_name == "") {
     return(clean_name)
   } else {
     # This function replaces "-" used to indicate a range of units with each unit number to facilitate matching, then using a flexible regexp search with the
     # upper and lower bounds around "-" with arbitrary spaces "\\s*" to replace them.
-    lower_range <- as.integer(str_remove(
-      str_extract(clean_name, "\\d+\\s*-"),
+    lower_range <- as.integer(stringr::str_remove(
+      stringr::str_extract(clean_name, "\\d+\\s*-"),
       "-"
     ))
-    upper_range <- as.integer(str_remove(
-      str_extract(clean_name, "-\\d+\\s*"),
+    upper_range <- as.integer(stringr::str_remove(
+      stringr::str_extract(clean_name, "-\\d+\\s*"),
       "-"
     ))
     if (
@@ -76,17 +69,17 @@ clean_name_string <- Vectorize(function(
       for (unitnum in (lower_range + 1):upper_range) {
         temp_str <- paste(temp_str, unitnum, sep = " ")
       }
-      clean_name <- str_replace(clean_name, cur_str, temp_str)
+      clean_name <- stringr::str_replace(clean_name, cur_str, temp_str)
     }
     clean_name <- gsub("-", " ", clean_name, fixed = TRUE)
     clean_name <- gsub("u(\\d+)", "\\1", clean_name)
     clean_name <- trimws(gsub("\\s+", " ", clean_name))
   }
   if (strip_all_numbers) {
-    clean_name <- str_remove_all(clean_name, "[0-9%]")
+    clean_name <- stringr::str_remove_all(clean_name, "[0-9%]")
   }
   if (strip_large_numbers) {
-    clean_name <- str_remove_all(clean_name, "[1-9]\\d{2,}")
+    clean_name <- stringr::str_remove_all(clean_name, "[1-9]\\d{2,}")
   }
   clean_name <- trimws(gsub("\\s+", " ", clean_name))
   return(as.character(clean_name))
@@ -94,8 +87,12 @@ clean_name_string <- Vectorize(function(
 
 # This function generates an acronym out of the plant name
 acron <- Vectorize(function(string_to_acron) {
-  acron_found <- str_remove_all(tolower(string_to_acron), junk_pattern)
-  acron_found <- str_replace_all(acron_found, "([a-zi+v*])\\w*\\s*", "\\1")
+  acron_found <- stringr::str_remove_all(tolower(string_to_acron), junk_pattern)
+  acron_found <- stringr::str_replace_all(
+    acron_found,
+    "([a-zi+v*])\\w*\\s*",
+    "\\1"
+  )
   return(acron_found)
 })
 
@@ -103,14 +100,17 @@ acron <- Vectorize(function(string_to_acron) {
 # This is calculated as a modified levenshtein distance that more heavily weights insertions and substitutions relative to deletions,
 # and has been empirically verified to provide high-quality matches between ferc and eia plant name fields.
 string_fit <- Vectorize(function(S1, S2) {
-  dweight <- 1 / str_length(S1)
+  dweight <- 1 / stringr::str_length(S1)
   iweight <- 0.5
   sweight <- 1
-  maxlen <- (2 * str_length(S1) * iweight + str_length(S2) * dweight)
+  maxlen <- (2 *
+    stringr::str_length(S1) *
+    iweight +
+    stringr::str_length(S2) * dweight)
   string_fit <- ifelse(
     maxlen > 0 & !is.na(maxlen),
     1 -
-      stringdist(
+      stringdist::stringdist(
         S1,
         S2,
         method = "dl",
@@ -119,13 +119,12 @@ string_fit <- Vectorize(function(S1, S2) {
         maxlen,
     1
   )
-
   return(string_fit)
 })
 
 # This function extracts large (>=100) numbers from a string in order to pull out ferc plant codes for hydro assets
 extract_large_num <- Vectorize(function(string_to_check) {
-  large_num <- as.integer(str_extract(string_to_check, "[1-9]\\d{2,}"))
+  large_num <- as.integer(stringr::str_extract(string_to_check, "[1-9]\\d{2,}"))
   return(large_num)
 })
 
@@ -146,7 +145,7 @@ bbb_file <- paste(
   "BBB Fossil Transition Analysis Inputs.xlsm",
   sep = "/"
 )
-model_inputs <- xlsx_names(bbb_file) %>%
+model_inputs <- tidyxl::xlsx_names(bbb_file) %>%
   subset(is_range == TRUE & hidden == FALSE, select = c(name, formula))
 
 named_ranges <- model_inputs$name
@@ -155,7 +154,7 @@ for (range_name in named_ranges) {
     subset(name == range_name, select = "formula") %>%
     as.character()
   if (!grepl(":", range_formula, fixed = TRUE)) {
-    range_value_test <- read_excel(
+    range_value_test <- readxl::read_excel(
       bbb_file,
       range = range_formula,
       col_names = FALSE
@@ -172,7 +171,7 @@ for (range_name in named_ranges) {
       grepl("BLS Data Series", range_formula, fixed = TRUE) |
       grepl("Interest Rates", range_formula, fixed = TRUE)
   ) {
-    range_value_test <- read_excel(bbb_file, range = range_formula)
+    range_value_test <- readxl::read_excel(bbb_file, range = range_formula)
     range_value_test <- as.data.frame(
       unclass(range_value_test),
       stringsAsFactors = TRUE,
@@ -249,9 +248,7 @@ reg_lag <- 3
 # Pull in PUDL utility ID matching tables to use for subsequent calculations, and normalize all ferc IDs to utility_id_ferc1,
 # incorporating additional FERC / EIA utility matches developed in Hub / Patio modeling as recorded in "utilities_inputs.xlsx"
 pudl_release <- results$pudl_release
-pudl <- import("etoolbox.utils.pudl")
-pudl$pudl_list(pudl_release)
-
+pudl <- reticulate::import("etoolbox.utils.pudl")
 utilities_eia <- pudl$pd_read_pudl(
   "core_pudl__assn_eia_pudl_utilities",
   release = pudl_release
@@ -289,7 +286,6 @@ operational_data_misc_eia861 <- pudl$pd_read_pudl(
       net_power_exchanged_mwh +
       net_wheeled_power_mwh
   )
-
 operational_data_revenue_eia861 <- pudl$pd_read_pudl(
   "core_eia861__yearly_operational_data_revenue",
   release = pudl_release
@@ -405,10 +401,10 @@ ownership_eia860 <- pudl$pd_read_pudl(
 ) %>%
   filter(year(report_date) == 2022) %>%
   mutate(
-    generator_id = str_remove(generator_id, "^0000"),
-    generator_id = str_remove(generator_id, "^000"),
-    generator_id = str_remove(generator_id, "^00"),
-    generator_id = str_remove(generator_id, "^0"),
+    generator_id = stringr::str_remove(generator_id, "^0000"),
+    generator_id = stringr::str_remove(generator_id, "^000"),
+    generator_id = stringr::str_remove(generator_id, "^00"),
+    generator_id = stringr::str_remove(generator_id, "^0"),
   )
 
 # Utility Data (860)
@@ -666,12 +662,6 @@ coop_data <- coop_data %>%
 coop_GT_Dist_Map <- cloud$read_cloud_file(
   "patio-data/20241031/co_op_map_xwalk.parquet"
 ) %>%
-  rename(
-    dist_utility_id_eia = Utility.ID,
-    GT_utility_name = G.T,
-    GT_utility_name_1 = Other.Provider.1,
-    GT_utility_name_2 = Other.Provider.2,
-  ) %>%
   mutate(
     GT_utility_name = if_else(
       GT_utility_name == "Continental Cooperative Services, Inc.",
@@ -700,7 +690,7 @@ GT_list <- coop_GT_Dist_Map %>%
     clean_GT_name = trimws(gsub(
       "\\s+",
       " ",
-      str_remove_all(tolower(GT_utility_name), utility_delim)
+      stringr::str_remove_all(tolower(GT_utility_name), utility_delim)
     ))
   ) %>%
   filter(clean_GT_name != "")
@@ -718,7 +708,7 @@ GT_match_list <- GT_list %>%
         clean_EIA_name = trimws(gsub(
           "\\s+",
           " ",
-          str_remove_all(tolower(utility_name_eia), utility_delim)
+          stringr::str_remove_all(tolower(utility_name_eia), utility_delim)
         ))
       )
   ) %>%
@@ -761,7 +751,7 @@ coop_GT_Dist_Map <- coop_GT_Dist_Map %>%
     by = c("dist_utility_id_eia" = "utility_id_eia")
   )
 
-write_parquet(
+arrow::write_parquet(
   coop_GT_Dist_Map,
   paste(cache_dir, "coop_GT_Dist_Map.parquet", sep = "/")
 )
@@ -786,7 +776,7 @@ coop_ba_code_remap <- coop_GT_Dist_Map %>%
   left_join(coop_eia_ba_code_map, by = c("SGT_utility_id_eia")) %>%
   filter(!is.na(ba_code))
 
-write_parquet(
+arrow::write_parquet(
   coop_ba_code_remap,
   paste(cache_dir, "coop_ba_code_remap.parquet", sep = "/")
 )
@@ -1068,23 +1058,24 @@ files <- c(
   "operations_emissions_by_tech"
 )
 for (file in files) {
-  filename <- paste(cache_dir, file, ".csv", sep = "")
-  if (file.exists(filename)) {
-    print(paste(filename, " already downloaded"))
-  } else {
-    download.file(
-      paste(
-        "https://utilitytransitionhub.rmi.org/static/data_download/",
-        file,
-        ".csv",
-        sep = ""
+  filename <- paste(cache_dir, "/", file, ".parquet", sep = "")
+  if (!file.exists(filename)) {
+    arrow::write_parquet(
+      read.csv(
+        paste(
+          "https://utilitytransitionhub.rmi.org/static/data_download/",
+          file,
+          ".csv",
+          sep = ""
+        ),
+        stringsAsFactors = TRUE
       ),
       filename
     )
   }
   assign(
     paste("hub", file, sep = "_"),
-    read.csv(filename, stringsAsFactors = TRUE)
+    arrow::read_parquet(filename)
   )
 }
 aggregate_hub_revenue_by_tech <- aggregate(
@@ -1373,10 +1364,13 @@ hub_net_plant_balance_2020 <- hub_net_plant_balance %>%
   ungroup()
 
 # Read in FERC Rate Case Data
-ferc_SP_utility_map <- read_excel(
+ferc_SP_utility_map <- readxl::read_excel(
   paste(
     cloud$AZURE_CACHE_PATH,
-    cloud$cached_path("ferc_SP_utility_map.xlsm", download = TRUE),
+    cloud$cached_path(
+      "patio-restricted/ferc_SP_utility_map.xlsm",
+      download = TRUE
+    ),
     sep = "/"
   ),
   sheet = "ferc_SP_utility_map"
@@ -1978,8 +1972,23 @@ unit_level_data <- unit_level_data %>%
   )
 
 print("Writing unit financial inputs")
-write_parquet(
+arrow::write_parquet(
   unit_level_data,
-  paste(cache_dir, "unit_financial_inputs.parquet", sep = "/")
+  paste(
+    root_dir,
+    "/econ_results/",
+    patio_results,
+    "_unit_financial_inputs.parquet",
+    sep = ""
+  )
 )
-write_parquet(asset_owners, paste(cache_dir, "asset_owners.parquet", sep = "/"))
+arrow::write_parquet(
+  asset_owners,
+  paste(
+    root_dir,
+    "/econ_results/",
+    patio_results,
+    "_asset_owners.parquet",
+    sep = ""
+  )
+)

@@ -8,3 +8,9 @@ fi
 
 # install blsR and tidyxl as they are not available from conda-forge
 R -e 'tryCatch(library(blsR), error = function(e) install.packages("blsR", repos = "http://cran.us.r-project.org")); tryCatch(library(tidyxl), error = function(e) install.packages("tidyxl", repos = "http://cran.us.r-project.org"))'
+
+if [ ! -f "econ_results" ]; then
+    {
+      mkdir "econ_results"
+    }
+fi

@@ -225,6 +225,7 @@ raw_cems/
 *.parquet.gzip
 *.zip
 *.csv
+econ_results/
 
 # Allowed Data
 !tests/colo_test_data/*.zip

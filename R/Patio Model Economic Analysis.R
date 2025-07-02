@@ -12,7 +12,15 @@
 ## Step 3: Optimizing Cost-Effective Scenarios
 ### Step 3a: (Incomplete, bugs still need to be worked out)
 
-patio_results <- "202504270143"
+options(show.error.locations = TRUE)
+args <- commandArgs(trailingOnly = TRUE)
+if (length(args) == 1) {
+  patio_results <- args
+} else {
+  warning("No patio result datestr supplied")
+  patio_results <- "202504270143"
+}
+print(paste("Running economic analysis on", patio_results))
 FRED_API_KEY <- Sys.getenv("FRED_API_KEY")
 BLS_KEY <- Sys.getenv("BLS_KEY")
 IRA_on <- TRUE
@@ -25,9 +33,8 @@ final_loop_year <- EIR_NewERA_fin_build_year
 irp_year <- 2024
 
 # Load packages
-library(RCurl)
+# library(RCurl)
 library(lubridate)
-library(arrow)
 library(readxl)
 library(dplyr)
 library(lmtest)
@@ -38,7 +45,7 @@ library(tidyxl)
 library(janitor)
 library(purrr)
 library(stringr)
-library(RSQLite)
+# library(RSQLite)
 library(bit64)
 library(fredr)
 library(blsR)
@@ -52,16 +59,11 @@ library(jsonlite)
 ### Pull in resource model data
 
 # python integration instructions here: https://rmi.github.io/etoolbox/etb_and_r.html#setup-etoolbox-with-uv
-use_python(gsub("lib/R", "bin/python", R.home()))
-platformdirs <- import("platformdirs")
-constants <- import("patio.constants")
-cloud <- import("etoolbox.utils.cloud")
-cache_dir <- paste(
-  platformdirs$user_cache_dir("patio", ensure_exists = TRUE),
-  patio_results,
-  sep = "/"
-)
-mkdir(cache_dir)
+reticulate::use_python(gsub("lib/R", "bin/python", R.home()))
+platformdirs <- reticulate::import("platformdirs")
+constants <- reticulate::import("patio.constants")
+cloud <- reticulate::import("etoolbox.utils.cloud")
+cache_dir <- platformdirs$user_cache_dir("patio", ensure_exists = TRUE)
 root_dir <- paste(constants$ROOT_PATH)
 results <- cloud$read_patio_resource_results(patio_results)
 
@@ -252,7 +254,7 @@ trans_costs <- as.numeric(
 
 ### Read in named ranges from Excel model front-end and assign single cell ranges to R scalar variables, tables to R dataframes.
 ### These named ranges provide critical policy, storage, and tax assumptions for the analysis.
-model_inputs <- xlsx_names(bbb_file) %>%
+model_inputs <- tidyxl::xlsx_names(bbb_file) %>%
   subset(is_range == TRUE & hidden == FALSE, select = c(name, formula))
 
 named_ranges <- model_inputs$name
@@ -261,7 +263,7 @@ for (range_name in named_ranges) {
     subset(name == range_name, select = "formula") %>%
     as.character()
   if (!grepl(":", range_formula, fixed = TRUE)) {
-    range_value_test <- read_excel(
+    range_value_test <- readxl::read_excel(
       bbb_file,
       range = range_formula,
       col_names = FALSE
@@ -277,7 +279,7 @@ for (range_name in named_ranges) {
       grepl("Tax Depreciation", range_formula, fixed = TRUE) |
       grepl("BLS Data Series", range_formula, fixed = TRUE)
   ) {
-    range_value_test <- read_excel(bbb_file, range = range_formula)
+    range_value_test <- readxl::read_excel(bbb_file, range = range_formula)
     range_value_test <- as.data.frame(
       unclass(range_value_test),
       stringsAsFactors = TRUE,
@@ -287,7 +289,7 @@ for (range_name in named_ranges) {
   }
 }
 
-parameters <- read_excel(bbb_file, "Toggles", col_names = FALSE)
+parameters <- readxl::read_excel(bbb_file, "Toggles", col_names = FALSE)
 CPIU <- CPIU[c("Year", "Inflation_Factor_2021")]
 
 ### Set parameters
@@ -325,46 +327,46 @@ data_start_date <- as.Date(ifelse(
   )
 ))
 
-fredr_set_key(FRED_API_KEY)
-T5YIE <- fredr(series = "T5YIE", observation_start = data_start_date)
-T5YIFR <- fredr(series = "T5YIFR", observation_start = data_start_date)
-BAMLC0A1CAAA <- fredr(
-  series = "BAMLC0A1CAAA",
-  observation_start = data_start_date
-)
-BAMLC0A2CAA <- fredr(
-  series = "BAMLC0A2CAA",
-  observation_start = data_start_date
-)
-BAMLC0A3CA <- fredr(series = "BAMLC0A3CA", observation_start = data_start_date)
-BAMLC0A4CBBB <- fredr(
-  series = "BAMLC0A4CBBB",
-  observation_start = data_start_date
-)
-BAMLH0A1HYBB <- fredr(
-  series = "BAMLH0A1HYBB",
-  observation_start = data_start_date
-)
-BAMLH0A2HYB <- fredr(
-  series = "BAMLH0A2HYB",
-  observation_start = data_start_date
-)
-DGS1MO <- fredr(series = "DGS1MO", observation_start = data_start_date)
-# DGS2MO <- fredr(series="DGS2MO", observation_start = data_start_date)
-DGS3MO <- fredr(series = "DGS3MO", observation_start = data_start_date)
-# DGS4MO <- fredr(series="DGS4MO", observation_start = data_start_date)
-DGS6MO <- fredr(series = "DGS6MO", observation_start = data_start_date)
-DGS1 <- fredr(series = "DGS1", observation_start = data_start_date)
-DGS2 <- fredr(series = "DGS2", observation_start = data_start_date)
-DGS3 <- fredr(series = "DGS3", observation_start = data_start_date)
-DGS5 <- fredr(series = "DGS5", observation_start = data_start_date)
-DGS7 <- fredr(series = "DGS7", observation_start = data_start_date)
-DGS10 <- fredr(series = "DGS10", observation_start = data_start_date)
-DGS20 <- fredr(series = "DGS20", observation_start = data_start_date)
-DGS30 <- fredr(series = "DGS30", observation_start = data_start_date)
+# fredr::fredr_set_key(FRED_API_KEY)
+# T5YIE <- fredr::fredr(series = "T5YIE", observation_start = data_start_date)
+# T5YIFR <- fredr::fredr(series = "T5YIFR", observation_start = data_start_date)
+# BAMLC0A1CAAA <- fredr::fredr(
+#   series = "BAMLC0A1CAAA",
+#   observation_start = data_start_date
+# )
+# BAMLC0A2CAA <- fredr::fredr(
+#   series = "BAMLC0A2CAA",
+#   observation_start = data_start_date
+# )
+# BAMLC0A3CA <- fredr::fredr(series = "BAMLC0A3CA", observation_start = data_start_date)
+# BAMLC0A4CBBB <- fredr::fredr(
+#   series = "BAMLC0A4CBBB",
+#   observation_start = data_start_date
+# )
+# BAMLH0A1HYBB <- fredr::fredr(
+#   series = "BAMLH0A1HYBB",
+#   observation_start = data_start_date
+# )
+# BAMLH0A2HYB <- fredr::fredr(
+#   series = "BAMLH0A2HYB",
+#   observation_start = data_start_date
+# )
+# DGS1MO <- fredr::fredr(series = "DGS1MO", observation_start = data_start_date)
+# # DGS2MO <- fredr::fredr(series="DGS2MO", observation_start = data_start_date)
+# DGS3MO <- fredr::fredr(series = "DGS3MO", observation_start = data_start_date)
+# # DGS4MO <- fredr::fredr(series="DGS4MO", observation_start = data_start_date)
+# DGS6MO <- fredr::fredr(series = "DGS6MO", observation_start = data_start_date)
+# DGS1 <- fredr::fredr(series = "DGS1", observation_start = data_start_date)
+# DGS2 <- fredr::fredr(series = "DGS2", observation_start = data_start_date)
+# DGS3 <- fredr::fredr(series = "DGS3", observation_start = data_start_date)
+# DGS5 <- fredr::fredr(series = "DGS5", observation_start = data_start_date)
+# DGS7 <- fredr::fredr(series = "DGS7", observation_start = data_start_date)
+# DGS10 <- fredr::fredr(series = "DGS10", observation_start = data_start_date)
+# DGS20 <- fredr::fredr(series = "DGS20", observation_start = data_start_date)
+# DGS30 <- fredr::fredr(series = "DGS30", observation_start = data_start_date)
 
-bls_set_key(BLS_KEY)
-CPIU_table <- get_series_table(
+blsR::bls_set_key(BLS_KEY)
+CPIU_table <- blsR::get_series_table(
   "CUUR0000SA0",
   start_year = 1913,
   end_year = cur_year
@@ -386,7 +388,7 @@ forward_rates_name <- paste(
 )
 
 if (file.exists(forward_rates_name)) {
-  Forward_Interest_Rates <- read_parquet(forward_rates_name)
+  Forward_Interest_Rates <- arrow::read_parquet(forward_rates_name)
 } else {
   prev_month <- case_when(
     cur_month == 1 ~ 12,
@@ -591,7 +593,7 @@ if (file.exists(forward_rates_name)) {
       )
   }
 
-  write_parquet(Forward_Interest_Rates, forward_rates_name)
+  arrow::write_parquet(Forward_Interest_Rates, forward_rates_name)
 }
 
 irp_treas_rate <- as.numeric(
@@ -640,16 +642,14 @@ technology_columns_fossil <- c(
 nrel_scenarios <- c(NREL_Scenario_tech, NREL_Scenario_financial)
 
 ## Read in NREL data
-file <- paste(cache_dir, "ATBe.csv", sep = "/")
-if (file.exists(file)) {
-  print(paste(file, " already downloaded"))
-} else {
+file <- paste(cache_dir, "ATBe.parquet", sep = "/")
+if (!file.exists(file)) {
   download.file(
-    "https://oedi-data-lake.s3.amazonaws.com/ATB/electricity/csv/2023/ATBe.csv",
+    "https://oedi-data-lake.s3.amazonaws.com/ATB/electricity/parquet/2023/ATBe.parquet",
     file
   )
 }
-nrel_atb <- read.csv(file, stringsAsFactors = TRUE)
+nrel_atb <- arrow::read_parquet(file)
 
 ### NREL parameters
 core_metric_parameter_tech_columns <-
@@ -818,8 +818,7 @@ nrel_atb_tech_intermediate <- nrel_atb_tech_intermediate %>%
 
 ## Pull in PUDL 861 data for delivery utility cost impact calculations
 pudl_release <- results$pudl_release
-pudl <- import("etoolbox.utils.pudl")
-pudl$pudl_list(pudl_release)
+pudl <- reticulate::import("etoolbox.utils.pudl")
 
 utilities_eia860 <- pudl$pd_read_pudl(
   "core_eia860__scd_utilities",
@@ -834,16 +833,20 @@ Utilities <- utilities_eia860 %>%
   distinct()
 
 # Pull in unit ownership and financial details and compile MUL of unique owned assets
-master_unit_list <- read_parquet(paste(
-  cache_dir,
-  "unit_financial_inputs.parquet",
-  sep = "/"
+master_unit_list <- arrow::read_parquet(paste(
+  root_dir,
+  "/econ_results/",
+  patio_results,
+  "_unit_financial_inputs.parquet",
+  sep = ""
 )) %>%
   mutate(plant_id_eia = as.integer64(plant_id_eia))
-asset_owners <- read_parquet(paste(
-  cache_dir,
-  "asset_owners.parquet",
-  sep = "/"
+asset_owners <- arrow::read_parquet(paste(
+  root_dir,
+  "/econ_results/",
+  patio_results,
+  "_asset_owners.parquet",
+  sep = ""
 ))
 
 ### Trim the full parquet and split it into proposed and the rest
@@ -1719,11 +1722,11 @@ owned_co2_reductions <- full_parquet_MUL %>%
     owned_co2_reduced_patio
   ))
 
-write_parquet(
+arrow::write_parquet(
   owned_co2_reductions,
   paste(cache_dir, "owned_co2_reductions.parquet", sep = "/")
 )
-write_parquet(
+arrow::write_parquet(
   allocated_parquet,
   paste(cache_dir, "allocated_parquet.parquet", sep = "/")
 )
@@ -2133,14 +2136,21 @@ if (sum(test_data_match$no_curt_adj_check_1) > 0) {
   paste("ERROR:", sum(test_data_match$curt_adj_check_1), "mismatching rows")
 }
 
-write_parquet(
+arrow::write_parquet(
   refinancing_parquet,
   paste(cache_dir, "refinancing.parquet", sep = "/")
 )
-write_parquet(fossil_parquet, paste(cache_dir, "fossil.parquet", sep = "/"))
+arrow::write_parquet(
+  fossil_parquet,
+  paste(cache_dir, "fossil.parquet", sep = "/")
+)
 gc()
-fossil_parquet <- read_parquet(paste(cache_dir, "fossil.parquet", sep = "/"))
-refinancing_parquet <- read_parquet(paste(
+fossil_parquet <- arrow::read_parquet(paste(
+  cache_dir,
+  "fossil.parquet",
+  sep = "/"
+))
+refinancing_parquet <- arrow::read_parquet(paste(
   cache_dir,
   "refinancing.parquet",
   sep = "/"
@@ -2265,11 +2275,11 @@ if (sum(test_data_match$no_curt_adj_check_2) > 0) {
   paste("ERROR:", sum(test_data_match$curt_adj_check_2), "mismatching rows")
 }
 
-write_parquet(
+arrow::write_parquet(
   final_fossil_costs_by_utility_ba,
   paste(cache_dir, "final_fossil_costs_by_utility_ba.parquet", sep = "/")
 )
-write_parquet(
+arrow::write_parquet(
   final_refinancing_costs_by_utility_ba,
   paste(cache_dir, "final_refinancing_costs_by_utility_ba.parquet", sep = "/")
 )
@@ -2280,7 +2290,7 @@ gc()
 
 ## Summarize renewable parquet by owner, renewable asset, scenario, and year - and calculate ownership
 ## weighted transmission and storage
-allocated_parquet <- read_parquet(paste(
+allocated_parquet <- arrow::read_parquet(paste(
   cache_dir,
   "allocated_parquet.parquet",
   sep = "/"
@@ -2625,7 +2635,7 @@ consolidated_final_data_inputs <- consolidated_final_data_inputs %>%
   ) %>%
   filter(!is.na(technology_description))
 
-write_parquet(
+arrow::write_parquet(
   consolidated_final_data_inputs,
   paste(cache_dir, "consolidated_final_data_inputs.parquet", sep = "/")
 )
@@ -2642,19 +2652,23 @@ rm(
 
 ### Start here for economic analysis and scenario selection if data prep above has been run at least once in
 # current R-session (only need to run through line 1069)
-consolidated_final_data_inputs <- read_parquet(paste(
+consolidated_final_data_inputs <- arrow::read_parquet(paste(
   cache_dir,
   "consolidated_final_data_inputs.parquet",
   sep = "/"
 ))
-fossil_parquet <- read_parquet(paste(cache_dir, "fossil.parquet", sep = "/"))
-refinancing_parquet <- read_parquet(paste(
+fossil_parquet <- arrow::read_parquet(paste(
+  cache_dir,
+  "fossil.parquet",
+  sep = "/"
+))
+refinancing_parquet <- arrow::read_parquet(paste(
   cache_dir,
   "refinancing.parquet",
   sep = "/"
 ))
 
-final_fossil_costs_by_utility_ba <- read_parquet(paste(
+final_fossil_costs_by_utility_ba <- arrow::read_parquet(paste(
   cache_dir,
   "final_fossil_costs_by_utility_ba.parquet",
   sep = "/"
@@ -2704,7 +2718,7 @@ MACRS_long <- MACRS %>%
   mutate(sum_MACRS = cumsum(cur_MACRS)) %>%
   ungroup()
 
-owned_co2_reductions <- read_parquet(paste(
+owned_co2_reductions <- arrow::read_parquet(paste(
   cache_dir,
   "owned_co2_reductions.parquet",
   sep = "/"
@@ -2779,7 +2793,7 @@ final_data_index <- consolidated_final_data_inputs %>%
   filter(!is.na(build_year)) %>%
   mutate(index = row_number())
 
-write_parquet(
+arrow::write_parquet(
   final_data_index,
   paste(cache_dir, "final_data_index.parquet", sep = "/")
 )
@@ -3555,8 +3569,8 @@ for (refinancing_capital_recycling_trigger in refinancing_capital_recycling_trig
                 ) %>%
                 ungroup()
 
-              # write_parquet(final_data_inputs, "final_data_inputs_test_early.parquet")
-              # final_data_inputs <- read_parquet("final_data_inputs_test_early.parquet")
+              # arrow::write_parquet(final_data_inputs, "final_data_inputs_test_early.parquet")
+              # final_data_inputs <- arrow::read_parquet("final_data_inputs_test_early.parquet")
               utility_ba_co2_reductions <- owned_co2_reductions %>%
                 select(-c(owned_co2_reduced_patio)) %>%
                 rename(Utility_ID_Econ = Utility_ID) %>%
@@ -5333,7 +5347,7 @@ for (refinancing_capital_recycling_trigger in refinancing_capital_recycling_trig
             if (
               file.exists(paste(cache_dir, "final_outputs.parquet", sep = "/"))
             ) {
-              final_outputs_agg <- read_parquet(paste(
+              final_outputs_agg <- arrow::read_parquet(paste(
                 cache_dir,
                 "final_outputs.parquet",
                 sep = "/"
@@ -5342,11 +5356,11 @@ for (refinancing_capital_recycling_trigger in refinancing_capital_recycling_trig
                 final_outputs_agg,
                 final_outputs %>% filter(!historical_actuals)
               )
-              write_parquet(
+              arrow::write_parquet(
                 final_outputs_agg,
                 paste(cache_dir, "final_outputs.parquet", sep = "/")
               )
-              scenario_selected_agg <- read_parquet(paste(
+              scenario_selected_agg <- arrow::read_parquet(paste(
                 cache_dir,
                 "scenario_selected.parquet",
                 sep = "/"
@@ -5355,25 +5369,25 @@ for (refinancing_capital_recycling_trigger in refinancing_capital_recycling_trig
                 scenario_selected_agg,
                 scenario_selected
               )
-              write_parquet(
+              arrow::write_parquet(
                 scenario_selected_agg,
                 paste(cache_dir, "scenario_selected.parquet", sep = "/")
               )
             } else {
-              write_parquet(
+              arrow::write_parquet(
                 final_outputs,
                 paste(cache_dir, "final_outputs.parquet", sep = "/")
               )
-              write_parquet(
+              arrow::write_parquet(
                 scenario_selected,
                 paste(cache_dir, "scenario_selected.parquet", sep = "/")
               )
-              final_outputs_agg <- read_parquet(paste(
+              final_outputs_agg <- arrow::read_parquet(paste(
                 cache_dir,
                 "final_outputs.parquet",
                 sep = "/"
               ))
-              scenario_selected_agg <- read_parquet(paste(
+              scenario_selected_agg <- arrow::read_parquet(paste(
                 cache_dir,
                 "scenario_selected.parquet",
                 sep = "/"
@@ -5382,14 +5396,14 @@ for (refinancing_capital_recycling_trigger in refinancing_capital_recycling_trig
 
             # final_outputs_name <- paste("final_outputs-",patio_results,ifelse(ba_least_cost,"-LC",""), ".parquet",sep="")
             # scenario_selected_name <- paste("scenario_selected-",patio_results,".parquet",sep="")
-            # write_parquet(final_outputs,"final_outputs.parquet")
-            # write_parquet(scenario_selected,"scenario_selected.parquet")
+            # arrow::write_parquet(final_outputs,"final_outputs.parquet")
+            # arrow::write_parquet(scenario_selected,"scenario_selected.parquet")
             #
             # # file.remove("fossil.parquet")
             # # file.remove("refinancing.parquet")
             #
             # parquet_name_detail <- paste("final_data_outputs-",patio_results,".parquet",sep="")
-            # write_parquet(final_data_outputs,parquet_name_detail)
+            # arrow::write_parquet(final_data_outputs,parquet_name_detail)
 
             # final_data_inputs_sums <- final_data_inputs %>%
             #   filter((operating_year==2024)) %>%
@@ -5411,7 +5425,36 @@ for (refinancing_capital_recycling_trigger in refinancing_capital_recycling_trig
     }
   }
 }
-
+arrow::write_parquet(
+  final_outputs,
+  paste(
+    root_dir,
+    "/econ_results/",
+    patio_results,
+    "_final_outputs.parquet",
+    sep = ""
+  )
+)
+arrow::write_parquet(
+  scenario_selected,
+  paste(
+    root_dir,
+    "/econ_results/",
+    patio_results,
+    "_scenario_selected.parquet",
+    sep = ""
+  )
+)
+jsonlite::write_json(
+  parameters,
+  paste(
+    root_dir,
+    "/econ_results/",
+    patio_results,
+    "_parameters.json",
+    sep = ""
+  )
+)
 # save results on the cloud
 cloud$write_cloud_file(
   final_outputs,
@@ -5422,11 +5465,11 @@ cloud$write_cloud_file(
   paste("patio-results", patio_results, "scenario_selected.parquet", sep = "/")
 )
 cloud$write_cloud_file(
-  toJSON(parameters),
+  jsonlite::toJSON(parameters),
   paste("patio-results", patio_results, "parameters.json", sep = "/")
 )
 
-final_outputs_agg <- read_parquet(paste(
+final_outputs_agg <- arrow::read_parquet(paste(
   cache_dir,
   "final_outputs.parquet",
   sep = "/"
@@ -5810,12 +5853,12 @@ file.remove(paste(cache_dir, "allocated_parquet.parquet", sep = "/"))
 # final_refinancing_costs_name <- paste("final_refinancing_costs-",patio_results,".parquet",sep="")
 # final_refinancing_outputs_name <- paste("final_refinancing_outputs-",patio_results,".parquet",sep="")
 # parquet_name <- paste("final_econ_by_tech-",patio_results,".parquet",sep="")
-# write_parquet(final_fossil_costs,final_fossil_costs_name)
-# write_parquet(final_fossil_outputs,final_fossil_outputs_name)
-# write_parquet(final_refinancing_costs,final_refinancing_costs_name)
-# write_parquet(final_refinancing_outputs,final_refinancing_outputs_name)
-# write_parquet(final_prop_and_clean_outputs,final_prop_and_clean_outputs_name)
-# write_parquet(final_econ_by_tech,parquet_name)
+# arrow::write_parquet(final_fossil_costs,final_fossil_costs_name)
+# arrow::write_parquet(final_fossil_outputs,final_fossil_outputs_name)
+# arrow::write_parquet(final_refinancing_costs,final_refinancing_costs_name)
+# arrow::write_parquet(final_refinancing_outputs,final_refinancing_outputs_name)
+# arrow::write_parquet(final_prop_and_clean_outputs,final_prop_and_clean_outputs_name)
+# arrow::write_parquet(final_econ_by_tech,parquet_name)
 # write.csv(final_econ_by_tech %>% filter(is_selected), paste("final_econ_by_tech-",patio_results,".csv",sep=""))
 # write.csv(final_econ_by_category %>% filter(is_selected), paste("final_econ_by_category-",patio_results,".csv",sep=""))
 # write.csv(final_econ %>% filter(is_selected), paste("final_econ-",patio_results,".csv",sep=""))

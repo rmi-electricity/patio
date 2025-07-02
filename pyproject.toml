@@ -18,6 +18,7 @@ classifiers = [
 requires-python = ">=3.13,<3.14"
 dependencies = [
     "rmi.dispatch[viz] @ git+https://github.com/rmi/dispatch.git",
+    "rmi.etoolbox @ git+https://github.com/rmi/etoolbox.git",
     "highspy>=1.10.0,<2",
     "pandas>=2.2.3,<3",
     "requests",
@@ -116,10 +117,11 @@ test = { cmd = [
     "coverage", "report", "--sort=cover",
 ] }
 ci = { depends-on = [ "lint", "docs", "test" ] }
+base = { cmd = "echo base {{ datestr }}", args = [ "datestr" ] }
+hh = { cmd = "echo hh {{ datestr }}", args = [ "datestr" ], depends-on = [{ task = 'base', args = [ "{{ datestr }}" ] } ] }
 
 [tool.pixi.feature.econ.dependencies]
 r-base = ">=4.4.3,<4.5"
-r-rcurl = ">=1.98_1.16,<2"
 r-lubridate = ">=1.9.4,<2"
 r-arrow = ">=19.0.1,<20"
 r-readxl = ">=1.4.5,<2"
@@ -131,7 +133,6 @@ r-tidyr = ">=1.3.1,<2"
 r-janitor = ">=2.2.1,<3"
 r-purrr = ">=1.0.4,<2"
 r-stringr = ">=1.5.1,<2"
-r-rsqlite = ">=2.3.11,<3"
 r-bit64 = ">=4.6.0_1,<5"
 r-fredr = ">=2.1.0,<3"
 r-reticulate = ">=1.42.0,<2"
@@ -149,8 +150,30 @@ target.osx.tasks.rstudio = "open -a rstudio"
 activation.scripts = [ "activation/env_setup.sh", "activation/r_setup.sh" ]
 activation.env = { PIXI_R_LIBS = "$CONDA_PREFIX/lib/R/library", R_LIBS = "$PIXI_R_LIBS", R_LIBS_USER = "$PIXI_R_LIBS" }
 
+[tool.pixi.feature.econ.tasks.patio-data]
+cmd = "Rscript 'R/Patio Model Utilities Inputs.R' {{ datestr }}"
+args = [ "datestr" ]
+outputs = [
+    "econ_results/{{ datestr }}_unit_financial_inputs.parquet",
+    "econ_results/{{ datestr }}_asset_owners.parquet",
+]
+
+[tool.pixi.feature.econ.tasks.patio-econ]
+cmd = "Rscript 'R/Patio Model Economic Analysis.R' {{ datestr }}"
+args = [ "datestr" ]
+depends-on = [ { task = 'patio-data', args = [ "{{ datestr }}" ] } ]
+inputs = [
+    "econ_results/{{ datestr }}_unit_financial_inputs.parquet",
+    "econ_results/{{ datestr }}_asset_owners.parquet",
+]
+outputs = [
+    "econ_results/{{ datestr }}_final_outputs.parquet",
+    "econ_results/{{ datestr }}_scenario_selected.parquet",
+    "econ_results/{{ datestr }}_parameters.json",
+]
+
 [tool.uv]
-constraint-dependencies = ["kaleido!=0.2.1.post1"]
+constraint-dependencies = [ "kaleido!=0.2.1.post1" ]
 
 #######################################################################################
 # Configurations for linters and other tools
