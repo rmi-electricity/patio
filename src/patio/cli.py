@@ -232,7 +232,7 @@ def main():
             patio.pd.setup_all()
         else:
             patio.run_all()
-            if config["project"] == "colo":
+            if config["project"]["run_type"] == "colo":
                 print(f"patio-colo -d '{patio.colo_dir}'", file=sys.stderr)
                 print()
                 print(patio.colo_dir)

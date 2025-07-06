@@ -690,6 +690,27 @@ class AssetData:
             .groupby("reg_rank", dropna=False)
             .capacity_mw.sum()
         )
+
+        no_ba_test = (
+            self.gens.query("final_ba_code.isna() & operational_status != 'retired'")
+            .groupby(
+                [
+                    "final_respondent_id",
+                    "state",
+                    "utility_name_eia",
+                    "utility_id_eia",
+                    "operational_status",
+                ],
+                dropna=False,
+                as_index=False,
+            )
+            .agg({"plant_id_eia": "nunique", "capacity_mw": "sum"})
+        )
+        LOGGER.warning(
+            "plants missing ba_code that will not be run:\n %s",
+            no_ba_test.to_string().replace("\n", "\n\t"),
+        )
+
         ids = (  # noqa: F841
             self.gens.query(
                 "(retirement_date.isna() | retirement_date.dt.year > 2050) & reg_rank < 8 &"
@@ -2465,7 +2486,11 @@ class AssetData:
         )
 
     def modelable_generators(self):
-        return self.gens.copy()
+        return self.gens.query(
+            "final_ba_code.notna() & final_ba_code != '<NA>' "
+            "& (category in ('existing_fossil', 'proposed_fossil', 'proposed_clean')"
+            ")"
+        ).copy()
         # if not (file := USER_DATA_PATH / "irp.parquet").exists():
         #     download(PATIO_DATA_AZURE_URLS["irp"], file)
         # irp = (

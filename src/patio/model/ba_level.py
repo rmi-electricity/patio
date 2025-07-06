@@ -2041,7 +2041,10 @@ class BAs:
             "_prod",
             "pudl_release",
         ):
-            z[k] = getattr(self, k)
+            try:
+                z[k] = getattr(self, k)
+            except Exception as exc:
+                LOGGER.warning("unable to add %s to DataZip, %r", k, exc)
 
     def prep_all_data(self):
         with logging_redirect_tqdm():
