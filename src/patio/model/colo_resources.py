@@ -1876,9 +1876,17 @@ class LoadOnlyFossil(Fossil):
     _dz = {"x_cap": True, "profs": ["x", "cost"], "cost_cap": True}
 
     def __init__(
-        self, m, mcoe: pl.DataFrame | None = None, tech="nggt", x_cap: float | None = None
+        self,
+        m,
+        mcoe: pl.DataFrame | None = None,
+        tech="nggt",
+        primary_fuel: str = "natural_gas",
+        backup_fuel: str = "distillate_oil",
+        x_cap: float | None = None,
     ):
         self._tech = tech
+        if mcoe is None:
+            pass
         super().__init__(m, mcoe)
         self.cost_df = pl.DataFrame(
             {

@@ -157,6 +157,7 @@ class Info(NamedTuple):
     tech: str
     status: str
     cap: float
+    fuel: str
     years: tuple[int, int] = ()
     max_re: float = 0.0
 

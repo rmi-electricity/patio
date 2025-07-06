@@ -2437,6 +2437,23 @@ class BAScenario:
         )
         icx_tech = re.icx_tech.unique()[0]
         status = re.icx_status.unique()[0]
+        _fuels = self.ba.plant_data.query(
+            "plant_id_eia == @pid & generator_id in @gens"
+        ).fuel_group
+        if len(_fuels.unique()) == 1:
+            fuel = _fuels.unique().item()
+        else:
+            fuel = _fuels.mode().item()
+            LOGGER.warning(
+                "%s %s %s %s has multiple fuels, selecting %s from %s",
+                self.ba.ba_code,
+                pid,
+                gens,
+                icx_tech,
+                fuel,
+                list(_fuels.unique()),
+            )
+
         # lhs_rhs = make_core_lhs_rhs(re).query("cons_set != 'fossil'")
         assert make_core_lhs_rhs(re, fossil=False).query("rhs.isna()").empty, (
             "rhs adjustment failed: idx mismatch"
@@ -2557,29 +2574,6 @@ class BAScenario:
         ) as dz:
             for k, v in out.items():
                 dz[k] = v
-
-        # save_pickle(
-        #     {
-        #         "re": re,
-        #         "re_pro_all": re_pro_.to_parquet(),
-        #         "icx_pro_all": icx_pro_all,
-        #         "icx_histpro_all": icx_histpro_all,
-        #         # "cr_req_pro_all": cr_req_pro_all,
-        #         "var_all": var_all,
-        #         "opt_years": [y for y in self.ba._metadata["year_mapper"] if y >= 2024],
-        #         "baseline_lambda": self.dm[0].redispatch_lambda(),
-        #         "ba_load": self.ba.load.to_frame("l").assign(nl=self.ba.net_load_prof),
-        #         "curtailment_pct": self.dm[0]
-        #         .system_summary_core(freq="h")
-        #         .loc[:, "curtailment_pct"],
-        #         "dm_data": {
-        #             "re_profiles": re_profs.to_parquet(),
-        #             "re_plant_specs": re_specs,
-        #         },
-        #     },
-        #     Path.home()
-        #     / f"{self.ba.colo_dir}/data/{self.ba.ba_code}_{pid}_{icx_tech}_{status}.pkl",
-        # )
         gc.collect()
         return {
             "ba": self.ba.ba_code,
@@ -2588,6 +2582,7 @@ class BAScenario:
             "tech": icx_tech,
             "status": status,
             "cap": poi,
+            "fuel": fuel,
             # "years": years,
         }
 
