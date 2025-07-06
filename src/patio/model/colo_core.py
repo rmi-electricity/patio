@@ -24,7 +24,7 @@ import polars as pl
 import polars.selectors as cs
 from tqdm.asyncio import tqdm
 
-from patio.constants import PATIO_PUDL_RELEASE, ROOT_PATH
+from patio.constants import PATIO_PUDL_RELEASE, ROOT_PATH, TECH_CODES
 from patio.helpers import (
     _git_commit_info,
 )
@@ -117,6 +117,11 @@ def run_colo_mp(config, queue, *, mp=True):
             fs = []
             for info in plants_data:
                 for conf in configs:
+                    if (
+                        conf["techs"]
+                        and TECH_CODES.get(info.tech, info.tech) not in conf["techs"]
+                    ):
+                        continue
                     xt = info.extra(name=conf["name"])
                     conf = deepcopy(conf)
 
@@ -151,6 +156,8 @@ def run_colo_mp(config, queue, *, mp=True):
         desc="Running colos",
         position=0,
     ):
+        if conf["techs"] and TECH_CODES.get(info.tech, info.tech) not in conf["techs"]:
+            continue
         xt = info.extra(name=conf["name"])
         conf = deepcopy(conf)
 
@@ -178,7 +185,11 @@ def setup_plants_configs(config, plants, pudl_release=PATIO_PUDL_RELEASE, **kwar
         plants_data = [p for p in plants_data if p.pid in pids]
     config["scenario"]["default"]["param"]["pudl_release"] = pudl_release
     configs = [
-        {"name": k, "ix": config["scenario"][k]["ix"]}
+        {
+            "name": k,
+            "ix": config["scenario"][k]["ix"],
+            "techs": config["scenario"][k].get("techs", []),
+        }
         | {
             p: config["scenario"].get("default", {}).get(p, {})
             | config["scenario"].get(k, {}).get(p, {})
@@ -208,7 +219,6 @@ def model_colo_config(
     data_dir,
     info,
     regime: Literal["reference", "limited"] = "limited",
-    model: Model | None = None,
 ):
     logger = logging.getLogger("patio")
     result_dir = colo_dir / "results"
@@ -230,32 +240,26 @@ def model_colo_config(
         logger.info("Limited exists but was not sucessful so running reference", extra=xt)
         regime: Literal["reference", "limited"] = "reference"
 
-    if model is None:
-        model = Model(
-            config["ix"],
-            config["name"],
+    model = Model(
+        config["ix"],
+        config["name"],
+        info,
+        Data.from_dz(
+            data_dir,
             info,
-            Data.from_dz(
-                data_dir,
-                info,
-                re_filter=(pl.col("re_type") == "solar")
-                | ((pl.col("re_type") == "onshore_wind") & (pl.col("distance") <= 20)),
-            ),
-            **config["param"],
-            regime=regime,
-            dvs=config["dv"],
-            logger=logger,
-            result_dir=result_dir,
-        )
-        if len(model.es_types) > 2:
-            raise RuntimeError(
-                f"can only have two storage types, this case has {model.es_types}"
-            )
-    else:
-        model.update_params(**deepcopy(config), regime=regime)
+            re_filter=(pl.col("re_type") == "solar")
+            | ((pl.col("re_type") == "onshore_wind") & (pl.col("distance") <= 20)),
+        ),
+        **config["param"],
+        regime=regime,
+        dvs=config["dv"],
+        logger=logger,
+        result_dir=result_dir,
+    )
+    if len(model.es_types) > 2:
+        raise RuntimeError(f"can only have two storage types, this case has {model.es_types}")
     del regime  # to prevent this var from being out of step with model state
     file = result_dir / info.file(model.regime, **config)
-    # result = OptResult.infeasible(info, model.regime)
 
     start = perf_counter()
     try:
@@ -266,13 +270,11 @@ def model_colo_config(
         logger.info("%r", exc, extra=model.extra)
         model.errors.append(repr(exc))
         model.to_file()
-        # result = result._replace(result=model.out_result_dict)
     except Exception as exc:
         logger.error("%r", exc, extra=model.extra)
         logger.info("%r", exc, exc_info=exc, extra=model.extra)
         model.errors.append(repr(exc))
         model.to_file()
-        # result = result._replace(result=model.out_result_dict)
     finally:
         elapsed = perf_counter() - start
         logger.info("%s seconds=%d", STATUS[model.status], elapsed, extra=model.extra)
@@ -320,7 +322,6 @@ def model_colo_config(
                 data_dir,
                 info,
                 "reference",
-                # model
             )
         else:
             del model

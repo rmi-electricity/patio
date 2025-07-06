@@ -37,15 +37,6 @@ capacity_mw = { comp = "ge", alt_name = "icx_capacity", item = 150.0 }
 min_retirement_year = 2028
 min_operating_year = 1995
 reg_rank = [ 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
-#query = """
-#SELECT * FROM self
-#WHERE
-#    technology_description in ('Natural Gas Steam Turbine', 'Conventional Steam Coal', 'Natural Gas Fired Combined Cycle', 'Natural Gas Fired Combustion Turbine', 'Petroleum Liquids', 'Natural Gas Internal Combustion Engine', 'Wood/Wood Waste Biomass', 'Coal Integrated Gasification Combined Cycle', 'Other Gases', 'Petroleum Coke', 'Landfill Gas', 'Natural Gas with Compressed Air Storage', 'All Other', 'Other Waste Biomass', 'Other Natural Gas')
-#    AND
-#    reg_rank in (1, 2, 3, 4, 5, 6, 7, 8, 9)
-#    AND
-#    ever_gas
-#"""
 
 [colo.project]
 scenarios = [
@@ -71,6 +62,7 @@ plant_ids = []
 
 [colo.scenario.default]
 ix = -1
+techs = []
 setting.run_econ = true
 param.num_crit_hrs = 25
 param.max_pct_fos = 0.2
@@ -98,18 +90,21 @@ dv.DCBackupFossil = { tech = "rice" }
 
 [colo.scenario.moderate]
 ix = 0
+techs = [ "Natural Gas Fired Combined Cycle", "Natural Gas Fired Combustion Turbine" ]
 param.max_pct_hist_fos = 20.0
 dv.IncumbentFossil = {}
 
 
 [colo.scenario.moderate_ej]
 ix = 1
+techs = [ "Natural Gas Fired Combined Cycle", "Natural Gas Fired Combustion Turbine" ]
 param.max_pct_hist_fos = 1.0
 dv.IncumbentFossil = {}
 
 
 [colo.scenario.clean]
 ix = 2
+techs = [ "Natural Gas Fired Combined Cycle", "Natural Gas Fired Combustion Turbine" ]
 param.max_pct_fos = 0.05
 param.max_pct_hist_fos = 1.0
 dv.IncumbentFossil = {}
@@ -117,6 +112,7 @@ dv.IncumbentFossil = {}
 
 [colo.scenario.dirty]
 ix = 8
+techs = [ "Natural Gas Fired Combined Cycle", "Natural Gas Fired Combustion Turbine" ]
 param.max_pct_fos = 0.4
 param.max_pct_hist_fos = 20.0
 dv.IncumbentFossil = {}
@@ -124,6 +120,7 @@ dv.IncumbentFossil = {}
 
 [colo.scenario.low_crit]
 ix = 9
+techs = [ "Natural Gas Fired Combined Cycle", "Natural Gas Fired Combustion Turbine" ]
 param.num_crit_hrs = 10
 param.max_pct_fos = 0.2
 param.max_pct_hist_fos = 5.0
