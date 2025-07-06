@@ -69,8 +69,8 @@ class TestPowerCouple:
         set_timeout(1800)
 
         expected = dict(zip(self.test_keys, expected, strict=False))
-        with open(test_dir.parent / "colo.toml", "rb") as f:
-            config = tomllib.load(f)
+        with open(test_dir.parent / "patio.toml", "rb") as f:
+            config = tomllib.load(f)["colo"]
         config["project"]["plant_ids"] = [pid]
         config["project"]["scenarios"] = [scenario]
         config["scenario"]["default"]["setting"]["saved_select"] = ""
@@ -95,9 +95,9 @@ class TestPowerCouple:
         assert not bad, "\n".join(bad)
 
 
-@pytest.mark.skip(reason="test_colo_config approach is easier to target.")
+# @pytest.mark.skip(reason="test_colo_config approach is easier to target.")
 @pytest.mark.script_launch_mode("inprocess")
-def test_patio_colo_entry_point(script_runner, os_solver, test_dir, temp_dir):
+def test_patio_colo_entry_point(script_runner, test_dir, temp_dir):
     """Test ``patio-colo`` entry point function."""
     ret = script_runner.run(
         [
@@ -107,7 +107,8 @@ def test_patio_colo_entry_point(script_runner, os_solver, test_dir, temp_dir):
             "-w",
             "1",
             "-p",
-            "55234",
+            "55343",
+            # "55234",
             "-D",
             str(temp_dir.relative_to(Path.home())),
             "-L",
@@ -252,8 +253,8 @@ class OLD:
         )
         (temp_dir / "colo_test" / "results").mkdir()
 
-        with open(ROOT_PATH / "colo.toml", "rb") as f:
-            config = tomllib.load(f)
+        with open(ROOT_PATH / "patio.toml", "rb") as f:
+            config = tomllib.load(f)["colo"]
 
         config = [{"name": k} | v for k, v in config["scenario"].items() if v["ix"] == ix][0]
         config.pop("ix")

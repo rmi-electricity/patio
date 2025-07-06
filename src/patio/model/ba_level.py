@@ -268,7 +268,8 @@ class BA(IOMixin):
         max_re: dict | None = None,
         year_mapper: dict | None = None,
         re_limits_dispatch: Literal["both", True, False] = "both",
-        max_re_distance: float | None = None,
+        max_wind_distance: float = 100.0,
+        max_solar_distance: float = 100.0,
         min_re_site_mw: float | None = None,
         cr_eligible_techs: list[str] | None = None,
         colo_techs: list[str] | None = None,
@@ -290,7 +291,8 @@ class BA(IOMixin):
             "name": name,
             "eia_ba": plant_data.balancing_authority_code_eia.iat[0],  # noqa: PD009
             "year_mapper": year_mapper,
-            "max_re_distance": max_re_distance,
+            "max_solar_distance": max_solar_distance,
+            "max_wind_distance": max_wind_distance,
             "min_re_site_mw": min_re_site_mw,
             "cr_eligible_techs": cr_eligible_techs,
             "colo_techs": colo_techs,
@@ -351,6 +353,7 @@ class BA(IOMixin):
             colo_method=colo_method,
         )
         self.colo_dir: str = colo_dir
+        max_re_distance = max(max_wind_distance, max_solar_distance)
         if max_re_distance is not None and re_plant_specs.distance.max() > max_re_distance:
             raise ValueError(
                 f"max distance in re_plant_specs > {max_re_distance=}; filtering must occur before data is passed to {self.__class__.__qualname__}"
@@ -397,7 +400,7 @@ class BA(IOMixin):
             .sort_values("combi_id")
             .reset_index(drop=True)
             .merge(
-                self.plant_data[["retirement_date", "operating_date"]]
+                self.plant_data[["retirement_date", "operating_date", "ever_gas"]]
                 .reset_index()
                 .rename(columns={"plant_id_eia": "icx_id", "generator_id": "icx_gen"}),
                 on=["icx_id", "icx_gen"],
@@ -1256,7 +1259,7 @@ class BA(IOMixin):
         cfl.colo_coef_mw = pl.LazyFrame()
         cfl.colo_summary = pl.DataFrame()
         if colo_techs := self._metadata["colo_techs"]:
-            cfl.setup_colo_data(techs=colo_techs)
+            cfl.setup_colo_data(colo_techs)
 
         cfl.msg = []
         cfl.good_scenario = dmax <= 0.15 and dcount <= 87
@@ -1524,7 +1527,7 @@ class BA(IOMixin):
             else:
                 self._scenarios.append(scen)
                 if _i == 0 and (colo_techs := self._metadata["colo_techs"]):
-                    scen.setup_colo_data(techs=colo_techs, **self._metadata["colo_config"])
+                    scen.setup_colo_data(colo_techs)
 
         # the max scenarios chunks were originally calculated before its parent was
         # created, so we need to re-calculate them here at the end
@@ -1874,6 +1877,7 @@ class BAs:
             self.scenario_configs = self.def_scen_configs
         else:
             self.scenario_configs = scenario_configs
+
         if bas is None:
             self.bas = [
                 x
@@ -2075,6 +2079,8 @@ class BAs:
                 self.bas, desc=f"Setup+Run {'':5}".ljust(pad, " "), position=0
             )
             for ba_code in for_loop:
+                if ba_code is None:
+                    continue
                 with logging_redirect_tqdm():
                     for_loop.set_description(
                         f"Setup+Run {ba_code.rjust(5, ' ')}".ljust(pad, " ")

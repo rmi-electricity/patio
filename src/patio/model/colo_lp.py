@@ -678,7 +678,7 @@ class Model(IOMixin):
                 "reoptimize": True,
             },
             cp.HIGHS: {"time_limit": time_limit, "parallel": "on"},
-            cp.COPT: {"TimeLimit": time_limit},
+            cp.COPT: {"TimeLimit": time_limit, "LpMethod": 4},
         }[solver_]
         with (
             capture_stdout() as c_out,
@@ -2473,8 +2473,8 @@ class Model(IOMixin):
 
     @classmethod
     def from_run(cls, info, name, regime, colo_dir):
-        with open(ROOT_PATH / "colo.toml", "rb") as f:
-            configs = tomllib.load(f)
+        with open(ROOT_PATH / "patio.toml", "rb") as f:
+            configs = tomllib.load(f)["colo"]
         if name in configs["scenario"]:
             config = configs["scenario"][name] | {"name": name}
         else:

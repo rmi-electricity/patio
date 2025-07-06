@@ -1,0 +1,183 @@
+[project]
+pudl_release = "v2025.7.0"
+# colo generates colo data, otherwise CR
+run_type = "colo"
+balancing_authorities = []
+regime = "limited"
+solar_ilr = 1.34
+
+[data]
+max_solar_distance = 10.0
+max_wind_distance = 45.0
+extend_cems = true
+re_by_plant = true
+min_re_site_mw = 25.0
+
+
+[colo.data]
+technology_description = { comp = "in", alt_name = "icx_tech", item = [
+    "Natural Gas Steam Turbine",
+    "Conventional Steam Coal",
+    "Natural Gas Fired Combined Cycle",
+    "Natural Gas Fired Combustion Turbine",
+    "Petroleum Liquids",
+    "Natural Gas Internal Combustion Engine",
+    "Wood/Wood Waste Biomass",
+    "Coal Integrated Gasification Combined Cycle",
+    "Other Gases",
+    "Petroleum Coke",
+    "Landfill Gas",
+    "Natural Gas with Compressed Air Storage",
+    "All Other",
+    "Other Waste Biomass",
+    "Other Natural Gas",
+] }
+ever_gas = { comp = "is_true" }
+capacity_mw = { comp = "ge", alt_name = "icx_capacity", item = 150.0 }
+min_retirement_year = 2028
+min_operating_year = 1995
+reg_rank = [ 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
+#query = """
+#SELECT * FROM self
+#WHERE
+#    technology_description in ('Natural Gas Steam Turbine', 'Conventional Steam Coal', 'Natural Gas Fired Combined Cycle', 'Natural Gas Fired Combustion Turbine', 'Petroleum Liquids', 'Natural Gas Internal Combustion Engine', 'Wood/Wood Waste Biomass', 'Coal Integrated Gasification Combined Cycle', 'Other Gases', 'Petroleum Coke', 'Landfill Gas', 'Natural Gas with Compressed Air Storage', 'All Other', 'Other Waste Biomass', 'Other Natural Gas')
+#    AND
+#    reg_rank in (1, 2, 3, 4, 5, 6, 7, 8, 9)
+#    AND
+#    ever_gas
+#"""
+
+[colo.project]
+scenarios = [
+    "moderate",
+#    "moderate_ej",
+    "clean",
+    "dirty",
+#    "low_crit",
+    "pure_surplus",
+    "form",
+#    "form_backup",
+    "form_fos",
+#    "thermal_load"
+]
+# relative to home or user dir
+#data_path = "patio_data/colo_data"
+#colo_json_path = "patio_data/colo_data/colo.json"
+data_path = "patio_data/colo_data_2025_2"
+colo_json_path = "patio_data/colo_data_2025_2/colo.json"
+run_dir_path = "patio_data/colo_{NOW}"
+workers = 8
+plant_ids = []
+
+[colo.scenario.default]
+ix = -1
+setting.run_econ = true
+param.num_crit_hrs = 25
+param.max_pct_fos = 0.2
+param.max_pct_hist_fos = 1.0
+param.mkt_rev_mult = 0.5
+param.fos_load_cost_mult = 3.0
+param.gas_window_max_hrs = 12
+param.gas_window_max_mult = 1.25
+param.stored_fuel_hrs = 48
+# https://www.rila.org/retail-compliance-center/emergency-generator-permitting-matrix
+param.backup_max_hrs_per_year = 250
+param.solar_degrade_per_year = 0.0
+param.life = 30
+param.build_year = 2026
+param.atb_scenario = "Moderate"
+param.ptc = 0.0
+param.itc = 0.3
+dv.FlexLoad = { uptime = 0.0 }
+dv.Renewables = {}
+dv.EndogenousDurationStorage = { pre_charge = 0.5, min_soc_hrs = 1 }
+dv.CleanExport = {}
+dv.Curtailment = {}
+dv.DCBackupFossil = { tech = "rice" }
+
+
+[colo.scenario.moderate]
+ix = 0
+param.max_pct_hist_fos = 20.0
+dv.IncumbentFossil = {}
+
+
+[colo.scenario.moderate_ej]
+ix = 1
+param.max_pct_hist_fos = 1.0
+dv.IncumbentFossil = {}
+
+
+[colo.scenario.clean]
+ix = 2
+param.max_pct_fos = 0.05
+param.max_pct_hist_fos = 1.0
+dv.IncumbentFossil = {}
+
+
+[colo.scenario.dirty]
+ix = 8
+param.max_pct_fos = 0.4
+param.max_pct_hist_fos = 20.0
+dv.IncumbentFossil = {}
+
+
+[colo.scenario.low_crit]
+ix = 9
+param.num_crit_hrs = 10
+param.max_pct_fos = 0.2
+param.max_pct_hist_fos = 5.0
+dv.IncumbentFossil = {}
+
+
+[colo.scenario.pure_surplus]
+ix = 10
+param.num_crit_hrs = 0
+param.max_pct_fos = 0.2
+param.max_pct_hist_fos = 3.0
+dv.ExportOnlyIncumbentFossil = {}
+dv.LoadOnlyFossilWithBackupFuel = { tech = "rice" }
+
+
+[colo.scenario.form]
+ix = 11
+param.num_crit_hrs = 0
+param.max_pct_fos = 0.2
+param.max_pct_hist_fos = 1.0
+dv.ExportOnlyIncumbentFossil = {}
+dv.FeStorage = { pre_charge = 0.5, min_soc_hrs = 1 }
+
+
+[colo.scenario.form_backup]
+ix = 12
+param.num_crit_hrs = 0
+param.max_pct_fos = 0.2
+param.max_pct_hist_fos = 2.0
+dv.ExportOnlyIncumbentFossil = {}
+dv.FeStorage = { pre_charge = 0.5, min_soc_hrs = 24 }
+
+
+[colo.scenario.form_fos]
+ix = 13
+param.num_crit_hrs = 0
+param.max_pct_fos = 0.2
+param.max_pct_hist_fos = 3.0
+dv.ExportOnlyIncumbentFossil = {}
+dv.FeStorage = { pre_charge = 0.5, min_soc_hrs = 1 }
+dv.LoadOnlyFossilWithBackupFuel = { tech = "rice" }
+
+
+[colo.scenario.thermal_load]
+ix = 14
+param.num_crit_hrs = 25
+param.max_pct_fos = 0.05
+param.max_pct_hist_fos = 1.0
+dv.IncumbentFossil = {}
+dv.Curtailment = { min_cost = 0.05 }
+dv.ThermalStorageLoad = {}
+
+[cr.project]
+# 'both', true, false
+re_limits_dispatch = true
+include_figs = false
+cr_eligible_techs = [ "Natural Gas Fired Combined Cycle", "Natural Gas Fired Combustion Turbine" ]

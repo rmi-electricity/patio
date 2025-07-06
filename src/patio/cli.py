@@ -6,11 +6,12 @@ import logging.handlers
 import multiprocessing
 import shutil
 import sys
+import tomllib
 import warnings
 from datetime import datetime
 from pathlib import Path
 
-from patio.constants import PATIO_DOC_PATH, PATIO_PUDL_RELEASE, TECH_CODES
+from patio.constants import PATIO_DOC_PATH, ROOT_PATH
 
 
 def logging_process(queue, configurer, now):
@@ -142,29 +143,13 @@ def main():
     from patio.model.ba_level import BAs
 
     parser = argparse.ArgumentParser(description="Run PATIO.")
-    # parser.add_argument(
-    #     "-t, --test",
-    #     action="store_true",
-    #     help="run in test mode",
-    #     default=False,
-    #     required=False,
-    #     dest="test",
-    # )
     parser.add_argument(
-        "-P, --pudl_release",
+        "-C, --config",
         type=str,
-        help="pudl release, ",
-        default=PATIO_PUDL_RELEASE,
+        default=str(ROOT_PATH / "patio.toml"),
         required=False,
-        dest="pudl_release",
-    )
-    parser.add_argument(
-        "-n, --name-prefix",
-        type=str,
-        help="the name of the run, ",
-        default="BAs",
-        required=False,
-        dest="name_prefix",
+        help="path to patio.toml config file",
+        dest="config",
     )
     parser.add_argument(
         "-b, --bas",
@@ -175,28 +160,20 @@ def main():
         dest="bas",
     )
     parser.add_argument(
-        "-p, --plant",
-        action="store_true",
-        help="Run each coal plant individually.",
-        default=False,
-        required=False,
-        dest="by_plant",
-    )
-    parser.add_argument(
-        "-f, --figs",
-        action="store_true",
-        help="Include figs",
-        default=False,
-        required=False,
-        dest="include_figs",
-    )
-    parser.add_argument(
         "-w, --warnings",
         action="store_true",
         help="Show warnings",
         default=False,
         required=False,
         dest="warnings",
+    )
+    parser.add_argument(
+        "-S, --setup",
+        action="store_true",
+        help="Setup profiles",
+        default=False,
+        required=False,
+        dest="setup",
     )
     parser.add_argument(
         "-s, --specs",
@@ -207,30 +184,6 @@ def main():
         dest="specs",
     )
     parser.add_argument(
-        "-d, --data-setup",
-        action="store_true",
-        help="Process BA profile data",
-        default=False,
-        required=False,
-        dest="setup",
-    )
-    parser.add_argument(
-        "-r, --re-limits-dispatch",
-        type=str,
-        help="`-r True` for re_limits_dispatch == True only (default). `-r False` for re_limits_dispatch == False only. `-r both` for both.",
-        default="True",
-        required=False,
-        dest="re_limits_dispatch",
-    )
-    parser.add_argument(
-        "-L, --limited",
-        action="store_true",
-        help="use limited renewable regime instead of reference https://www.nrel.gov/gis/wind-supply-curves.html",
-        default=False,
-        required=False,
-        dest="limited",
-    )
-    parser.add_argument(
         "-l, --local",
         action="store_true",
         help="do not upload to Azure",
@@ -238,93 +191,39 @@ def main():
         required=False,
         dest="local",
     )
-    parser.add_argument(
-        "-k, --km-max-re-distance",
-        type=str,
-        help="maximum distance between fossil and clean repowering sites in km",
-        default="45",
-        required=False,
-        dest="max_re_distance",
-    )
-    parser.add_argument(
-        "-t, --techs",
-        type=str,
-        help="type codes of fossil plants that should be considered for clean repowering separated by commas (e.g. `coal` or `coal,NGST`)",
-        default=None,
-        required=False,
-        dest="cr_eligible_techs",
-    )
-    parser.add_argument(
-        "-c, --colo-techs",
-        type=str,
-        help="type codes of fossil plants that should be considered for co-located load (e.g. `coal` or `coal,NGST`)",
-        default=None,
-        required=False,
-        dest="colo_techs",
-    )
-    # parser.add_argument(
-    #     "--colo-only",
-    #     action="store_true",
-    #     help="only run colo analysis on counterfactual, without running and CR portfolios",
-    #     default=False,
-    #     required=False,
-    #     dest="colo_only",
-    # )
-    parser.add_argument(
-        "--shutdown",
-        action="store_true",
-        help="shutdown system after run completes",
-        default=False,
-        required=False,
-        dest="shutdown",
-    )
     args = parser.parse_args()
     print(args)
 
+    with open(args.config, "rb") as f:
+        config = tomllib.load(f)
+
     if (bas := args.bas) is not None:
-        bas = [s.strip() for s in bas.split(",")]
-
-    kwargs = {"include_figs": args.include_figs}
-
-    if (cr_eligible_techs := args.cr_eligible_techs) is not None:
-        kwargs = kwargs | {
-            "cr_eligible_techs": [
-                TECH_CODES[t.strip().casefold()] for t in cr_eligible_techs.split(",")
-            ]
-        }
-    if (colo_techs := args.colo_techs) is not None:
-        kwargs = kwargs | {
-            "colo_techs": [TECH_CODES[t.strip().casefold()] for t in colo_techs.split(",")]
-        }
-    cargs = {"scenario_configs": []} if colo_techs else {}
+        config["project"]["balancing_authorities"] = [s.strip() for s in bas.split(",")]
+    elif not config["project"]["balancing_authorities"]:
+        config["project"]["balancing_authorities"] = None
 
     kwargs = (
-        kwargs
+        config["data"]
+        | config["cr"]["project"]
         | {
-            "re_limits_dispatch": {
-                "all": "both",
-                "both": "both",
-                "true": True,
-                "false": False,
-            }[args.re_limits_dispatch.casefold()]
+            "colo_techs": config["colo"]["data"],
         }
-        | {"max_re_distance": float(args.max_re_distance)}
     )
-    # ROOT_LOGGER.info("data_kwargs %s", kwargs)
+    cargs = {"scenario_configs": []} if config["project"]["run_type"] == "colo" else {}
+    print(f"{kwargs=}\n{cargs=}")
 
     if not args.warnings:
         warnings.simplefilter("ignore")
 
     try:
         patio = BAs(
-            name=args.name_prefix + "_" + now,
-            solar_ilr=1.34,
-            data_kwargs={"re_by_plant": True} | kwargs,
-            bas=bas,
-            by_plant=args.by_plant,
-            regime="limited" if args.limited else "reference",
-            pudl_release=args.pudl_release,
-            # queue=queue,
+            name="BAs_" + now,
+            solar_ilr=config["project"]["solar_ilr"],
+            data_kwargs=kwargs,
+            bas=config["project"]["balancing_authorities"],
+            by_plant=False,
+            regime=config["project"]["regime"],
+            pudl_release=config["project"]["pudl_release"],
             **cargs,
         )
         if args.specs:
@@ -333,7 +232,7 @@ def main():
             patio.pd.setup_all()
         else:
             patio.run_all()
-            if colo_techs is not None:
+            if config["project"] == "colo":
                 print(f"patio-colo -d '{patio.colo_dir}'", file=sys.stderr)
                 print()
                 print(patio.colo_dir)

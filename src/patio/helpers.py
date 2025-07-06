@@ -51,6 +51,55 @@ __all__ = [
 ]
 
 
+def df_query[T: pd.DataFrame | pl.DataFrame | pl.LazyFrame](df: T, qs: dict) -> T:
+    if isinstance(df, pd.DataFrame):
+        for k, v in qs.items():
+            if not isinstance(v, dict) or "comp" not in v:
+                continue
+            if v.get("alt_name", "") in df.columns:
+                k = v["alt_name"]
+            if v["comp"] == "in":
+                df = df[df[k].isin(v["item"])]
+            if v["comp"] == "eq":
+                df = df[df[k] == v["item"]]
+            if v["comp"] == "ge":
+                df = df[df[k] >= v["item"]]
+            if v["comp"] == "le":
+                df = df[df[k] <= v["item"]]
+            if v["comp"] == "ge.dt.year":
+                df = df[df[k].dt.year >= v["item"]]
+            if v["comp"] == "le.dt.year":
+                df = df[df[k].dt.year <= v["item"]]
+            if v["comp"] == "is_true":
+                df = df[df[k]]
+            if v["comp"] == "is_false":
+                df = df[~df[k]]
+        return df
+    elif isinstance(df, pl.DataFrame | pl.LazyFrame):
+        for k, v in qs.items():
+            if not isinstance(v, dict) or "comp" not in v:
+                continue
+            if v.get("alt_name", "") in df.columns:
+                k = v["alt_name"]
+            if v["comp"] == "in":
+                df = df.filter(pl.col(k).is_in(v["item"]))
+            if v["comp"] == "eq":
+                df = df.filter(pl.col(k) == v["item"])
+            if v["comp"] == "ge":
+                df = df.filter(pl.col(k) >= v["item"])
+            if v["comp"] == "le":
+                df = df.filter(pl.col(k) <= v["item"])
+            if v["comp"] == "ge.dt.year":
+                df = df.filter(pl.col(k).dt.year() >= v["item"])
+            if v["comp"] == "le.dt.year":
+                df = df.filter(pl.col(k).dt.year() <= v["item"])
+            if v["comp"] == "is_true":
+                df = df.filter(pl.col(k))
+            if v["comp"] == "is_false":
+                df = df.filter(pl.col(k).not_())
+        return df
+
+
 def re_limited(re_meta: pd.DataFrame) -> pd.DataFrame:
     rn = {
         "capacity_mw_nrel_site_lim": "capacity_mw_nrel_site",

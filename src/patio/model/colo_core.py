@@ -1096,19 +1096,19 @@ def main(
                 "name": "-D, --dir",
                 "type": str,
                 "default": "",
-                "help": "path from home, overrides `run_dir_path` in colo.toml",
+                "help": "path from home, overrides `run_dir_path` in patio.toml",
             },
             {
                 "name": "-C, --config",
                 "type": str,
                 "default": "",
-                "help": "path to colo.toml config file relative to home",
+                "help": "path to patio.toml config file relative to home",
             },
             {
                 "name": "-L, --source-data",
                 "type": str,
                 "default": "",
-                "help": "path from home, overrides `data_path` and `colo_json_path` in colo.toml",
+                "help": "path from home, overrides `data_path` and `colo_json_path` in patio.toml",
             },
             {
                 "name": "-p, --plants",
@@ -1142,10 +1142,10 @@ def main(
     if args.config != "":  # noqa: SIM108
         toml_path = Path.home() / args.config
     else:
-        toml_path = ROOT_PATH / "colo.toml"
+        toml_path = ROOT_PATH / "patio.toml"
 
     with open(toml_path, "rb") as f:
-        config = tomllib.load(f)
+        config = tomllib.load(f)["colo"]
     if args.dir != "":
         config["project"]["run_dir_path"] = args.dir
     else:

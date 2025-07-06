@@ -18,7 +18,6 @@ import polars as pl
 import pyarrow as pa
 from etoolbox.datazip import DataZip
 from etoolbox.utils.cloud import get, put
-from etoolbox.utils.misc import download
 from pandas.util import hash_pandas_object
 from tqdm.auto import tqdm
 from tqdm.contrib.logging import logging_redirect_tqdm
@@ -48,6 +47,7 @@ from patio.exceptions import (
 )
 from patio.helpers import (
     bbb_path,
+    df_query,
     generate_projection_from_historical,
     generate_projection_from_historical_pl,
     get_year_map,
@@ -374,7 +374,8 @@ class ProfileData:
         kind="adj",
         extend_cems=True,
         re_by_plant=True,
-        max_re_distance=45.0,
+        max_wind_distance=45.0,
+        max_solar_distance=10.0,
         min_re_site_mw=25.0,
         cr_eligible_techs: Sequence[str] | None = None,
         colo_techs=(),
@@ -389,7 +390,10 @@ class ProfileData:
         )
         if (
             colo_techs
-            and plant_data.query("reg_rank < 8 & technology_description in @colo_techs").empty
+            and df_query(
+                plant_data,
+                colo_techs | {"reg_rank": {"comp": "in", "item": colo_techs["reg_rank"]}},
+            ).empty
         ):
             raise PatioData(f"No colo opportunities in {ba_code}")
         # TODO would be good to try and put all the profiles together, and all the
@@ -447,12 +451,14 @@ class ProfileData:
         )
         if cr_eligible_techs is not None:
             existing_pd = existing_pd.query("icx_tech in @cr_eligible_techs")
-        LOGGER.warning("solar distance == 10, wind distance == %s", max_re_distance)
+        LOGGER.warning(
+            "solar distance == %s, wind distance == %s", max_solar_distance, max_wind_distance
+        )
         re_specs = (
             re_specs.query(
                 "capacity_mw_nrel_site >= @min_re_site_mw "
-                " & ((technology_description.str.contains('Solar') & distance <= 10)"
-                "| (technology_description.str.contains('Wind') & distance <= @max_re_distance))"
+                " & ((technology_description.str.contains('Solar') & distance <= @max_solar_distance)"
+                "| (technology_description.str.contains('Wind') & distance <= @max_wind_distance))"
             )
             .merge(
                 self.ad.gens.rename(columns=icx_rn)[
@@ -592,7 +598,8 @@ class ProfileData:
                 #     6155,
                 # ],
             }.get(ba_code, []),
-            "max_re_distance": max_re_distance,
+            "max_solar_distance": max_solar_distance,
+            "max_wind_distance": max_wind_distance,
             "min_re_site_mw": min_re_site_mw,
             "cr_eligible_techs": cr_eligible_techs,
             "colo_techs": colo_techs,
@@ -1008,7 +1015,7 @@ class ProfileData:
     def load_cems(self, ba_code, extend_cems):
         ex = "_extended" if extend_cems else ""
         if not (file := USER_DATA_PATH / f"ba_cems{ex}.zip").exists():
-            download(PATIO_DATA_AZURE_URLS[f"ba_cems{ex}"], file)
+            get(PATIO_DATA_AZURE_URLS[f"ba_cems{ex}"], file.parent)
         try:
             with DataZip(file, "r") as z:
                 cems = z[ba_code].convert_dtypes(dtype_backend="pyarrow")
@@ -1023,7 +1030,7 @@ class ProfileData:
         # if not (file := USER_DATA_PATH / f"re_data_{self.regime}.zip").exists():
         #     download(PATIO_DATA_AZURE_URLS[f"re_data_{self.regime}"], file)
         if not (file := USER_DATA_PATH / "re_data.zip").exists():
-            download(PATIO_DATA_AZURE_URLS["re_data"], file)
+            get(PATIO_DATA_AZURE_URLS["re_data"], file.parent)
         try:
             with DataZip(file, "r") as z:
                 meta = z[ba_code + "_meta"]
@@ -1782,13 +1789,45 @@ class ProfileData:
                     (pl.col("plant_id_eia") == 64551) & (pl.col("generator_id") == "WT2")
                 ).not_()
             )
+        if missing_set - filled_set == {(64864, "GEN01"), (64864, "CHAPS"), (319, "2")}:
+            LOGGER.warning(
+                "ProfileData._fill_missing_w_pre_op_re is DISCARDING (64864, 'GEN01'), (64864, 'CHAPS'), (319, '2')"
+            )
+            missing = missing.filter(
+                (
+                    (pl.col("plant_id_eia") == 64864) & (pl.col("generator_id") == "GEN01")
+                ).not_()
+                & (
+                    (pl.col("plant_id_eia") == 64864) & (pl.col("generator_id") == "CHAPS")
+                ).not_()
+                & ((pl.col("plant_id_eia") == 319) & (pl.col("generator_id") == "2")).not_()
+            )
+        if missing_set - filled_set == {(66626, "WADLE")}:
+            LOGGER.warning(
+                "ProfileData._fill_missing_w_pre_op_re is DISCARDING (66626, 'WADLE')"
+            )
+            missing = missing.filter(
+                (
+                    (pl.col("plant_id_eia") == 66626) & (pl.col("generator_id") == "WADLE")
+                ).not_()
+            )
+        if missing_set - filled_set == {(56458, "CHW-T")}:
+            LOGGER.warning(
+                "ProfileData._fill_missing_w_pre_op_re is DISCARDING (56458, 'CHW-T')"
+            )
+            missing = missing.filter(
+                (
+                    (pl.col("plant_id_eia") == 56458) & (pl.col("generator_id") == "CHW-T")
+                ).not_()
+            )
 
-        assert len(
-            missing_with_filled_re.select("plant_id_eia", "generator_id").unique()
-        ) == len(missing.select("plant_id_eia", "generator_id").unique().collect()), (
-            "the number of generators in existing_xpatio/old_clean changed when we "
-            "added synthetic annual data for RE generators before they began operating"
-        )
+        if len(missing_with_filled_re.select("plant_id_eia", "generator_id").unique()) != len(
+            missing.select("plant_id_eia", "generator_id").unique().collect()
+        ):
+            raise AssertionError(
+                "the number of generators in existing_xpatio/old_clean changed when we "
+                f"added synthetic annual data for RE generators before they began operating, namely:\n{missing_set - filled_set}"
+            )
         return missing_with_filled_re
 
     def _fill_pre_op_mly_gen(self, existing_re, mean_profiles):

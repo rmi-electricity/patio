@@ -17,7 +17,7 @@ classifiers = [
 ]
 requires-python = ">=3.13,<3.14"
 dependencies = [
-    "rmi.dispatch[viz] @ git+https://github.com/rmi/dispatch.git",
+    "rmi.dispatch[viz] @ git+https://github.com/rmi/dispatch.git@a5334c7",
     "rmi.etoolbox @ git+https://github.com/rmi/etoolbox.git",
     "highspy>=1.10.0,<2",
     "pandas>=2.2.3,<3",

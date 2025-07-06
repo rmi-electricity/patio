@@ -214,6 +214,8 @@ def adjust_ba_codes(df: pd.DataFrame, new_ba_col="final_ba_code") -> pd.DataFram
     # Source for PJM FRR data
     # https://www.pjm.com/-/media/markets-ops/rpm/rpm-auction-info/2024-2025/2024-2025-planning-period-parameters-for-base-residual-auction.ashx
     # map https://www.pjm.com/-/media/about-pjm/pjm-zones.ashx
+    if new_ba_col not in df:
+        df[new_ba_col] = pd.NA
 
     df[new_ba_col] = (
         pd.Series("PAC", index=df.index)
@@ -306,6 +308,7 @@ def adjust_ba_codes(df: pd.DataFrame, new_ba_col="final_ba_code") -> pd.DataFram
                 pd.NA,
             ),
         )
+        .fillna(df[new_ba_col])
         .fillna(
             # keep safe respondent ids
             df.final_respondent_id.astype(str).where(

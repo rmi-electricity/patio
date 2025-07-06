@@ -346,7 +346,7 @@ def generator_ownership(year: int | None = None, release: str = "nightly") -> pl
         else year
     )
     return (
-        pl_scan_pudl("_out_eia__yearly_generators", release=release)
+        pl_scan_pudl("out_eia__yearly_generators", release=release)
         .filter(
             (pl.col("data_maturity") == "final")
             & (pl.col("report_date").dt.year() == year)
@@ -515,12 +515,62 @@ class AssetData:
             "transmission_distribution_owner_id",
             "transmission_distribution_owner_name",
         ]
+        ever_gas_ids = (
+            pl_scan_pudl("core_eia923__monthly_generation_fuel", self.pudl_release)
+            .group_by(
+                "plant_id_eia",
+                "report_date",
+                gas=pl.when(pl.col("energy_source_code") == "NG")
+                .then(pl.lit("g"))
+                .otherwise(pl.lit("ng")),
+            )
+            .agg(pl.sum("net_generation_mwh"))
+            .collect()
+            .pivot("gas", index=["plant_id_eia", "report_date"], values="net_generation_mwh")
+            .filter(
+                (pl.col("g").fill_null(0.0) > 0.0)
+                & ((pl.col("g").fill_null(0.0) / pl.sum_horizontal("ng", "g")) > 0.01)
+            )
+            .select("plant_id_eia")
+            .unique()
+            .to_series()
+            .to_list()
+        )
+        if not (file := USER_DATA_PATH / "irp.parquet").exists():
+            download(PATIO_DATA_AZURE_URLS["irp"], file)
+        irp = pd.read_parquet(
+            file
+        ).astype(
+            {"plant_id_eia": int}
+        )  # .pipe(add_plant_role).assign(ever_gas=lambda x: x.technology_description.str.contains("Natural Gas"))
+        if "utility_id_eia" not in irp:
+            irp = irp.assign(
+                utility_id_eia=lambda x: x.final_ba_code.map(
+                    {
+                        "186": 19876,
+                        "EPE": 5701,
+                        "ETR": -999,
+                        "PAC": 14354,
+                        "SC": 17543,
+                        "TEPC": 24211,
+                        "TVA": 18642,
+                        "WACM": 30151,
+                    }
+                ).astype(int),
+            )
 
         self.gens = (
-            pd_read_pudl("core_eia860m__changelog_generators", release=self.pudl_release)
-            .sort_values("report_date", ascending=True)
-            .groupby(["plant_id_eia", "generator_id"], as_index=False)
-            .last(skipna=False)
+            pd.concat(
+                [
+                    pd_read_pudl(
+                        "core_eia860m__changelog_generators", release=self.pudl_release
+                    )
+                    .sort_values("report_date", ascending=True)
+                    .groupby(["plant_id_eia", "generator_id"], as_index=False)
+                    .last(skipna=False),
+                    irp,
+                ]
+            )
             .merge(
                 pd_read_pudl("out_eia__yearly_plants", release=self.pudl_release)
                 .query("report_date.dt.year >= @self.years[0]")
@@ -587,10 +637,12 @@ class AssetData:
             .pipe(fix_op_status)
             .rename(columns={"energy_source_code_1": "energy_source_code_860m"})
             .assign(
-                fuel_group=lambda x: x.energy_source_code_860m.map(FUEL_GROUP_MAP),
-                operating_date=lambda x: x.generator_operating_date.fillna(
-                    x.current_planned_generator_operating_date
+                fuel_group=lambda x: x.fuel_group.fillna(
+                    x.energy_source_code_860m.map(FUEL_GROUP_MAP)
                 ),
+                operating_date=lambda x: x.operating_date.fillna(
+                    x.generator_operating_date
+                ).fillna(x.current_planned_generator_operating_date),
                 retirement_date=lambda x: x.generator_retirement_date.fillna(
                     x.planned_generator_retirement_date
                 ),
@@ -605,7 +657,7 @@ class AssetData:
                     sep="_",
                 ),
                 utcoffset=lambda x: x.plant_id_eia.map(offsets),
-                source="860m",
+                source=lambda x: x.source.fillna("860m"),
             )
             .pipe(add_ba_code)
             .astype({"plant_id_eia": int})
@@ -623,6 +675,11 @@ class AssetData:
                     | (x.replacement & x.retirement_date.notna())
                     # we want to keep ERCO and NYIS around and can always remove completely later
                     | x.balancing_authority_code_eia.isin(("NYIS", "ERCO"))
+                ),
+                ever_gas=lambda x: x.plant_id_eia.isin(ever_gas_ids)
+                | (
+                    (x.operational_status == "proposed")
+                    & (x.technology_description.str.contains("Natural Gas"))
                 ),
             )
             .query("state not in ('AK', 'HI')")
@@ -1247,7 +1304,12 @@ class AssetData:
                     & (pl.col("utility_id_eia") == pl.col("id"))
                     & (
                         pl.col("balancing_authority_code_eia").is_in(("MISO", "SWPP"))
-                        | (pl.col("utility_name_eia") == "Virginia Electric & Power Co")
+                        | (
+                            (pl.col("balancing_authority_code_eia") == "PJM")
+                            & pl.col("utility_name_eia").is_in(
+                                ("Virginia Electric & Power Co", "Commonwealth Edison Co")
+                            )
+                        )
                     )
                 )
                 .then(3)
@@ -1404,17 +1466,21 @@ class AssetData:
             )
             .filter(pl.col("n_matches") != 1)
         )
-        return gens.merge(
-            done.select(
-                "plant_id_eia",
-                "generator_id",
-                "reg_rank",
-                "entity_type_lse",
-                "utility_name_eia_lse",
-            ).to_pandas(),
-            on=["plant_id_eia", "generator_id"],
-            how="left",
-            validate="1:1",
+        return (
+            gens.merge(
+                done.select(
+                    "plant_id_eia",
+                    "generator_id",
+                    "reg_rank",
+                    "entity_type_lse",
+                    "utility_name_eia_lse",
+                ).to_pandas(),
+                on=["plant_id_eia", "generator_id"],
+                how="left",
+                validate="1:1",
+            )
+            .fillna({"reg_rank": 9})
+            .astype({"reg_rank": int})
         )
 
     def _fuel_cost_setup(self):
@@ -2399,29 +2465,40 @@ class AssetData:
         )
 
     def modelable_generators(self):
-        if not (file := USER_DATA_PATH / "irp.parquet").exists():
-            download(PATIO_DATA_AZURE_URLS["irp"], file)
-        irp = pd.read_parquet(file).astype({"plant_id_eia": int}).pipe(add_plant_role)
-        if "utility_id_eia" not in irp:
-            irp = irp.assign(
-                utility_id_eia=lambda x: x.final_ba_code.map(
-                    {
-                        "186": 19876,
-                        "EPE": 5701,
-                        "ETR": -999,
-                        "PAC": 14354,
-                        "SC": 17543,
-                        "TEPC": 24211,
-                        "TVA": 18642,
-                        "WACM": 30151,
-                    }
-                ).astype(int),
-            )
-        return pd.concat([self.gens, irp]).query(
-            "final_ba_code.notna() & final_ba_code != '<NA>' "
-            "& (category in ('existing_fossil', 'proposed_fossil', 'proposed_clean')"
-            ")"
-        )
+        return self.gens.copy()
+        # if not (file := USER_DATA_PATH / "irp.parquet").exists():
+        #     download(PATIO_DATA_AZURE_URLS["irp"], file)
+        # irp = (
+        #     pd.read_parquet(file)
+        #     .astype({"plant_id_eia": int})
+        #     .pipe(add_plant_role)
+        #     .assign(ever_gas=lambda x: x.technology_description.str.contains("Natural Gas"))
+        # )
+        # if "utility_id_eia" not in irp:
+        #     irp = irp.assign(
+        #         utility_id_eia=lambda x: x.final_ba_code.map(
+        #             {
+        #                 "186": 19876,
+        #                 "EPE": 5701,
+        #                 "ETR": -999,
+        #                 "PAC": 14354,
+        #                 "SC": 17543,
+        #                 "TEPC": 24211,
+        #                 "TVA": 18642,
+        #                 "WACM": 30151,
+        #             }
+        #         ).astype(int),
+        #     )
+        # return (
+        #     pd.concat([self.gens, irp])
+        #     .query(
+        #         "final_ba_code.notna() & final_ba_code != '<NA>' "
+        #         "& (category in ('existing_fossil', 'proposed_fossil', 'proposed_clean')"
+        #         ")"
+        #     )
+        #     .fillna({"ever_gas": False})
+        #     .astype({"ever_gas": bool})
+        # )
 
     def all_modelable_generators(self) -> pd.DataFrame:
         if "all_modelable_generators" not in self._dfs:
@@ -2454,7 +2531,8 @@ class AssetData:
             LOGGER.info(
                 "%s counts of generators missing capacity that will be excluded  \n%s",
                 ba_code,
-                no_capacity.groupby(["operational_status", "technology_description"])
+                no_capacity.reset_index()
+                .groupby(["operational_status", "technology_description"])
                 .plant_id_eia.count()
                 .to_string()
                 .replace("\n", "\n\t"),

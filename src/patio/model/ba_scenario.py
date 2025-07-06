@@ -32,7 +32,7 @@ from patio.constants import (
     TECH_CODES,
 )
 from patio.exceptions import ScenarioError
-from patio.helpers import make_core_lhs_rhs
+from patio.helpers import df_query, make_core_lhs_rhs
 from patio.model.base import (
     ScenarioConfig,
     calc_redispatch_cost,
@@ -2098,8 +2098,7 @@ class BAScenario:
 
     def setup_colo_data(
         self,
-        techs: Sequence[str],
-        # years: Sequence[int],
+        selection: dict,
     ):
         if self.to_replace:
             # additional re_spec and profile things have to happen with nuclear that
@@ -2108,21 +2107,23 @@ class BAScenario:
         if self.ba.ba_code in BAD_COLO_BAS:
             LOGGER.warning("ba_code=%s skipped for colo analysis", self.ba.ba_code)
             return None
+        min_ret_yr = selection["min_retirement_year"]  # noqa: F841
+        min_op_yr = selection["min_operating_year"]  # noqa: F841
+        reg_rank = selection["reg_rank"]  # noqa: F841
         ids = (
             self.ba._re_plant_specs.query(
-                "(retirement_date_icx.isna() | retirement_date_icx.dt.year > 2050) & "
-                "reg_rank < 8 &"
-                "((operating_date_icx.dt.year >= 1995 & icx_tech in @OTHER_TD_MAP) | icx_tech not in @OTHER_TD_MAP)"
+                "(retirement_date_icx.isna() | retirement_date_icx.dt.year > @min_ret_yr) & "
+                "((operating_date_icx.dt.year >= @min_op_yr & icx_tech in @OTHER_TD_MAP) | icx_tech not in @OTHER_TD_MAP)"
+                "& reg_rank in @reg_rank"
             )
             .groupby(["icx_id", "icx_gen"], as_index=False)[
-                ["icx_tech", "icx_capacity", "icx_status"]
+                ["icx_tech", "icx_capacity", "icx_status", "ever_gas"]
             ]
             .first()
             .groupby(["icx_id", "icx_tech", "icx_status"], as_index=False)
-            .agg({"icx_capacity": "sum", "icx_gen": tuple})
-            .query("icx_tech in @techs & icx_capacity >= 150")[
-                ["icx_id", "icx_gen", "icx_capacity"]
-            ]
+            .agg({"icx_capacity": "sum", "icx_gen": tuple, "ever_gas": "max"})
+            .astype({"ever_gas": bool})
+            .pipe(df_query, selection)[["icx_id", "icx_gen", "icx_capacity"]]
         )
         filters = (
             self.ba.plant_data.merge(
@@ -2134,15 +2135,16 @@ class BAScenario:
                 validate="1:1",
                 indicator=True,
             )
-            .query("technology_description in @techs")
+            .pipe(df_query, selection)
             .assign(
                 retirement=lambda x: x.retirement_date.isna()
-                | (x.retirement_date.dt.year > 2050),
-                operating=lambda x: x.operating_date.dt.year >= 2000,
+                | (x.retirement_date.dt.year > selection["min_retirement_year"]),
+                operating=lambda x: x.operating_date.dt.year
+                >= selection["min_operating_year"],
                 size=lambda x: x.groupby(
                     ["plant_id_eia", "operating", "retirement"]
                 ).capacity_mw.transform("sum")
-                >= 150,
+                >= selection.get("capacity_mw", {"item": 0.0})["item"],
                 re_data=lambda x: x["_merge"] == "both",
             )
             .groupby(
@@ -2172,17 +2174,33 @@ class BAScenario:
             with tqdm_logging_redirect():
                 with open(json_path) as cjson:
                     json_plants = json.load(cjson)
-                plants_data = [
-                    self.setup_re_colo_data(pid, gens, cap, first_year=2024)
-                    for pid, gens, cap in tqdm(
-                        ids.itertuples(index=False),
-                        total=len(ids),
-                        position=4,
-                        leave=False,
-                        desc=f"{self.ba.ba_code} colo data setup",
-                    )
-                ]
-                plants_data = [p for p in plants_data if p]
+                plants_data = []
+                for pid, gens, cap in tqdm(
+                    ids.itertuples(index=False),
+                    total=len(ids),
+                    position=4,
+                    leave=False,
+                    desc=f"{self.ba.ba_code} colo data setup",
+                ):
+                    try:
+                        p = self.setup_re_colo_data(pid, gens, cap, first_year=2024)
+                    except Exception as exc:
+                        LOGGER.error("(pid=%s, gens=%s, cap=%s) %r", pid, gens, cap, exc)
+                    else:
+                        if p:
+                            plants_data.append(p)
+
+                # plants_data = [
+                #     self.setup_re_colo_data(pid, gens, cap, first_year=2024)
+                #     for pid, gens, cap in tqdm(
+                #         ids.itertuples(index=False),
+                #         total=len(ids),
+                #         position=4,
+                #         leave=False,
+                #         desc=f"{self.ba.ba_code} colo data setup",
+                #     )
+                # ]
+                # plants_data = [p for p in plants_data if p]
                 json_plants["plants"].extend(plants_data)
                 with open(json_path, "w") as cjson:
                     json.dump(json_plants, cjson, indent=4)

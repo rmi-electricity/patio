@@ -1535,6 +1535,9 @@ class Curtailment(DecisionVariable):
         super().__init__(m)
         self.min_cost = min_cost
 
+    def c_hourly(self, selection=False) -> pl.LazyFrame | None:
+        return self._h_core(selection, self.cost, "c_", func=lambda x: x)
+
     @check_shape()
     def load(self, yr: tuple, *args) -> cp.Expression:
         return -self.get_x(yr)
