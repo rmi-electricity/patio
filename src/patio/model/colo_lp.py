@@ -40,6 +40,7 @@ from patio.helpers import (
 )
 from patio.model.base import adjust_profiles, calc_redispatch_cost
 from patio.model.colo_common import (
+    AEO_MAP,
     COSTS,
     FAIL_DISPATCH,
     FAIL_SELECT,
@@ -48,6 +49,7 @@ from patio.model.colo_common import (
     INFEASIBLE,
     STATUS,
     SUCCESS,
+    aeo,
     capture_stderr,
     capture_stdout,
     get_summary,
@@ -274,6 +276,10 @@ class Data:
         re_pro = p_data.get("re_pro", p_data.get("re_pro"))
         with DataZip(src_path / f"{info.ba}.zip") as z:
             baseline = z["baseline"]
+            plant_data = z["plant_data"]
+            disp_cost = (
+                z["ba_dm_data"]["dispatchable_cost"].cast({"datetime": pl.Datetime()}).lazy()
+            )
         re_filter = (
             re_filter.meta.serialize(format="json")
             if isinstance(re_filter, pl.Expr)
@@ -291,32 +297,29 @@ class Data:
             re_ids=re_ids,
             i=info,
             src_path=src_path,
-            ba_data={},
+            ba_data={"dispatchable_cost": disp_cost, "plant_data": plant_data},
             meta={"re_filter": re_filter},
         )
 
     def load_ba_data(self, path=None):
-        if not self.ba_data:
+        if "ba_dm_data" not in self.ba_data:
             if path is None:
                 path = self.src_path / f"{self.i.ba}.zip"
             with DataZip(path) as z:
-                b_data = {k: v for k, v in z.items()}  # noqa: C416
+                b_data = {k: v for k, v in z.items() if k not in self.ba_data}
             b_data.pop("baseline")
-            b_data["ba_dm_data"]["dispatchable_cost"] = (
-                b_data["ba_dm_data"]["dispatchable_cost"]
-                .cast({"datetime": pl.Datetime()})
-                .lazy()
-            )
+            b_data["ba_dm_data"].pop("dispatchable_cost")
             self.ba_data.update(b_data)
 
     def del_ba_data(self):
-        for k in list(self.ba_data):
+        for k in ("ba_dm_data", "fuel_curve"):
             del self.ba_data[k]
 
     def __getitem__(self, item):
-        # item = new_name.get(item, item)
         if item in self.ba_data:
             return self.ba_data[item]
+        if item in self.ba_data.get("ba_dm_data", []):
+            return self.ba_data["ba_dm_data"][item]
         try:
             return getattr(self, item)
         except AttributeError:
@@ -363,6 +366,8 @@ class Model(IOMixin):
         life: int,
         build_year: int,
         atb_scenario: str,
+        aeo_scenario: str,
+        aeo_report_year: int,
         mkt_rev_mult: float = 0.5,
         num_crit_hrs: int = 0,
         max_pct_fos: float = 0.2,
@@ -390,6 +395,8 @@ class Model(IOMixin):
         self.life = life
         self.build_year = build_year
         self.atb_scenario = atb_scenario
+        self.aeo_report_year = aeo_report_year
+        self.aeo_scenario = aeo_scenario
         self.pudl_release = pudl_release
         self._params = {
             "mkt_rev_mult": mkt_rev_mult,
@@ -1277,7 +1284,7 @@ class Model(IOMixin):
             )
         )
         costs = (
-            self.d["ba_dm_data"]["dispatchable_cost"]
+            self.d.ba_data["dispatchable_cost"]
             .filter(
                 (pl.col("datetime").dt.year() >= self.d.opt_years[0])
                 & (c.plant_id_eia == self.i.pid)
@@ -1670,7 +1677,7 @@ class Model(IOMixin):
             )
         )
         costs = (
-            self.d["ba_dm_data"]["dispatchable_cost"]
+            self.d.ba_data["dispatchable_cost"]
             .filter(
                 (pl.col("datetime").dt.year() >= self.d.opt_years[0])
                 & (c.plant_id_eia == self.i.pid)
@@ -2521,9 +2528,8 @@ class Model(IOMixin):
 
     def redispatch(self, hourly):
         self.d.load_ba_data()
-        dmd = self.d["ba_dm_data"]
         pd_dt_idx = pd.Index(hourly.select("datetime").collect().to_pandas().squeeze())
-        new_profs = dmd["dispatchable_profiles"].loc[pd_dt_idx, :]
+        new_profs = self.d["dispatchable_profiles"].loc[pd_dt_idx, :]
         # breaks for nuclear because not in new profs (also no export capacity)
         if (
             TECH_CODES.get(self.i.tech, self.i.tech) in OTHER_TD_MAP
@@ -2542,7 +2548,7 @@ class Model(IOMixin):
             new_profs.loc[:, icx_ixs] = adjust_profiles(
                 new_profs.loc[:, icx_ixs].to_numpy(),
                 colo_load_fossil.to_numpy(),
-                dmd["dispatchable_specs"].loc[icx_ixs, "capacity_mw"].to_numpy(),
+                self.d["dispatchable_specs"].loc[icx_ixs, "capacity_mw"].to_numpy(),
             )
             max_check = (new_profs.loc[:, icx_ixs].sum(axis=1) + colo_load_fossil).max()
             assert max_check < self.i.cap or np.isclose(max_check, self.i.cap), (
@@ -2557,16 +2563,16 @@ class Model(IOMixin):
             .set_index("datetime")
             .fillna(0.0)
             .squeeze(),
-            dispatchable_specs=dmd["dispatchable_specs"],
+            dispatchable_specs=self.d["dispatchable_specs"],
             dispatchable_profiles=new_profs,
-            dispatchable_cost=dmd["dispatchable_cost"]
+            dispatchable_cost=self.d["dispatchable_cost"]
             .filter(c.datetime.dt.year() >= self.d.opt_years[0])
             .collect()
             .to_pandas()
             .set_index(["plant_id_eia", "generator_id", "datetime"]),
-            storage_specs=dmd["storage_specs"],
-            re_profiles=dmd["re_profiles"].loc[pd_dt_idx, :],
-            re_plant_specs=dmd["re_plant_specs"],
+            storage_specs=self.d["storage_specs"],
+            re_profiles=self.d["re_profiles"].loc[pd_dt_idx, :],
+            re_plant_specs=self.d["re_plant_specs"],
         )()
         hly = (
             hourly.select("datetime", "export_clean", "load_fossil")
@@ -2836,6 +2842,32 @@ class Model(IOMixin):
                 self.to_file()
             del flows_hourly
         return econ_df, flows
+
+    def aeo_fuel_price(self, fuel):
+        ba, state = (
+            self.d.ba_data["plant_data"]
+            .query("plant_id_eia == @self.i.pid")[["balancing_authority_code_eia", "state"]]
+            .iloc[0]
+        )
+        try:
+            reg = AEO_MAP.filter(
+                (pl.col("balancing_authority_code_eia") == ba) & (pl.col("state") == state)
+            )["electricity_market_module_region_eiaaeo"].item()
+        except ValueError as exc:
+            raise RuntimeError(f"{ba} {state} not in AEO MAP") from exc
+        return (
+            aeo(self.pudl_release)
+            .filter(
+                (pl.col("report_year") == self.aeo_report_year)
+                & (pl.col("model_case_eiaaeo") == self.aeo_scenario)
+                & (pl.col("electricity_market_module_region_eiaaeo") == reg)
+                & (pl.col("fuel_type_eiaaeo") == fuel)
+            )
+            .select(
+                datetime=pl.datetime(pl.col("projection_year"), 1, 1),
+                fuel_per_mmbtu=pl.col("fuel_cost_per_mmbtu"),
+            )
+        )
 
 
 def package_econ_data(run, ad, addl_filter, *, local=False):

@@ -40,7 +40,7 @@ reg_rank = [ 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
 
 [colo.project]
 scenarios = [
-    "moderate",
+#    "moderate",
 #    "moderate_ej",
     "clean",
     "dirty",
@@ -54,8 +54,8 @@ scenarios = [
 # relative to home or user dir
 #data_path = "patio_data/colo_data"
 #colo_json_path = "patio_data/colo_data/colo.json"
-data_path = "patio_data/colo_data_2025_2"
-colo_json_path = "patio_data/colo_data_2025_2/colo.json"
+data_path = "patio_data/colo_data_20250706"
+colo_json_path = "patio_data/colo_data_20250706/colo.json"
 run_dir_path = "patio_data/colo_{NOW}"
 workers = 8
 plant_ids = []
@@ -78,6 +78,8 @@ param.solar_degrade_per_year = 0.0
 param.life = 30
 param.build_year = 2026
 param.atb_scenario = "Moderate"
+param.aeo_report_year = 2023
+param.aeo_scenario = "reference"
 param.ptc = 0.0
 param.itc = 0.3
 dv.FlexLoad = { uptime = 0.0 }
@@ -133,7 +135,7 @@ param.num_crit_hrs = 0
 param.max_pct_fos = 0.2
 param.max_pct_hist_fos = 3.0
 dv.ExportOnlyIncumbentFossil = {}
-dv.LoadOnlyFossilWithBackupFuel = { tech = "rice" }
+dv.LoadOnlyFossilWithBackupFuel = { tech = "rice", primary_fuel = "natural_gas", backup_fuel = "distillate_fuel_oil" }
 
 
 [colo.scenario.form]
@@ -161,7 +163,7 @@ param.max_pct_fos = 0.2
 param.max_pct_hist_fos = 3.0
 dv.ExportOnlyIncumbentFossil = {}
 dv.FeStorage = { pre_charge = 0.5, min_soc_hrs = 1 }
-dv.LoadOnlyFossilWithBackupFuel = { tech = "rice" }
+dv.LoadOnlyFossilWithBackupFuel = { tech = "rice", primary_fuel = "natural_gas", backup_fuel = "distillate_fuel_oil" }
 
 
 [colo.scenario.thermal_load]

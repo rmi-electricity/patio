@@ -984,7 +984,16 @@ def logging_process(queue):
             record = queue.get()
             if record is None:
                 break
-            if "gurobipy" in record.name and record.levelno <= logging.INFO:
+            if (
+                any(
+                    (
+                        "gurobipy" in record.name,
+                        "botocore" in record.name,
+                        "hooks" in record.name,
+                    )
+                )
+                and record.levelno <= logging.INFO
+            ):
                 continue
             if "cvxpy" in record.name and record.levelno <= logging.INFO:
                 record.levelno = logging.DEBUG

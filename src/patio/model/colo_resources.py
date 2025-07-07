@@ -1654,7 +1654,7 @@ class Fossil(DecisionVariable):
             mcoe = m.d.mcoe
         self.mcoe = mcoe
         self.for_co2 = (
-            self.m.d.ba_data["ba_dm_data"]["dispatchable_cost"]
+            self.m.d.ba_data["dispatchable_cost"]
             .filter(
                 (pl.col("plant_id_eia") == self.m.i.pid)
                 & (pl.col("generator_id").is_in(self.m.i.gens))
@@ -1881,12 +1881,12 @@ class LoadOnlyFossil(Fossil):
         mcoe: pl.DataFrame | None = None,
         tech="nggt",
         primary_fuel: str = "natural_gas",
-        backup_fuel: str = "distillate_oil",
         x_cap: float | None = None,
     ):
         self._tech = tech
-        if mcoe is None:
-            pass
+        if mcoe is None and primary_fuel != m.i.fuel:
+            m.d.load_ba_data()
+
         super().__init__(m, mcoe)
         self.cost_df = pl.DataFrame(
             {
@@ -2030,9 +2030,46 @@ class LoadOnlyFossilWithBackupFuel(Fossil):
     _dz = {"x_cap": True, "profs": ["x", "cost"], "cost_cap": True}
 
     def __init__(
-        self, m, mcoe: pl.DataFrame | None = None, tech="nggt", x_cap: float | None = None
+        self,
+        m,
+        mcoe: pl.DataFrame | None = None,
+        tech="nggt",
+        primary_fuel: str = "natural_gas",
+        backup_fuel: str = "distillate_fuel_oil",
+        x_cap: float | None = None,
     ):
         self._tech = tech
+        self.primary_fuel = primary_fuel
+        self.backup_fuel = backup_fuel
+        d_cost = m.d.ba_data["dispatchable_cost"].collect()
+        if mcoe is None and self.primary_fuel != m.i.fuel:
+            if self.primary_fuel in d_cost["fuel_group"].unique():
+                mcoe = (
+                    d_cost.filter(pl.col("fuel_group") == self.primary_fuel)
+                    .group_by("datetime", maintain_order=True)
+                    .agg(pl.mean("fuel_per_mmbtu"))
+                )
+            else:
+                mcoe = m.aeo_fuel_price(self.primary_fuel)
+            mcoe = mcoe.select(
+                "datetime",
+                total_var_mwh=pl.col("fuel_per_mmbtu") * COSTS["eff"][self._tech]
+                + COSTS["vom"][self._tech],
+            )
+        if self.backup_fuel in d_cost["fuel_group"].unique():
+            bmcoe = (
+                d_cost.filter(pl.col("fuel_group") == self.backup_fuel)
+                .group_by("datetime", maintain_order=True)
+                .agg(pl.mean("fuel_per_mmbtu"))
+            )
+        else:
+            bmcoe = m.aeo_fuel_price(self.backup_fuel)
+        self.backup_mcoe = bmcoe.select(
+            "datetime",
+            total_var_mwh=pl.col("fuel_per_mmbtu") * COSTS["eff"][self._tech]
+            + COSTS["vom"][self._tech],
+        )
+
         super().__init__(m, mcoe)
         self.cost_df = pl.DataFrame(
             {
@@ -2182,7 +2219,19 @@ class LoadOnlyFossilWithBackupFuel(Fossil):
             self.cost[yr] = (mcoe, np.zeros(8760 * 2))
             self.cost_w_penalty[yr] = (mcoe, np.zeros(8760 * 2))
             return fixed_cost * self.x_cap + mcoe @ l
-        stored_mcoe = np.full(8760, COSTS["eff"][self._tech] * 22)
+        stored_mcoe = (
+            prof(
+                self.backup_mcoe.upsample("datetime", every="1h")
+                .lazy()
+                .join(self.m.d.ba_pro.select("datetime"), on="datetime", how="right")
+                .select(pl.all().forward_fill()),
+                yr,
+                cs.numeric,
+            )
+            .collect()
+            .to_numpy()
+            .flatten()
+        )
         self.cost[yr] = (mcoe, stored_mcoe)
         mcoe_ = self.m.fos_load_cost_mult * mcoe
         stored_mcoe_ = np.maximum(stored_mcoe, mcoe_ + 5)
@@ -2214,8 +2263,25 @@ class DCBackupFossil(Fossil):
         m,
         mcoe: pl.DataFrame | None = None,
         tech="rice",
+        primary_fuel="distillate_fuel_oil",
     ):
         self._tech = tech
+        self.primary_fuel = primary_fuel
+        d_cost = m.d.ba_data["dispatchable_cost"].collect()
+        if mcoe is None:
+            if self.primary_fuel in d_cost["fuel_group"].unique():
+                mcoe = (
+                    d_cost.filter(pl.col("fuel_group") == self.primary_fuel)
+                    .group_by("datetime", maintain_order=True)
+                    .agg(pl.mean("fuel_per_mmbtu"))
+                )
+            else:
+                mcoe = m.aeo_fuel_price(self.primary_fuel)
+            mcoe = mcoe.select(
+                "datetime",
+                total_var_mwh=pl.col("fuel_per_mmbtu") * COSTS["eff"][self._tech]
+                + COSTS["vom"][self._tech],
+            )
         super().__init__(m, mcoe)
 
     @property
@@ -2285,7 +2351,7 @@ class DCBackupFossil(Fossil):
         if is_resource_selection(yr):
             self.cost[yr] = np.zeros(8760 * 2)
             return cp.Constant(0.0)
-        mcoe = (
+        stored_mcoe = (
             prof(
                 self.mcoe.upsample("datetime", every="1h")
                 .lazy()
@@ -2298,7 +2364,19 @@ class DCBackupFossil(Fossil):
             .to_numpy()
             .flatten()
         )
-        stored_mcoe = np.full(8760, COSTS["eff"][self._tech] * 22)
+        mcoe = (
+            prof(
+                self.m.d.mcoe.upsample("datetime", every="1h")
+                .lazy()
+                .join(self.m.d.ba_pro.select("datetime"), on="datetime", how="right")
+                .select(pl.all().forward_fill()),
+                yr,
+                cs.numeric,
+            )
+            .collect()
+            .to_numpy()
+            .flatten()
+        )
         penalty_cost = np.maximum(stored_mcoe, self.m.fos_load_cost_mult * mcoe + 5)
         self.cost[yr] = stored_mcoe
         self.cost_w_penalty[yr] = penalty_cost

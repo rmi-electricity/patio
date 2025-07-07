@@ -95,7 +95,7 @@ class TestPowerCouple:
         assert not bad, "\n".join(bad)
 
 
-# @pytest.mark.skip(reason="test_colo_config approach is easier to target.")
+@pytest.mark.skip(reason="test_colo_config approach is easier to target.")
 @pytest.mark.script_launch_mode("inprocess")
 def test_patio_colo_entry_point(script_runner, test_dir, temp_dir):
     """Test ``patio-colo`` entry point function."""
@@ -107,8 +107,9 @@ def test_patio_colo_entry_point(script_runner, test_dir, temp_dir):
             "-w",
             "1",
             "-p",
-            "55343",
-            # "55234",
+            # "6195",
+            # "55343",
+            "55234",
             "-D",
             str(temp_dir.relative_to(Path.home())),
             "-L",
