@@ -90,6 +90,13 @@ running this may take a long time as additional R packages are downloaded and co
 
    pixi run rstudio
 
+Reticulate and RStudio can behave strangely with pixi environments, additional
+environment variables may help. But mean that reticulate will always use this environment
+no matter the project.
+
+.. code-block:: zsh
+
+   echo "export RETICULATE_PYTHON=$(pixi run -e econ 'which python')" >> ~/.zshenv
 
 Additional information on setting up your IDE to use the pixi environment see these guides
 `PyCharm <https://pixi.sh/v0.20.1/ide_integration/pycharm/>`_,
