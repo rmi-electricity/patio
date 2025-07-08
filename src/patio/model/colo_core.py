@@ -90,6 +90,7 @@ def run_colo_mp(config, queue, *, mp=True):
         plant_json = json.load(f)
 
     configs, plants_data = setup_plants_configs(config, **plant_json)
+
     # plants_data = plant_json.get("plants")
     # plants_data = [Info(**(v | {"gens": tuple(v.pop("gens"))})) for v in plants_data]
     # if pids := config["project"].get("plant_ids", None):
@@ -107,6 +108,11 @@ def run_colo_mp(config, queue, *, mp=True):
     #     }
     #     for k in config["project"]["scenarios"]
     # ]
+    def rn(x):
+        if x is None:
+            return 0.0
+        return x
+
     workers = config["project"]["workers"]
     LOGGER.warning("%s workers, %s time limit", workers, RLP_TL)
 
@@ -135,7 +141,10 @@ def run_colo_mp(config, queue, *, mp=True):
                         continue
                     with open(result_dir / info.file("limited", **conf)) as f:
                         result = json.load(f)
-                    if "ppa" in result and result.get("load_mw", 0) >= max(
+                    ll = result.get("load_mw", 0)
+                    if ll is None:
+                        ll = 0
+                    if "ppa" in result and rn(result.get("load_mw", 0)) >= max(
                         50.0, mround(info.cap * 0.5, 25)
                     ):
                         LOGGER.info("skipping, good limited version exists", extra=xt)
@@ -169,7 +178,7 @@ def run_colo_mp(config, queue, *, mp=True):
             continue
         with open(result_dir / info.file("limited", **conf)) as f:
             result = json.load(f)
-        if "ppa" in result and result.get("load_mw", 0) >= max(
+        if "ppa" in result and rn(result.get("load_mw", 0)) >= max(
             50.0, mround(info.cap * 0.5, 25)
         ):
             LOGGER.info("skipping, good limited version exists", extra=xt)
@@ -400,7 +409,11 @@ def model_colo_load(model: Model, run_econ, saved_select, **kwargs):
 
     model.d.del_ba_data()
     gc.collect()
-    model.add_df(hourly=hourly.collect(), full=econ_df, flows=flows)
+    model.add_df(
+        hourly=hourly.with_columns(cs.by_dtype(pl.Float64).cast(pl.Float32)).collect(),
+        full=econ_df,
+        flows=flows,
+    )
 
     model.logger.debug("finished successfully", extra=model.extra)
     return model
@@ -711,9 +724,9 @@ def assemble_results(colo_dir, *, keep=True):
             out.sort(*sort_by).select(*out_cols).write_parquet(
                 colo_dir / "colo_summary.parquet"
             )
-            if not keep:
-                for file in result_dir.glob("*.json"):
-                    file.unlink()
+            # if not keep:
+            #     for file in result_dir.glob("*.json"):
+            #         file.unlink()
         pbar.update(1)
 
         if any((flows_dir := result_dir / "flows").glob("*.parquet")):
@@ -846,6 +859,14 @@ def assemble_results(colo_dir, *, keep=True):
                 shutil.rmtree(hourly_rs_dir)
         pbar.update(20)
         if any((hourly_dir := result_dir / "hourly").glob("*.parquet")):
+            # dffs = list(hourly_dir.glob("*.parquet"))
+            # for dff in tqdm(dffs, total=len(dffs)):
+            #     df = pl.scan_parquet(dff)
+            #     if pl.Float64 in {type(x) for x in df.collect_schema().values()}:
+            #         try:
+            #             df.with_columns(cs.by_dtype(pl.Float64).cast(pl.Float32)).sink_parquet(dff)
+            #         except Exception as exc:
+            #             print(f"unable to downcast {dff} {exc!r}")
             hourly_dir.rename(hourly_dir.parent.parent / "hourly")
             # try:
             #     pl.scan_parquet(
@@ -1108,6 +1129,7 @@ def main(
                 "default": "",
                 "help": "path from home, overrides `run_dir_path` in patio.toml",
             },
+            {"name": "-r, --resume", "help": "resume most recent run"},
             {
                 "name": "-C, --config",
                 "type": str,
@@ -1158,6 +1180,13 @@ def main(
         config = tomllib.load(f)["colo"]
     if args.dir != "":
         config["project"]["run_dir_path"] = args.dir
+    elif args.resume:
+        config["project"]["run_dir_path"] = str(
+            sorted(
+                Path.home().glob(f"{Path(config['project']['run_dir_path']).parent}/colo_20*")
+            )[-1].relative_to(Path.home())
+        )
+        print(config["project"]["run_dir_path"])
     else:
         config["project"]["run_dir_path"] = config["project"]["run_dir_path"].replace(
             "{NOW}", datetime.now().strftime("%Y%m%d%H%M")
@@ -1213,6 +1242,13 @@ def _add_to_json(json_path, add_to_json):
             json_plants[k] = v
     with open(json_path, "w") as cjson:
         json.dump(json_plants, cjson, indent=4)
+
+
+def break_summary(summary):
+    for row in summary.iter_rows(named=True):
+        file = f"{row['ba_code']}_{row['icx_id']}_{row['tech']}_{row['status']}_{row['regime']}_{row['ix']}.json"
+        with open(f"/Users/alex/patio_data/colo_202507070053/results/{file}", "w") as f:
+            json.dump(row, f, indent=4)
 
 
 if __name__ == "__main__":
