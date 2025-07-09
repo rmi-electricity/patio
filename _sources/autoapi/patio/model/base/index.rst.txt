@@ -1,0 +1,282 @@
+patio.model.base
+================
+
+.. py:module:: patio.model.base
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   patio.model.base.BaseProfileMatch
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   patio.model.base.equal_energy
+   patio.model.base.equal_capacity
+
+
+Module Contents
+---------------
+
+.. py:class:: BaseProfileMatch
+
+   .. py:attribute:: capacity
+      :type:  float
+
+
+   .. py:attribute:: req_profile
+      :type:  pandas.Series | pandas.DataFrame
+
+
+   .. py:attribute:: re_profiles
+      :type:  pandas.DataFrame
+
+
+   .. py:attribute:: fuel_profile
+      :type:  pandas.DataFrame
+      :value: None
+
+
+
+   .. py:attribute:: _re_cap
+      :type:  None | numpy.ndarray
+      :value: None
+
+
+
+   .. py:attribute:: _en_cap
+      :type:  None | numpy.ndarray
+      :value: None
+
+
+
+   .. py:attribute:: _errors
+      :type:  list
+      :value: []
+
+
+
+   .. py:attribute:: _resources
+      :type:  tuple
+      :value: ()
+
+
+
+   .. py:attribute:: _cap
+      :type:  bool
+      :value: False
+
+
+
+   .. py:attribute:: _co2_profile
+      :type:  pandas.DataFrame
+
+
+   .. py:method:: __post_init__()
+
+
+   .. py:method:: kw(**kwargs)
+      :classmethod:
+
+
+
+   .. py:property:: resources
+      :type: tuple
+
+
+
+   .. py:method:: by_inverse()
+
+      Find the solar and wind capacity that most closely matches
+      the fossil plant's output using a generalized inverse
+
+      :return: None
+
+      .. math::
+          \mathbf{G} = egin{bmatrix}
+          \mathbf{daily\:solar} & \mathbf{daily\:wind}
+          \end{bmatrix}\
+          \mathbf{d} = [\mathbf{daily\:output}]
+
+          egin{bmatrix}
+          solar\:cap & wind\:cap
+          \end{bmatrix} = (\mathbf{G}^{T}\mathbf{G})^{-1}\mathbf{G}^{T}\mathbf{d}
+
+
+
+   .. py:method:: optimize(try_capacity=True)
+
+
+   .. py:method:: try_capacity(try_capacity)
+
+
+   .. py:method:: by_equal_energy(inc=0.1)
+
+      Find the solar and wind capacity that produces the same energy
+      while avoiding as much fossil generation as possible
+
+      :param inc: increment to use in search
+      :return: None
+
+
+
+   .. py:method:: by_equal_capacity(inc=0.1)
+
+      Find the solar and wind capacity equal to fossil capacity
+      that avoids as much fossil generation as possible
+
+      :param inc: increment to use in search
+      :return: None
+
+
+
+   .. py:method:: to_pd(item, name=None, prefix='', suffix='')
+
+
+   .. py:property:: re_cap
+      :type: dict
+
+
+
+   .. py:property:: re
+      :type: numpy.ndarray
+
+
+      Total renewable generation
+
+
+   .. py:property:: re_shares
+      :type: numpy.ndarray
+
+
+
+   .. py:property:: re_by_type
+      :type: numpy.ndarray
+
+
+      Total renewable generation
+
+
+   .. py:property:: avoided
+      :type: numpy.ndarray
+
+
+      Avoided fossil generation
+
+
+   .. py:method:: avoided_test(re)
+
+
+   .. py:property:: avoided_fuel
+      :type: numpy.ndarray
+
+
+      Avoided fossil generation
+
+
+   .. py:property:: excess_re
+      :type: numpy.ndarray
+
+
+      Renewable generation that exceeds fossil requirement
+
+
+   .. py:property:: excess_by_type
+      :type: numpy.ndarray
+
+
+
+   .. py:property:: ix
+
+
+   .. py:property:: ix_names
+
+
+   .. py:property:: carbon_intensity
+
+
+   .. py:method:: _output_incr(share)
+
+
+   .. py:method:: _output_incr_freq(share, freq='MS')
+
+
+   .. py:method:: fmt_share(share)
+      :staticmethod:
+
+
+
+   .. py:method:: output_incr(step=0.1, freq='T')
+
+
+   .. py:method:: output_incr_df(step=0.1, freq='T')
+
+
+   .. py:property:: out_metr
+
+
+   .. py:property:: fixed_out_metr
+
+
+   .. py:method:: make_fig(starting_year=None)
+
+      Create bar figure showing results
+
+
+
+   .. py:method:: copy()
+
+
+   .. py:property:: for_cap_func
+
+      cap, req_prof, re_profs = self.for_cap_func
+      Returns:
+
+
+   .. py:method:: test_offshore()
+
+
+   .. py:method:: test_onshore()
+
+
+   .. py:method:: grouper(df, prefix='', suffix='', freq=None, group_cols=True, total=False)
+      :staticmethod:
+
+
+
+   .. py:method:: stacker(df, name=None, freq='YS')
+      :staticmethod:
+
+
+
+.. py:function:: equal_energy(req_prof, re_profs, inc=0.1, pct_to_replace=1.0)
+
+   Find the combination of wind and solar that produces the same energy
+   while avoiding as much fossil generation as possible.
+
+   :param req_prof: the fossil profile we are trying to match
+   :param re_profs: 2 or 3 cols of re CFs
+   :param inc: increment to use in search, only available with 2 profs
+   :param pct_to_replace: percentage of energy to actually replace
+   :return: re_capacity
+
+
+.. py:function:: equal_capacity(cap, req_prof, re_profs, inc=0.1, sent=False)
+
+   Find the combination of wind and solar capacity that equals fossil capacity
+   while avoiding as much fossil generation as possible.
+
+   :param cap: capacity of the fossil plant
+   :param req_prof: the fossil profile we are trying to match
+   :param re_profs: 2 or 3 cols of re CFs
+   :param inc: increment to use in search, only available with 2 profs
+   :param sent: sentinel to avoid recursion
+   :return: re_capacity
+
+

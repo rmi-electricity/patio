@@ -1,0 +1,30 @@
+patio.cli
+=========
+
+.. py:module:: patio.cli
+
+.. autoapi-nested-parse::
+
+   Functional entry point for PATIO.
+
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   patio.cli.logging_process
+   patio.cli.setup_logger
+   patio.cli.main
+
+
+Module Contents
+---------------
+
+.. py:function:: logging_process(queue, configurer, now)
+
+.. py:function:: setup_logger(now)
+
+.. py:function:: main()
+
