@@ -46,19 +46,12 @@ use patio with pixi.
    brew install pixi
 
 Navigate to the cloned ``patio`` repository and run the following to setup patio
-with pixi.
+with pixi. **Note: do not clone patio to anywhere managed by OneDrive**.
 
 .. code-block:: zsh
 
    pre-commit install
    pixi install
-
-If the pixi command is not recognized after restarting the terminal you may need to
-add it to your path.
-
-.. code-block:: zsh
-
-   echo 'export PATH=~/.pixi/bin:$PATH'  >> ~/.zshenv
 
 If you have not yet initialized `etoolbox <https://github.com/RMI/etoolbox>`__ on your
 computer, run this command and follow the instructions:
@@ -68,7 +61,8 @@ computer, run this command and follow the instructions:
    pixi run etb cloud init
 
 The FRED_API_KEY and BLS_KEY must be set as environment variables.
-To set the environment variable ``FRED_API_KEY`` with the value ``abcd1234``, use the following command:
+To set the environment variable ``FRED_API_KEY`` with the value ``abcd1234`` (replace
+this value with your actual API key), use the following command:
 
 .. code-block:: zsh
 
@@ -80,9 +74,33 @@ The value can be retrieved in R using its key:
 
    FRED_API_KEY <- Sys.getenv("FRED_API_KEY")
 
-Using RStudio
+Additional information on setting up your IDE to use the pixi environment see these guides
+`PyCharm <https://pixi.sh/v0.20.1/ide_integration/pycharm/>`_,
+`RStudio <https://pixi.sh/v0.20.1/ide_integration/r_studio/>`_.
+
+Working with the econ model
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-For RStudio to use the patio environment created in the previous step,
+For the R code to work properly, additional setup is required if you do not have
+conda installed. You can test this by running ``conda`` in your terminal, if it says
+something like ``command not found: conda``, then it needs to be installed.
+
+Install conda
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Install ``conda`` with pixi:
+
+.. code-block:: zsh
+
+   pixi global install conda
+
+Initialize ``conda``.
+
+.. code-block:: zsh
+
+   ~/.pixi/bin/conda init $(basename $SHELL)
+
+Using R tools
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+For RStudio to use the patio environment created in the previous steps,
 you must open it from the terminal with the following command. The first time
 running this may take a long time as additional R packages are downloaded and compiled.
 
@@ -90,17 +108,11 @@ running this may take a long time as additional R packages are downloaded and co
 
    pixi run rstudio
 
-Reticulate and RStudio can behave strangely with pixi environments, additional
-environment variables may help. But mean that reticulate will always use this environment
-no matter the project.
+Launch the R console.
 
 .. code-block:: zsh
 
-   echo "export RETICULATE_PYTHON=$(pixi run -e econ 'which python')" >> ~/.zshenv
-
-Additional information on setting up your IDE to use the pixi environment see these guides
-`PyCharm <https://pixi.sh/v0.20.1/ide_integration/pycharm/>`_,
-`RStudio <https://pixi.sh/v0.20.1/ide_integration/r_studio/>`_.
+   pixi run R
 
 Additional comments on using Pre-commit
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -117,8 +129,9 @@ To run the resource model:
 
    pixi run patio
 
-To run the economic model:
+To run the economic model with ``<model-run-datestr>`` replaced with the run's
+name/identifier:
 
 .. code-block:: zsh
 
-   pixi run patio-econ < model-run-datestr >
+   pixi run patio-econ <model-run-datestr>

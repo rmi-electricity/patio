@@ -150,6 +150,9 @@ target.osx.tasks.rstudio = "open -a rstudio"
 activation.scripts = [ "activation/env_setup.sh", "activation/r_setup.sh" ]
 activation.env = { PIXI_R_LIBS = "$CONDA_PREFIX/lib/R/library", R_LIBS = "$PIXI_R_LIBS", R_LIBS_USER = "$PIXI_R_LIBS" }
 
+[tool.pixi.feature.econ.tasks.R]
+cmd = "R"
+
 [tool.pixi.feature.econ.tasks.patio-data]
 cmd = "Rscript 'R/Patio Model Utilities Inputs.R' {{ datestr }}"
 args = [ "datestr" ]

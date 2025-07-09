@@ -2263,7 +2263,7 @@ def text_position(scen_df, pid):
     return position
 
 
-def make_case_sheets(colo, flows, test=False):
+def make_case_sheets(colo, flows, *, land_screen=True, test=False):
     colors = [
         "#003B63",
         "#45CFCC",
@@ -2284,7 +2284,9 @@ def make_case_sheets(colo, flows, test=False):
         "#EE8905",
         "#73020C",
     ]
-    good = good_screen(colo.query("required_acres <= 1.5 * buildable_acres"))
+    if land_screen:
+        colo = colo.query("required_acres <= 1.5 * buildable_acres")
+    good = good_screen(colo)
     pl_good = (
         pl.from_pandas(colo.query("run_status == 'SUCCESS'"))
         # pl.from_pandas(good_screen(colo))
@@ -2404,6 +2406,7 @@ def make_case_sheets(colo, flows, test=False):
                         pl.col("tech").str.to_uppercase(),
                         "utility_name_eia",
                         separator=" ",
+                        ignore_nulls=True,
                     )
                 )
                 .unique()
