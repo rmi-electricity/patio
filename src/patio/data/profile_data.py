@@ -1015,7 +1015,7 @@ class ProfileData:
     def load_cems(self, ba_code, extend_cems):
         ex = "_extended" if extend_cems else ""
         if not (file := USER_DATA_PATH / f"ba_cems{ex}.zip").exists():
-            get(PATIO_DATA_AZURE_URLS[f"ba_cems{ex}"], file.parent)
+            get(PATIO_DATA_AZURE_URLS[f"ba_cems{ex}"], file)
         try:
             with DataZip(file, "r") as z:
                 cems = z[ba_code].convert_dtypes(dtype_backend="pyarrow")
@@ -1027,10 +1027,8 @@ class ProfileData:
         return cems
 
     def hourly_re_by_plant(self, ba_code):
-        # if not (file := USER_DATA_PATH / f"re_data_{self.regime}.zip").exists():
-        #     download(PATIO_DATA_AZURE_URLS[f"re_data_{self.regime}"], file)
         if not (file := USER_DATA_PATH / "re_data.zip").exists():
-            get(PATIO_DATA_AZURE_URLS["re_data"], file.parent)
+            get(PATIO_DATA_AZURE_URLS["re_data"], file)
         try:
             with DataZip(file, "r") as z:
                 meta = z[ba_code + "_meta"]
@@ -1536,7 +1534,7 @@ class ProfileData:
         if not (
             all_re_path := USER_DATA_PATH.parent / "all_re_new_too_big_tabled.parquet"
         ).exists():
-            get("raw-data/all_re_new_too_big_tabled.parquet", all_re_path)
+            get("patio-data/all_re_new_too_big_tabled.parquet", all_re_path)
         all_profs = pl.scan_parquet(all_re_path, use_statistics=True).select(
             pl.col("plant_id_eia").alias("plant_id_prof_site"),
             "re_type",

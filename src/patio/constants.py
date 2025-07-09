@@ -906,19 +906,14 @@ SIMPLE_TD_MAP = CLEAN_TD_MAP | {
 PATIO_PUDL_RELEASE = "v2024.11.0"
 PATIO_DATA_RELEASE = "20241031"
 PATIO_DATA_AZURE_URLS = {
-    # "ba_cems": f"https://rmicfezil.blob.core.windows.net/patio-data/{PATIO_DATA_RELEASE}/ba_cems.zip",
-    # "ba_cems_extended": f"https://rmicfezil.blob.core.windows.net/patio-data/{PATIO_DATA_RELEASE}/ba_cems_extended.zip",
     "ba_cems": f"patio-data/{PATIO_DATA_RELEASE}/ba_cems.zip",
     "ba_cems_extended": f"patio-data/{PATIO_DATA_RELEASE}/ba_cems_extended.zip",
-    "camd_starts_ms": f"https://rmicfezil.blob.core.windows.net/patio-data/{PATIO_DATA_RELEASE}/camd_starts_ms.parquet",
-    "Coal_Closure_Energy_Communities_SHP_2023v2": f"https://rmicfezil.blob.core.windows.net/patio-data/{PATIO_DATA_RELEASE}/Coal_Closure_Energy_Communities_SHP_2023v2.zip",
-    "irp": f"https://rmicfezil.blob.core.windows.net/patio-data/{PATIO_DATA_RELEASE}/irp.parquet",
-    "MSA_NMSA_FEE_EC_Status_SHP_2023v2": f"https://rmicfezil.blob.core.windows.net/patio-data/{PATIO_DATA_RELEASE}/MSA_NMSA_FEE_EC_Status_SHP_2023v2.zip",
-    "re_data_limited": f"https://rmicfezil.blob.core.windows.net/patio-data/{PATIO_DATA_RELEASE}/re_data_limited.zip",
-    "re_data_reference": f"https://rmicfezil.blob.core.windows.net/patio-data/{PATIO_DATA_RELEASE}/re_data_reference.zip",
-    # "re_data": f"https://rmicfezil.blob.core.windows.net/patio-data/{PATIO_DATA_RELEASE}/re_data.zip",
+    "camd_starts_ms": f"patio-data/{PATIO_DATA_RELEASE}/camd_starts_ms.parquet",
+    "Coal_Closure_Energy_Communities_SHP_2023v2": f"patio-data/{PATIO_DATA_RELEASE}/Coal_Closure_Energy_Communities_SHP_2023v2.zip",
+    "irp": f"patio-data/{PATIO_DATA_RELEASE}/irp.parquet",
+    "MSA_NMSA_FEE_EC_Status_SHP_2023v2": f"patio-data/{PATIO_DATA_RELEASE}/MSA_NMSA_FEE_EC_Status_SHP_2023v2.zip",
     "re_data": f"patio-data/{PATIO_DATA_RELEASE}/re_data.zip",
-    "lse": f"https://rmicfezil.blob.core.windows.net/patio-data/{PATIO_DATA_RELEASE}/Electric_Retail_Service_Territories.kml.zip",
+    "lse": f"patio-data/{PATIO_DATA_RELEASE}/Electric_Retail_Service_Territories.kml.zip",
 }
 TECH_CODES = {
     "coal": "Conventional Steam Coal",

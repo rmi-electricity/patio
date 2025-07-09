@@ -19,7 +19,6 @@ import geopandas as gpd
 import numpy as np
 import pandas as pd
 import polars as pl
-from etoolbox.datazip import DataZip
 from etoolbox.utils.cloud import get, rmi_cloud_fs
 from etoolbox.utils.misc import download
 from etoolbox.utils.pudl import generator_ownership, pd_read_pudl, pl_scan_pudl
@@ -537,7 +536,7 @@ class AssetData:
             .to_list()
         )
         if not (file := USER_DATA_PATH / "irp.parquet").exists():
-            download(PATIO_DATA_AZURE_URLS["irp"], file)
+            get(PATIO_DATA_AZURE_URLS["irp"], file)
         irp = pd.read_parquet(
             file
         ).astype(
@@ -1159,7 +1158,7 @@ class AssetData:
     def add_regulatory_ranking(self, gens):
         if not (file := USER_DATA_PATH / "Electric_Retail_Service_Territories.kml").exists():
             if not file.with_suffix(".kml.zip").exists():
-                download(PATIO_DATA_AZURE_URLS["lse"], file.with_suffix(".kml.zip"))
+                get(PATIO_DATA_AZURE_URLS["lse"], file.with_suffix(".kml.zip"))
             shutil.unpack_archive(file.with_suffix(".kml.zip"), USER_DATA_PATH)
             file.with_suffix(".kml.zip").unlink()
         utils = (
@@ -1644,7 +1643,7 @@ class AssetData:
         # https://atb.nrel.gov/electricity/2023/utility-scale_pv
         # solar_path = CACHE_PATH / f"pv_{regime}_2020.csv"
         # if not solar_path.exists():
-        #     gdown.download(links["solar"], temp := BytesIO())
+        #     gdown.get(links["solar"], temp := BytesIO())
         #     ZipFile(temp).extract(solar_path.name, path=CACHE_PATH)
         rn = {
             "mean_res": "global_horizontal_irradiance",
@@ -1965,7 +1964,7 @@ class AssetData:
         if not (
             all_re_path := USER_DATA_PATH.parent / "all_re_new_too_big_tabled.parquet"
         ).exists():
-            get("raw-data/all_re_new_too_big_tabled.parquet", all_re_path)
+            get("patio-data/all_re_new_too_big_tabled.parquet", all_re_path)
         re_profs = (
             pl.scan_parquet(all_re_path)
             .with_columns(
@@ -2317,7 +2316,7 @@ class AssetData:
         """Screen for plants with high CF that could be replaced by nuclear."""
         if "temp_nuke_replacements" not in self._dfs:
             if not (file := USER_DATA_PATH / "camd_starts_ms.parquet").exists():
-                download(PATIO_DATA_AZURE_URLS["camd_starts_ms"], file)
+                get(PATIO_DATA_AZURE_URLS["camd_starts_ms"], file)
             plants = (
                 self.modelable_generators()
                 .query("category == 'existing_fossil'")
@@ -2492,7 +2491,7 @@ class AssetData:
             ")"
         ).copy()
         # if not (file := USER_DATA_PATH / "irp.parquet").exists():
-        #     download(PATIO_DATA_AZURE_URLS["irp"], file)
+        #     get(PATIO_DATA_AZURE_URLS["irp"], file)
         # irp = (
         #     pd.read_parquet(file)
         #     .astype({"plant_id_eia": int})
@@ -2801,7 +2800,7 @@ def load_ec():
         parent, *_ = file_.partition("/")
         if not (file := USER_DATA_PATH / parent).exists():
             if not file.with_suffix(".zip").exists():
-                download(PATIO_DATA_AZURE_URLS[parent], file.with_suffix(".zip"))
+                get(PATIO_DATA_AZURE_URLS[parent], file.with_suffix(".zip"))
             shutil.unpack_archive(file.with_suffix(".zip"), USER_DATA_PATH)
             file.with_suffix(".zip").unlink()
             if (mf := USER_DATA_PATH / "__MACOSX").exists():
@@ -2834,7 +2833,7 @@ def add_ec_flag(
     return df
 
 
-def cost_comparison():
+def cost_comparison(pudl_release=PATIO_PUDL_RELEASE):
     def problem(df):
         return (
             (df.om_per_mwh.isna() | (df.om_per_mwh < 5))
@@ -2843,29 +2842,27 @@ def cost_comparison():
             | (df.som.isna() | (df.som < 0) | (df.som > 50))
         )
 
-    # if not (pudl_sql := Path(get_pudl_sql_url().removeprefix("sqlite:///"))).exists():
-    #     if not pudl_sql.parent.exists():
-    #         pudl_sql.parent.mkdir(parents=True)
-    #     get("az://raw-data/pudl.sqlite.gz", f"{pudl_sql}.gz")
-    #     ungzip(Path(f"{pudl_sql}.gz"))
-    from etoolbox.utils.pudl import PretendPudlTablCore
-
-    pdl = DataZip.load(
-        user_cache_path("gencost", "rmi") / "pdltbl",
-        klass=PretendPudlTablCore,
-    )
     gens = (
-        pdl.gens_eia860m()
-        .query("report_date == '2023-03-01'")
+        pd_read_pudl("core_eia860m__changelog_generators", release=pudl_release)
+        .sort_values("report_date", ascending=True)
+        .groupby(["plant_id_eia", "generator_id"], as_index=False)
+        .last(skipna=False)
         .pipe(fix_cc_in_prime)
         .rename(columns={"energy_source_code_1": "energy_source_code_860m"})
         .assign(
             fuel_group=lambda x: x.energy_source_code_860m.map(FUEL_GROUP_MAP),
-            operating_date=lambda x: x.generator_operating_date.fillna(
+            current_planned_generator_operating_date=lambda x: pd.to_datetime(
                 x.current_planned_generator_operating_date
             ),
+            generator_retirement_date=lambda x: pd.to_datetime(x.generator_retirement_date),
+            planned_generator_retirement_date=lambda x: pd.to_datetime(
+                x.planned_generator_retirement_date
+            ),
+            operating_date=lambda x: x.operating_date.fillna(
+                x.generator_operating_date
+            ).fillna(x.current_planned_generator_operating_date),
             retirement_date=lambda x: x.generator_retirement_date.fillna(
-                x.planned_retirement_date
+                x.planned_generator_retirement_date
             ),
         )
         .drop_duplicates(subset=["plant_id_eia", "generator_id"], keep="first")
