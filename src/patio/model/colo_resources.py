@@ -132,8 +132,80 @@ class DecisionVariable:
         return NotImplemented
 
     @property
+    def fuels(self):
+        return []
+
+    @property
     def cap_summary(self) -> dict:
         return {}
+
+    def cost_summary(self, every="1y", cap_grp=None, h_grp=None):
+        if cap_grp is None:
+            cap_grp = (pl.col("re_type").alias("type"),)
+        try:
+            parts = []
+            if self.cost_cap:
+                ovn = {
+                    "capex_gross": product("capex_raw", "reg_mult", "life_adj", "capacity_mw"),
+                    "itc": -product("capex_raw", "reg_mult", "life_adj", "capacity_mw")
+                    * (1 - pl.col("itc_adj")),
+                    "tx_capex": product("tx_capex_raw", "distance", "capacity_mw"),
+                }
+                ops = {
+                    "fom": product("opex_raw", "capacity_mw"),
+                    "ptc": -product("ptc_gen", "ptc", "capacity_mw"),
+                }
+
+                parts.append(
+                    pl.concat(
+                        [
+                            v.with_columns(
+                                capacity_mw=self.x_cap.value,
+                                datetime=pl.datetime(
+                                    {self.m.i.years: min(self.m.d.opt_years)}.get(k, k[0]),
+                                    1,
+                                    1,
+                                ),
+                            ).with_columns(**(ops if len(k) == 1 else ovn))
+                            for k, v in self.cost_cap.items()
+                        ],
+                        how="diagonal_relaxed",
+                    )
+                    .group_by("datetime", *cap_grp, maintain_order=True)
+                    .agg(pl.first("capacity_mw"), pl.col(list(ovn) + list(ops)).sum())
+                )
+            if self.cost:
+                parts.append(
+                    self.hourly()
+                    .with_columns(**{c: product(c, f"c_{c}") for c in self.var_names})
+                    .group_by_dynamic("datetime", every=every, group_by=h_grp)
+                    .agg(pl.col(*self.var_names).sum())
+                    .collect()
+                )
+            if parts:
+                out = pl.concat(parts, how="align")
+                if "type" in out.columns:
+                    return out
+                return out.with_columns(type=pl.lit(self.cat))
+            return pl.DataFrame()
+
+        except pl.exceptions.PolarsError as exc:
+            self.m.logger.error(
+                "%s cost summary failed %s msg=%s",
+                self.__class__.__qualname__,
+                exc.__class__,
+                str(exc).split("Resolved plan until failure:")[0],
+                extra=self.m.extra,
+            )
+            return pl.DataFrame()
+        except Exception as exc:
+            self.m.logger.error(
+                "%s cost summary failed %r",
+                self.__class__.__qualname__,
+                exc,
+                extra=self.m.extra,
+            )
+            return pl.DataFrame()
 
     def set_x_cap(self, cap_summary, re_selected, *args):
         return None
@@ -158,17 +230,6 @@ class DecisionVariable:
         if c_hourly is None:
             return hourly
         return hourly.join(c_hourly, on="datetime")
-
-    def clean_cost(self) -> float:
-        if not self.cost_cap or self.x_cap is None:
-            return 0.0
-        return (
-            self.cost_cap[self.m.i.years]
-            .select(pl.sum_horizontal("capex__oc", "opex__oc", "tx_capex__oc"))
-            .to_series()
-            .to_numpy()
-            @ self.x_cap.value
-        )
 
     def c_mw_all(self) -> pl.DataFrame | None:
         if not self.cost_cap:
@@ -227,9 +288,6 @@ class DecisionVariable:
         except Exception as exc:
             raise RuntimeError(f"{self!r} {prefix} {exc!r}\n") from exc
 
-    def full_ptc(self):
-        return NotImplemented
-
     def annual_gen(self):
         return NotImplemented
 
@@ -255,6 +313,9 @@ class DecisionVariable:
         return cp.Constant(0.0)
 
     def icx_ops(self, yr: tuple, *args) -> cp.Expression:
+        return cp.Constant(0.0)
+
+    def incumbent_ops(self, yr: tuple, *args) -> cp.Expression:
         return cp.Constant(0.0)
 
     def land(self, yr: tuple, *args) -> cp.Expression:
@@ -593,7 +654,7 @@ class FlexLoad(Load):
 
     def bounds(self, yr: tuple, *args) -> tuple[cp.Constraint, ...]:
         if is_resource_selection(yr):
-            return self.x_cap >= 0.0, self.x_cap <= self.m.i.cap * 0.75
+            return self.x_cap >= 0.0, self.x_cap <= self.m.i.cap * self.m.load_icx_max_mult
         return self.get_x(yr) >= cp.multiply(self.min_load, self.x_cap.value), self.get_x(
             yr
         ) <= self.x_cap.value
@@ -1431,12 +1492,6 @@ class Renewables(DecisionVariable):
             return prof(out, self.m.i.years, cs.all)
         return out.filter(pl.col("datetime").dt.year().is_in(self.m.dispatchs))
 
-    def full_ptc(self) -> dict:
-        return {
-            yr: -self.cost_cap[(yr,)]["ptc__oc"].to_numpy() @ self.x_cap.value
-            for yr in self.m.d.opt_years
-        }
-
     def annual_gen(self) -> cp.Expression:
         return (
             self.m.d.re_pro.group_by_dynamic("datetime", every="1y")
@@ -1693,12 +1748,16 @@ class Fossil(DecisionVariable):
         )
 
 
-class IncumbentFossil(Fossil):
+class LoadIncumbentFossil(Fossil):
     """x_lt x_ft"""
 
-    _var_names = ("load_fossil", "export_fossil")
+    _var_names = ("load_fossil",)
     _cat = "fossil"
     _dz = {"profs": ["x", "cost"]}
+
+    @property
+    def fuels(self):
+        return [self.m.i.fuel]
 
     @property
     def cap_summary(self) -> dict:
@@ -1715,40 +1774,29 @@ class IncumbentFossil(Fossil):
 
     @check_shape()
     def load(self, yr: tuple, *args) -> cp.Expression:
-        l, f = self.get_x(yr)
-        return l
-
-    @check_shape()
-    def export_req(self, yr: tuple, *args) -> cp.Expression:
-        l, f = self.get_x(yr)
-        return f
+        return self.get_x(yr)
 
     @check_shape()
     def fossil_load(self, yr: tuple, *args) -> cp.Expression:
-        l, f = self.get_x(yr)
-        return cp.sum(l)
+        return cp.sum(self.get_x(yr))
 
     @check_shape()
     def fossil_load_hrly(self, yr: tuple, *args) -> cp.Expression:
-        l, f = self.get_x(yr)
-        return l
+        return self.get_x(yr)
 
     @check_shape()
     def fossil_hist(self, yr: tuple, *args) -> cp.Expression:
-        return cp.sum(cp.sum(list(self.get_x(yr))))
+        return cp.sum(self.get_x(yr))
 
-    @check_shape()
-    def icx_ops(self, yr: tuple, *args) -> cp.Expression:
-        l, f = self.get_x(yr)
-        return f
+    def incumbent_ops(self, yr: tuple, *args) -> cp.Expression:
+        return self.get_x(yr)
 
     def gas_window_max(self, yr: tuple, *args) -> cp.Expression:
         return sum(
             sp.eye_array(8760 * len(yr), k=-n) for n in range(self.m.gas_window_max_hrs)
-        ) @ cp.sum(list(self.get_x(yr)))
+        ) @ self.get_x(yr)
 
     def objective(self, yr: tuple, yr_fact_map, *args) -> cp.Expression:
-        l, f = self.get_x(yr)
         mcoe = (
             prof(
                 self.mcoe.upsample("datetime", every="1h")
@@ -1774,19 +1822,13 @@ class IncumbentFossil(Fossil):
                 .to_numpy()
             )
             mult = 1.0
-        self.cost[yr] = (mcoe, mcoe)
-        self.cost_w_penalty[yr] = (mult * mcoe, mcoe)
-        return mult * mcoe @ l + mcoe @ f
+        self.cost[yr] = mcoe
+        self.cost_w_penalty[yr] = mult * mcoe
+        return mult * mcoe @ self.get_x(yr)
 
     def bounds(self, yr: tuple, *args) -> tuple[cp.Constraint, ...]:
-        l, f = self.get_x(yr)
-        return (
-            l >= 0.0,
-            f >= 0.0,
-            l <= self.m.i.cap,
-            f <= self.m.i.cap,
-            l + f <= self.m.i.cap,
-        )
+        l = self.get_x(yr)
+        return l >= 0.0, l <= self.m.i.cap
 
     def __repr__(self) -> str:
         cap = f"{self.m.i.cap:.0f}"
@@ -1800,12 +1842,16 @@ class IncumbentFossil(Fossil):
         return self.__class__.__qualname__ + f"({cap})"
 
 
-class ExportOnlyIncumbentFossil(Fossil):
+class ExportIncumbentFossil(Fossil):
     """x_ft"""
 
     _var_names = ("export_fossil",)
     _cat = "export_fossil"
     _dz = {"profs": ["x", "cost"]}
+
+    @property
+    def fuels(self):
+        return [self.m.i.fuel]
 
     @property
     def cap_summary(self) -> dict:
@@ -1830,6 +1876,9 @@ class ExportOnlyIncumbentFossil(Fossil):
 
     @check_shape()
     def icx_ops(self, yr: tuple, *args) -> cp.Expression:
+        return self.get_x(yr)
+
+    def incumbent_ops(self, yr: tuple, *args) -> cp.Expression:
         return self.get_x(yr)
 
     def gas_window_max(self, yr: tuple, *args) -> cp.Expression:
@@ -1868,7 +1917,7 @@ class ExportOnlyIncumbentFossil(Fossil):
         return self.get_x(yr) >= 0.0, self.get_x(yr) <= self.m.i.cap
 
 
-class LoadOnlyFossil(Fossil):
+class LoadNewFossil(Fossil):
     """x_f x_lt"""
 
     _var_names = ("load_fossil",)
@@ -1884,14 +1933,30 @@ class LoadOnlyFossil(Fossil):
         x_cap: float | None = None,
     ):
         self._tech = tech
-        if mcoe is None and primary_fuel != m.i.fuel:
-            m.d.load_ba_data()
-
+        self.primary_fuel = primary_fuel
+        d_cost = m.d.ba_data["dispatchable_cost"].collect()
+        if mcoe is None and self.primary_fuel != m.i.fuel:
+            if self.primary_fuel in d_cost["fuel_group"].unique():
+                mcoe = (
+                    d_cost.filter(pl.col("fuel_group") == self.primary_fuel)
+                    .group_by("datetime", maintain_order=True)
+                    .agg(pl.mean("fuel_per_mmbtu"))
+                )
+            else:
+                mcoe = m.aeo_fuel_price(self.primary_fuel)
+            mcoe = mcoe.select(
+                "datetime",
+                total_var_mwh=pl.col("fuel_per_mmbtu") * COSTS["eff"][self._tech]
+                + COSTS["vom"][self._tech],
+            )
         super().__init__(m, mcoe)
         self.cost_df = pl.DataFrame(
             {
                 "re_site_id": 0,
-                "re_type": self._tech,
+                "re_type": "load_fossil",
+                "generator_id": self._tech,
+                "tech": self._tech,
+                "fuel": self.fuels[0],
                 "capex_raw": COSTS["capex"][self._tech],
                 "life_adj": f_pv(
                     self.m.r_disc,
@@ -1911,6 +1976,10 @@ class LoadOnlyFossil(Fossil):
         self.x_cap = cp.Variable(1, name="fossil_cap")
         if x_cap is not None:
             self.x_cap.value = x_cap
+
+    @property
+    def fuels(self):
+        return [self.primary_fuel]
 
     @property
     def tech(self):
@@ -2022,7 +2091,7 @@ class LoadOnlyFossil(Fossil):
         return self.get_x(yr) >= 0.0, self.get_x(yr) <= self.x_cap.value
 
 
-class LoadOnlyFossilWithBackupFuel(Fossil):
+class LoadNewFossilWithBackup(Fossil):
     """x_f x_lt"""
 
     _var_names = ("load_fossil", "load_stored_fuel")
@@ -2094,6 +2163,10 @@ class LoadOnlyFossilWithBackupFuel(Fossil):
         self.x_cap = cp.Variable(1, name="fossil_cap")
         if x_cap is not None:
             self.x_cap.value = x_cap
+
+    @property
+    def fuels(self):
+        return [self.primary_fuel, self.backup_fuel]
 
     @property
     def tech(self):
@@ -2283,6 +2356,10 @@ class DCBackupFossil(Fossil):
                 + COSTS["vom"][self._tech],
             )
         super().__init__(m, mcoe)
+
+    @property
+    def fuels(self):
+        return [self.primary_fuel]
 
     @property
     def tech(self):

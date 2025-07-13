@@ -55,6 +55,7 @@ from patio.model.colo_common import (
     get_summary,
     good_screen,
     hstack,
+    keep_nonzero_cols,
     nt,
     prof,
     safediv,
@@ -63,11 +64,11 @@ from patio.model.colo_common import (
 )
 from patio.model.colo_resources import (
     DecisionVariable,
-    ExportOnlyIncumbentFossil,
+    ExportIncumbentFossil,
     FeStorage,
-    IncumbentFossil,
-    LoadOnlyFossil,
-    LoadOnlyFossilWithBackupFuel,
+    LoadIncumbentFossil,
+    LoadNewFossil,
+    LoadNewFossilWithBackup,
     Storage,
     is_resource_selection,
 )
@@ -326,21 +327,6 @@ class Data:
             raise KeyError(item)  # noqa: B904
 
 
-class _OptDataShim(NamedTuple):
-    m: "Model"
-
-    def clean_cost(self):
-        clean_cost = sum(dv.clean_cost() for dv in self.m).item()
-        f_yr = self.m.d.opt_years[0]
-        return {yr: (clean_cost if yr == f_yr else 0) for yr in self.m.d.opt_years}
-
-    def full_ptc(self):
-        return self.m["renewables"].full_ptc()
-
-    def c_mw_all(self):
-        return pl.concat([a for dv in self.m if (a := dv.c_mw_all()) is not None], how="align")
-
-
 class Model(IOMixin):
     cost_cols = [
         "re_site_id",
@@ -363,6 +349,7 @@ class Model(IOMixin):
         name: str,
         i: Info,
         d: Data,
+        *,
         life: int,
         build_year: int,
         atb_scenario: str,
@@ -375,9 +362,12 @@ class Model(IOMixin):
         fos_load_cost_mult: float = 1.0,
         gas_window_max_hrs: int = 24,
         gas_window_max_mult: float = 1.0,
+        gas_window_seasonal: bool = False,
         stored_fuel_hrs: int = 48,
         backup_max_hrs_per_year: int = 250,
         solar_degrade_per_year: float = 0.0,
+        load_icx_max_mult: float = 0.75,
+        con_fossil_load_hrly: bool = True,
         regime: Literal["limited", "reference"] = "limited",
         logger: logging.Logger | None = None,
         ptc: float = COSTS["ptc"],
@@ -391,7 +381,6 @@ class Model(IOMixin):
         self.name = name
         self.i: Info = i
         self.d: Data = d
-        self.a = _OptDataShim(self)
         self.life = life
         self.build_year = build_year
         self.atb_scenario = atb_scenario
@@ -410,6 +399,9 @@ class Model(IOMixin):
             "backup_max_hrs_per_year": backup_max_hrs_per_year,
             "gas_window_max_mult": gas_window_max_mult,
             "solar_degrade_per_year": solar_degrade_per_year,
+            "load_icx_max_mult": load_icx_max_mult,
+            "gas_window_seasonal": gas_window_seasonal,
+            "con_fossil_load_hrly": con_fossil_load_hrly,
         }
         self.result_dir = result_dir
         self.ptc = ptc
@@ -566,6 +558,22 @@ class Model(IOMixin):
     @property
     def solar_degrade_per_year(self):
         return self._params["solar_degrade_per_year"]
+
+    @property
+    def load_icx_max_mult(self):
+        return self._params["load_icx_max_mult"]
+
+    @property
+    def gas_window_seasonal(self):
+        return self._params["gas_window_seasonal"]
+
+    @property
+    def con_fossil_load_hrly(self):
+        return self._params["con_fossil_load_hrly"]
+
+    @cached_property
+    def fuels(self):
+        return {f for dv in self for f in dv.fuels}
 
     def mk_crit_hrs_mask(self, nh, yr):
         crit = lambda co: pl.col(co).rank(descending=True).over(pl.col("datetime").dt.year())  # noqa: E731
@@ -812,13 +820,18 @@ class Model(IOMixin):
             cp.sum([dv.load(yr) for dv in self]) == 0.0,
             cp.sum([dv.clean_export(yr) for dv in self]) >= 0.0,
             cp.sum([dv.fossil_load(yr) for dv in self]) <= 0.0,
-            cp.sum([dv.fossil_load_hrly(yr) for dv in self]) <= 0.0,
             cp.sum([dv.icx_ops(yr) for dv in self]) <= self.i.cap,
+            cp.sum([dv.incumbent_ops(yr) for dv in self]) <= self.i.cap,
             cp.sum([dv.land(yr) for dv in self]) <= self.b_land,
             cp.sum([dv.export_req(yr) for dv in self]) >= self.b_exp_req(yr),
-            cp.sum([dv.gas_window_max(yr) for dv in self]) <= self.b_rolling_gas(yr),
         ]
-        if not is_resource_selection(yr):
+        if "natural_gas" in self.fuels and self.i.fuel == "natural_gas":
+            cons.append(
+                cp.sum([dv.gas_window_max(yr) for dv in self]) <= self.b_rolling_gas(yr)
+            )
+        if self.con_fossil_load_hrly:
+            cons.append(cp.sum([dv.fossil_load_hrly(yr) for dv in self]) <= 0.0)
+        if not is_resource_selection(yr) and "distillate_fuel_oil" in self.fuels:
             cons.extend(
                 [
                     cp.sum([dv.stored_fuel(yr) for dv in self])
@@ -827,12 +840,12 @@ class Model(IOMixin):
                     <= self.backup_max_hrs_per_year * self.load_mw,
                 ]
             )
-        if IncumbentFossil in self and self.num_crit_hrs > 0:
+        if LoadIncumbentFossil in self and self.num_crit_hrs > 0:
             cons.append(
                 cp.multiply(self._crit_hrs[yr].value, cp.sum([dv.critical(yr) for dv in self]))
                 >= 0.0
             )
-        if IncumbentFossil in self or ExportOnlyIncumbentFossil in self:
+        if ExportIncumbentFossil in self:
             cons.append(cp.sum([dv.fossil_hist(yr) for dv in self]) <= self.b_fos_hist(yr))
         soc_ixs = [0] + prof(self.d.ba_pro, yr, cs.datetime).with_row_index().filter(
             (c.datetime.dt.month() == 12)
@@ -864,7 +877,7 @@ class Model(IOMixin):
         )
 
     def b_rolling_gas(self, yr):
-        return (
+        out = (
             self.export_profs.with_columns(
                 rmax=pl.sum("export_requirement").rolling(
                     "datetime", period=f"{self.gas_window_max_hrs}h"
@@ -878,13 +891,23 @@ class Model(IOMixin):
             .to_series()
             .to_numpy()
         )
+        if self.gas_window_seasonal:
+            return out
+        return max(out)
 
     def check_service(self):
         hrly_check = (
             self.hourly()
             .with_columns(
                 src=pl.sum_horizontal(
-                    *self.re_types, "es", "export_fossil", "load_fossil", "backup"
+                    cs.by_name(
+                        *self.re_types,
+                        "es",
+                        "export_fossil",
+                        "load_fossil",
+                        "backup",
+                        require_all=False,
+                    )
                 ),
                 disp=pl.sum_horizontal("export_requirement", "load"),
             )
@@ -977,28 +1000,16 @@ class Model(IOMixin):
             result = result.with_columns(
                 load_stored_fuel=pl.lit(0.0), c_load_stored_fuel=pl.lit(0.0)
             )
-        if "backup" not in cols:
-            result = result.with_columns(
-                backup=pl.lit(0.0), c_backup=pl.lit(0.0), backup_co2=pl.lit(0.0)
-            )
-        result = (
-            result.with_columns(
-                load_fossil=pl.sum_horizontal("load_fossil", "backup"),
-                load_fossil_co2=pl.sum_horizontal("load_fossil_co2", "backup_co2"),
-                es=pl.sum_horizontal(cs.contains("discharge"))
-                - pl.sum_horizontal(cs.contains("_charge")),
-            )
-            .with_columns(
-                fossil=pl.sum_horizontal("export_fossil", "load_fossil"),
-                export=pl.sum_horizontal("export_clean", "export_fossil"),
-                stored_fuel=pl.sum_horizontal("load_stored_fuel", "backup"),
-            )
-            .with_columns(
-                gas_fossil=pl.col("fossil") - pl.col("stored_fuel"),
-                clean_for_load=pl.min_horizontal(
-                    "load", pl.sum_horizontal(*self.re_types, "es")
-                ),
-            )
+        result = result.with_columns(
+            load_fossil_co2=pl.sum_horizontal("load_fossil_co2"),
+            es=pl.sum_horizontal(cs.contains("discharge"))
+            - pl.sum_horizontal(cs.contains("_charge")),
+            fossil=pl.sum_horizontal("export_fossil", "load_fossil"),
+            export=pl.sum_horizontal("export_clean", "export_fossil"),
+            stored_fuel=pl.sum_horizontal("load_stored_fuel"),
+        ).with_columns(
+            gas_fossil=pl.col("fossil") - pl.col("stored_fuel"),
+            clean_for_load=pl.min_horizontal("load", pl.sum_horizontal(*self.re_types, "es")),
         )
         if selection:
             return result.with_columns(critical_hour=self._crit_hrs[self.i.years].value)
@@ -1046,13 +1057,11 @@ class Model(IOMixin):
                 baseline_rev_fossil=c.baseline_export_fossil * c._hr_mkt_rev,
                 cost_fossil=pl.sum_horizontal(
                     pl.col("gas_fossil") * pl.col("c_export_fossil"),
-                    pl.col("stored_fuel")
-                    * pl.max_horizontal("c_backup", "c_load_stored_fuel"),
+                    pl.col("stored_fuel") * pl.col("c_load_stored_fuel"),
                 ),
                 cost_load_fossil=pl.sum_horizontal(
                     (pl.col("load_fossil") - pl.col("stored_fuel")) * pl.col("c_load_fossil"),
-                    pl.col("stored_fuel")
-                    * pl.max_horizontal("c_backup", "c_load_stored_fuel"),
+                    pl.col("stored_fuel") * pl.col("c_load_stored_fuel"),
                 ),
                 cost_export_fossil=c.export_fossil * c.c_export_fossil,
                 cost_curt=c.curtailment * c.c_curtailment
@@ -1064,69 +1073,92 @@ class Model(IOMixin):
         )
 
     def finance_df(self, hourly: pl.LazyFrame | None = None) -> pl.LazyFrame:
-        _cc = self.a.clean_cost()
-        _ptc = self.a.full_ptc()
+        core_cols = (
+            "datetime",
+            "type",
+            "capacity_mw",
+            "capex_gross",
+            "itc",
+            "tx_capex",
+            "fom",
+            "ptc",
+        )
+        cost_summary = (
+            pl.concat([dv.cost_summary(every="1y") for dv in self], how="diagonal_relaxed")
+            .with_columns(
+                type=pl.col("type").replace({"fossil": "load_fossil", "rice": "load_fossil"}),
+                hly=pl.sum_horizontal(~cs.by_name(*core_cols, require_all=False)),
+            )
+            .with_columns(
+                cost=pl.max_horizontal(0.0, pl.col("hly")),
+                rev=-pl.min_horizontal(0.0, pl.col("hly")),
+            )
+            .select(cs.by_name(*core_cols, "cost", "rev", require_all=False))
+            .select(~cs.starts_with("capacity_mw"))
+            .sort("type", "datetime")
+            .pivot(on=["type"], index="datetime")
+            .pipe(self.add_mapped_yrs)
+            .rename({"rev_export": "rev_clean", "cost_curtailment": "cost_curt"})
+            .with_columns(
+                cost_fossil=pl.sum_horizontal("cost_export_fossil", "cost_load_fossil")
+            )
+            .with_columns(cs.by_dtype(pl.Float64).fill_null(0.0))
+            .pipe(keep_nonzero_cols, keep=["cost_curt", *[f"ptc_{t}" for t in self.re_types]])
+            .lazy()
+        )
         if hourly is None:
             hourly = self.hourly().pipe(self.add_mapped_yrs)
         hourly = hourly.lazy()
         if any("redispatch" in co for co in hourly.collect_schema().names()):
-            red_cols = [
-                "redispatch_rev_clean",
-                "redispatch_rev_fossil",
-                "redispatch_cost_fossil",
-                "redispatch_cost_curt",
-                "redispatch_sys_cost",
-                "redispatch_cost_export_fossil",
-            ]
-            col0 = {"redispatch_ptc": c.full_ptc - c.redispatch_cost_curt}
+            col0 = {
+                "redispatch_ptc": pl.sum_horizontal(cs.starts_with("ptc_"))
+                - c.redispatch_cost_curt
+            }
             col1 = {
                 "redispatch_cost": pl.sum_horizontal("cost_clean", "redispatch_cost_fossil")
                 - c.redispatch_ptc
             }
         else:
-            red_cols = []
             col0, col1 = {}, {}
         return (
-            pl.concat(
-                [
-                    pl.LazyFrame(
-                        list((_cc | {k: _cc[v] for k, v in self.yr_mapper.items()}).items()),
-                        schema=["year", "cost_clean"],
-                        orient="row",
-                    ),
-                    pl.LazyFrame(
-                        list((_ptc | {k: _ptc[v] for k, v in self.yr_mapper.items()}).items()),
-                        schema=["year", "full_ptc"],
-                        orient="row",
-                    ),
-                    hourly.group_by(pl.col("datetime").dt.year().alias("year"))
-                    .agg(
-                        pl.col(
-                            "rev_clean",
-                            "rev_fossil",
-                            "baseline_rev_fossil",
-                            "cost_fossil",
-                            "cost_curt",
-                            "baseline_sys_cost",
-                            "cost_load_fossil",
-                            "cost_export_fossil",
-                            *red_cols,
-                        ).sum()
-                    )
-                    .sort("year"),
-                ],
-                how="align",
+            cost_summary.join(
+                hourly.group_by_dynamic("datetime", every="1y").agg(
+                    cs.by_name(
+                        "rev_fossil",
+                        "baseline_rev_fossil",
+                        "baseline_sys_cost",
+                        "redispatch_rev_clean",
+                        "redispatch_rev_fossil",
+                        "redispatch_cost_fossil",
+                        "redispatch_cost_curt",
+                        "redispatch_sys_cost",
+                        "redispatch_cost_export_fossil",
+                        require_all=False,
+                    ).sum()
+                ),
+                on="datetime",
+                how="left",
             )
-            .with_columns(ptc=c.full_ptc - c.cost_curt, **col0)
-            .with_columns(cost=pl.sum_horizontal("cost_clean", "cost_fossil") - c.ptc, **col1)
+            .sort("datetime")
             .with_columns(
-                func=c.cost - c.rev_clean,
+                year=pl.col("datetime").dt.year(),
                 fin_disc=np.reshape(
                     ((1 + COSTS["inflation"]) / (1 + COSTS["discount"]))
                     ** np.arange(self.life),
                     (self.life,),
                 ),
             )
+            .with_columns(
+                cost_clean=pl.sum_horizontal(cs.contains("capex") | cs.contains("itc"))
+                + pl.when(pl.col("datetime") == pl.col("datetime").min())
+                .then((pl.sum_horizontal(cs.starts_with("fom_")) * pl.col("fin_disc")).sum())
+                .otherwise(0.0),
+                full_ptc=pl.sum_horizontal(cs.starts_with("ptc_")),
+                ptc=pl.sum_horizontal(cs.starts_with("ptc_")) - c.cost_curt,
+                **col0,
+            )
+            .with_columns(cost=pl.sum_horizontal("cost_clean", "cost_fossil") - c.ptc, **col1)
+            .with_columns(func=c.cost - c.rev_clean)
             .pipe(
                 lambda df: df.select(
                     list(dict.fromkeys(["year"] + sorted(df.collect_schema().names())))
@@ -1159,10 +1191,8 @@ class Model(IOMixin):
                     "export_fossil",
                     "load_fossil",
                     "load_stored_fuel",
-                    "backup",
                     "historical_fossil",
                     "baseline_export_fossil",
-                    # "baseline_export_clean",
                     "baseline_sys_deficit",
                     "baseline_sys_co2",
                     "baseline_sys_load",
@@ -1194,7 +1224,9 @@ class Model(IOMixin):
             .with_columns(
                 rolling_max=pl.max("rolling_max").over(pl.col("datetime").dt.month()),
                 gas_use=pl.sum_horizontal("export_fossil", "load_fossil")
-                - pl.sum_horizontal("load_stored_fuel", "backup"),
+                - pl.sum_horizontal(
+                    cs.by_name("load_stored_fuel", "backup", require_all=False)
+                ),
             )
             .with_columns(
                 capacity_vio=pl.max_horizontal(pl.col("gas_use") - self.i.cap, 0.0),
@@ -1308,7 +1340,7 @@ class Model(IOMixin):
             .sort("datetime")
             .lazy()
         )
-        if LoadOnlyFossil in self:
+        if LoadNewFossil in self:
             new_fos_tech = self["fossil"].tech
             mcoe = (
                 self["fossil"]
@@ -1316,7 +1348,7 @@ class Model(IOMixin):
                 .with_columns(
                     cost=pl.col("load_fossil")
                     * pl.col("c_load_fossil")
-                    / self.fos_load_cost_mult.value
+                    / self.fos_load_cost_mult
                 )
                 .group_by(pl.col("datetime").dt.year())
                 .agg(pl.col("cost").sum())
@@ -1328,7 +1360,6 @@ class Model(IOMixin):
                 .with_columns(
                     datetime=pl.lit(f"{y}-01-01").str.to_datetime(),
                     capacity_mw=pl.lit(self["fossil"].x_cap.value.item()),
-                    generator_id=pl.lit(new_fos_tech),
                     mcoe=pl.lit(mcoe.filter(pl.col("datetime") == y)["cost"].item()),
                 )
                 .lazy()
@@ -1338,15 +1369,35 @@ class Model(IOMixin):
             new_fos_tech = None
             new_fos_specs = []
 
+        # costs = []
+        # for dv in self:
+        #     a = dv.cost_summary(
+        #         every="1y",
+        #         cap_grp=[
+        #             pl.col("re_site_id").alias("plant_id_eia"),
+        #             pl.col("re_type").alias("type"),
+        #             "generator_id",
+        #         ],
+        #         h_grp=[
+        #             pl.col("re_site_id").alias("plant_id_eia"),
+        #             pl.col("re_type").alias("type"),
+        #         ],
+        #     )
+        #     if a.is_empty():
+        #         a = dv.cost_summary(every="1y").with_columns(
+        #             plant_id_eia=pl.lit(0), generator_id=pl.lit(dv.cat)
+        #         )
+        #     costs.append(a)
+        #
+        # costs = pl.concat(costs, how="diagonal_relaxed")
+
         re_specs = pl.concat(
             [
                 pl.concat(
                     [
                         self["renewables"]
                         .cost_cap[(y,)]
-                        .with_columns(
-                            datetime=pl.lit(f"{y}-01-01").str.to_datetime(), mcoe=pl.lit(None)
-                        )
+                        .with_columns(datetime=pl.datetime(y, 1, 1), mcoe=pl.lit(None))
                         .lazy()
                         .join(
                             self.re_selected.lazy(), on=["re_site_id", "re_type"], how="right"
@@ -1365,14 +1416,6 @@ class Model(IOMixin):
                 )
                 .rename(
                     {"latitude_nrel_site": "latitude", "longitude_nrel_site": "longitude"}
-                ),
-                hourly.select("datetime", mcoe=pl.col("backup") * pl.col("c_backup"))
-                .group_by_dynamic("datetime", every="1y")
-                .agg(pl.sum("mcoe"))
-                .with_columns(
-                    plant_id_eia=pl.lit(-1).cast(pl.Int64),
-                    generator_id=pl.lit("backup"),
-                    capacity_mw=self.load_mw,
                 ),
             ],
             how="diagonal_relaxed",
@@ -1419,6 +1462,12 @@ class Model(IOMixin):
                     f"export__{r}": pl.sum_horizontal(cs.matches(f"^export_.*__{r}$"))
                     for r in (*self.re_types, "storage", "fossil")
                 },
+            )
+            .join(
+                hourly.select("datetime", "baseline_sys_lambda"),
+                on="datetime",
+                how="left",
+                validate="1:1",
             )
             .unpivot(index=["datetime", "baseline_sys_lambda"], on=cs.contains("__"))
             .with_columns(
@@ -1488,7 +1537,7 @@ class Model(IOMixin):
                         **TECH_CODES,
                         "fossil": TECH_CODES.get(self.i.tech, self.i.tech),
                         "new_fossil": TECH_CODES.get(new_fos_tech, new_fos_tech),
-                        "backup": TECH_CODES.get(self["backup"].tech, self["backup"].tech),
+                        # "backup": TECH_CODES.get(self["backup"].tech, self["backup"].tech),
                         "li": "Batteries",
                         "fe": "Batteries",
                         "storage": "Batteries",
@@ -1598,7 +1647,7 @@ class Model(IOMixin):
             "onshore_wind",
             "li_discharge",
             "fe_discharge",
-            *(("export_fossil", "load_fossil") if LoadOnlyFossil in self else ("fossil",)),
+            *(("export_fossil", "load_fossil") if LoadNewFossil in self else ("fossil",)),
         )
         bad = (
             full.with_columns(
@@ -1635,277 +1684,6 @@ class Model(IOMixin):
                 f"energy in econ df not reconciled for following resources / years\n{bad}"
             )
             self.logger.info("%s", self.errors[-1])
-        return full.select(
-            list(
-                dict.fromkeys(
-                    [
-                        *id_cols,
-                        "datetime",
-                        "capacity_mw",
-                        *en_cols,
-                        "redispatch_mmbtu",
-                        "redispatch_co2",
-                        *fin_cols,
-                        "capacity_mw_nrel_site",
-                        "area_sq_km",
-                        "distance",
-                    ]
-                )
-                | dict.fromkeys(full.collect_schema().names())
-            )
-        )
-
-    def create_df_for_econ_model_old(
-        self, flows_hourly: pl.LazyFrame, hourly: pl.LazyFrame
-    ) -> pl.LazyFrame:
-        re = (
-            self["renewables"]
-            .hourly(by_type=False)
-            .pipe(self.add_mapped_yrs)
-            .unpivot(
-                cs.numeric(),
-                index="datetime",
-                variable_name="combi_id",
-                value_name="redispatch_mwh",
-            )
-            .join(self.re_selected.lazy(), on="combi_id", how="inner", validate="m:1")
-            .select(
-                pl.col("re_site_id").alias("plant_id_eia"),
-                pl.col("generator_id").alias("source"),
-                "datetime",
-                "redispatch_mwh",
-            )
-        )
-        costs = (
-            self.d.ba_data["dispatchable_cost"]
-            .filter(
-                (pl.col("datetime").dt.year() >= self.d.opt_years[0])
-                & (c.plant_id_eia == self.i.pid)
-                & c.generator_id.is_in(self.i.gens)
-            )
-            .group_by("datetime", "plant_id_eia")
-            .agg(cs.numeric().mean())
-            .with_columns(
-                datetime=pl.col("datetime").cast(pl.Datetime()), source=pl.lit("fossil")
-            )
-            .collect()
-            .join(
-                flows_hourly.group_by_dynamic("datetime", every="1mo")
-                .agg(pl.sum("starts"))
-                .collect(),
-                on="datetime",
-                how="left",
-                validate="1:1",
-            )
-            .pipe(self.add_mapped_yrs)
-            .lazy()
-        )
-
-        re_specs = (
-            pl.concat(
-                [
-                    self["renewables"]
-                    .cost_cap[(y,)]
-                    .with_columns(
-                        datetime=pl.lit(f"{y}-01-01").str.to_datetime(), mcoe=pl.lit(None)
-                    )
-                    .lazy()
-                    .join(self.re_selected.lazy(), on=["re_site_id", "re_type"], how="right")
-                    for y in self.d.opt_years
-                ]
-                + [x for t in self.es_types for x in self[f"{t}_storage"].for_econ()],
-                how="diagonal_relaxed",
-            )
-            .pipe(self.add_mapped_yrs)
-            .with_columns(
-                fom_per_kw=pl.col("opex_raw") / 1000,
-                plant_id_eia=pl.col("re_site_id"),
-                category=pl.lit("colo_clean"),
-            )
-            .rename({"latitude_nrel_site": "latitude", "longitude_nrel_site": "longitude"})
-        )
-
-        specs = (
-            pl.from_pandas(self.d["plant_data"])
-            .filter((c.plant_id_eia == self.i.pid) & c.generator_id.is_in(self.i.gens))
-            .sort("capacity_mw", descending=True)
-            .group_by("plant_id_eia")
-            .agg(
-                pl.col("generator_id"),
-                c.capacity_mw.sum(),
-                pl.col(
-                    k
-                    for k in self.d["plant_data"].columns
-                    if k not in ("plant_id_eia", "generator_id", "capacity_mw", "source")
-                ).first(),
-            )
-            .with_columns(c.generator_id.list.sort().list.join(", "))
-            .lazy()
-        )
-
-        id_cols = ["plant_id_eia", "generator_id", "technology_description"]
-        en_cols = [
-            "redispatch_mwh",
-            "export_mwh",
-            "load_mwh",
-            # *[f"{t}_charging_mwh" for t in self.es_types],
-            "storage_charging_mwh",
-            "curtailment_mwh",
-            "redispatch_curt_adj_mwh",
-        ]
-        fin_cols = [
-            "export_revenue",
-            "redispatch_cost_fuel",
-            "redispatch_cost_vom",
-            "redispatch_cost_fom",
-            "redispatch_cost_startup",
-        ]
-        flow_pivot = (
-            flows_hourly.with_columns(
-                **{
-                    f"export__{r}": pl.sum_horizontal(cs.matches(f"^export_.*__{r}$"))
-                    for r in (*self.re_types, "storage", "fossil")
-                },
-            )
-            .unpivot(index=["datetime", "baseline_sys_lambda"], on=cs.contains("__"))
-            .with_columns(
-                destination=c.variable.str.split("__").list.first(),
-                source=c.variable.str.split("__").list.last(),
-            )
-            .collect()
-            .pivot(
-                index=["datetime", "source", "baseline_sys_lambda"],
-                on="destination",
-                values="value",
-            )
-            .lazy()
-        )
-        if len(self.es_types) > 1:
-            es_shares = hourly.select(
-                "datetime",
-                (
-                    cs.contains("discharge") / pl.sum_horizontal(cs.contains("discharge"))
-                ).fill_nan(0.0),
-            ).collect()
-            dest_cols = list(
-                dict.fromkeys(
-                    k.split("__")[0]
-                    for k in cs.expand_selector(flows_hourly, cs.contains("__"))
-                )
-            )
-            flow_pivot = pl.concat(
-                [flow_pivot.filter(~pl.col("source").str.contains("storage"))]
-                + [
-                    flow_pivot.filter(pl.col("source").str.contains("storage")).with_columns(
-                        pl.concat_str(pl.lit(f"{t}_"), pl.col("source")).alias("source"),
-                        pl.col(dest_cols) * es_shares.select(f"{t}_discharge").to_series(),
-                    )
-                    for t in self.es_types
-                ]
-            )
-        full = (
-            flow_pivot.lazy()
-            .join(
-                re.with_columns(
-                    share=(
-                        c.redispatch_mwh / c.redispatch_mwh.sum().over("datetime", "source")
-                    ).fill_nan(0.0)
-                ),
-                on=["datetime", "source"],
-                validate="1:m",
-                how="left",
-            )
-            .with_columns(
-                export_mwh=c.share.fill_null(1.0) * c.export,
-                export_revenue=c.share.fill_null(1.0) * c.baseline_sys_lambda * c.export,
-                load_mwh=c.share.fill_null(1.0) * c.load,
-                storage_charging_mwh=c.share.fill_null(1.0) * c.storage,
-                # **{
-                #     f"{t}_charging_mwh": c.share.fill_null(1.0) * pl.col(t)
-                #     for t in self.es_types
-                # },
-                curtailment_mwh=c.share.fill_null(1.0) * c.curtailment,
-                plant_id_eia=pl.when(c.source.str.contains("li") | c.source.str.contains("fe"))
-                .then(0)
-                .when(c.source == "fossil")
-                .then(self.i.pid)
-                .otherwise(c.plant_id_eia)
-                .cast(pl.Int64),
-                technology_description=c.source.replace(
-                    {
-                        **TECH_CODES,
-                        "fossil": TECH_CODES.get(self.i.tech, self.i.tech),
-                        "li": "Batteries",
-                        "fe": "Batteries",
-                    }
-                ),
-                generator_id=c.source.replace({"fossil": ", ".join(sorted(self.i.gens))}),
-            )
-            .with_columns(
-                generator_id=pl.when(pl.col("generator_id").is_in(self.es_types))
-                .then(pl.concat_str(pl.col("generator_id"), pl.lit("_storage")))
-                .otherwise(pl.col("generator_id"))
-            )
-            # removed backup that fills missing redispatch_mwh with sum of load_mwh, export_mwh,
-            # storage_charging_mwh, and curtailment_mwh
-            .with_columns(
-                redispatch_curt_adj_mwh=c.redispatch_mwh - c.curtailment_mwh,
-            )
-            .group_by_dynamic("datetime", every="1mo", group_by=(*id_cols, "source"))
-            .agg(pl.col(*en_cols, "export_revenue").sum())
-        )
-        full = (
-            full.join(
-                costs, on=["datetime", "plant_id_eia", "source"], validate="1:1", how="left"
-            )
-            .with_columns(
-                redispatch_cost_fuel=c.redispatch_mwh * c.fuel_per_mwh,
-                redispatch_cost_vom=c.redispatch_mwh * c.vom_per_mwh,
-                redispatch_cost_fom=self.i.cap * c.fom_per_kw * 1000 / 12,
-                redispatch_cost_startup=c.starts * self.i.cap * c.start_per_kw,
-                redispatch_mmbtu=c.redispatch_mwh * c.heat_rate,
-            )
-            .with_columns(
-                redispatch_co2=c.redispatch_mmbtu * c.co2_factor,
-            )
-            .filter(pl.col("plant_id_eia").is_not_null())
-            .group_by_dynamic("datetime", every="1y", group_by=(*id_cols, "source"))
-            .agg(pl.col(*en_cols, "redispatch_mmbtu", "redispatch_co2", *fin_cols).sum())
-        )
-
-        full = pl.concat(
-            [
-                full.filter(
-                    pl.col("generator_id").is_in(self.re_types).not_()
-                    & pl.col("source").is_in(self.es_types).not_()
-                ).join(
-                    specs,
-                    on=["plant_id_eia", "generator_id"],
-                    how="left",
-                    validate="m:1",
-                    suffix="__specs",
-                ),
-                full.filter(
-                    pl.col("generator_id").is_in(self.re_types)
-                    | pl.col("source").is_in(self.es_types)
-                ).join(
-                    re_specs,
-                    on=["plant_id_eia", "generator_id", "datetime"],
-                    how="left",
-                    validate="1:1",
-                    suffix="__specs",
-                ),
-            ],
-            how="diagonal_relaxed",
-        ).with_columns(
-            redispatch_cost_fom=pl.when(c.redispatch_cost_fom == 0.0)
-            .then(c.fom_per_kw * c.capacity_mw)
-            .otherwise(c.redispatch_cost_fom),
-            operating_month=c.operating_date.dt.month(),
-            operating_year=c.operating_date.dt.year(),
-            retirement_month=c.retirement_date.dt.month(),
-            retirement_year=c.retirement_date.dt.year(),
-        )
         return full.select(
             list(
                 dict.fromkeys(
@@ -1988,7 +1766,7 @@ class Model(IOMixin):
         ).collect()
         base = {
             "run_status": STATUS[self.status],
-            "icx_shared": IncumbentFossil in self,
+            "icx_shared": LoadIncumbentFossil in self,
             "load_mw": load,
             "fossil_mw": self.i.cap,
             "max_re_mw": self.i.max_re,
@@ -2033,7 +1811,7 @@ class Model(IOMixin):
             hrly = self._dfs.get("hourly", self.hourly().pipe(self.add_mapped_yrs))
             fin_disc = to_dict(
                 (fin := self.finance_df(hrly))
-                .select(pl.exclude("year", "fin_disc") * pl.col("fin_disc"))
+                .select(pl.exclude("datetime", "year", "fin_disc") * pl.col("fin_disc"))
                 .sum()
             )
             en_disc = to_dict(
@@ -2045,7 +1823,13 @@ class Model(IOMixin):
             vio = to_dict(self.gas_violation_df(hrly))
             hrly = hrly.lazy().collect()
         except Exception as exc:
-            self.errors.append(repr(exc))
+            self.logger.error(
+                "out_result_dict failed %s",
+                repr(exc).split("Resolved plan until failure")[0],
+                extra=self.extra,
+            )
+            self.logger.info("out_result_dict failed", exc_info=exc, extra=self.extra)
+            self.errors.append(repr(exc).split("Resolved plan until failure")[0])
             return nan_to_none(
                 base | {"errors": "; ".join(reversed(self.errors))} | self._out_result_dict
             )
@@ -2143,8 +1927,8 @@ class Model(IOMixin):
             },
             **{f"{k}_disc": v for k, v in fin_disc.items()},
             **{f"{k}_mwh_disc": v for k, v in en_disc.items()},
-            **to_dict(fin.select(cs.exclude("year", "fin_disc")).sum(), "_undisc"),
-            **to_dict(en.select(cs.exclude("year", "phys_disc")).sum(), "_mwh_disc"),
+            **to_dict(fin.select(cs.exclude("year", "datetime", "fin_disc")).sum(), "_undisc"),
+            **to_dict(en.select(cs.exclude("year", "phys_disc")).sum(), "_mwh_undisc"),
             "lcoe_redispatch": (
                 fin_disc.get("redispatch_cost", np.nan)
                 / (
@@ -2226,7 +2010,11 @@ class Model(IOMixin):
         except Exception:
             pass
         try:
-            out.update(coef_mw=self.a.c_mw_all())
+            out.update(
+                coef_mw=pl.concat(
+                    [a for dv in self if (a := dv.c_mw_all()) is not None], how="align"
+                )
+            )
         except Exception:
             pass
         try:
@@ -2442,7 +2230,7 @@ class Model(IOMixin):
         self["li_storage"].x_cap.value = [[li_mw], [li_mwh]]
         if FeStorage in self:
             self["fe_storage"].x_cap.value = [fe_mw]
-        if LoadOnlyFossil in self or LoadOnlyFossilWithBackupFuel in self:
+        if LoadNewFossil in self or LoadNewFossilWithBackup in self:
             self["fossil"].x_cap.value = [new_fossil_mw]
         self.add_to_result_dict(
             select_time=suma["select_time"].item(),
@@ -2534,7 +2322,7 @@ class Model(IOMixin):
         if (
             TECH_CODES.get(self.i.tech, self.i.tech) in OTHER_TD_MAP
             and "fossil" in self.dvs
-            and isinstance(self["fossil"], IncumbentFossil)
+            and isinstance(self["fossil"], LoadIncumbentFossil)
         ):
             icx_ixs = [(self.i.pid, g) for g in self.i.gens]
             colo_load_fossil = (
@@ -2699,53 +2487,60 @@ class Model(IOMixin):
             hourly = hourly.with_columns(redispatch_export_fossil=pl.col("export_fossil"))
         return hourly
 
-    def econ_and_flows(self, hourly, run_econ):
+    def econ_and_flows(self, hourly: pl.LazyFrame, run_econ):
+        assert "backup" not in hourly.collect_schema().names()
+
         with timer() as t0:
-            l_fos = "fossil" if IncumbentFossil in self else "new_fossil"
+            l_fos = "fossil" if LoadIncumbentFossil in self else "new_fossil"
+            es_fos = pl.min_horizontal(
+                "charge",
+                "load_fossil",
+                pl.max_horizontal(
+                    "load_fossil",
+                    pl.sum_horizontal(*self.re_types) - pl.col("load"),
+                ),
+            )
+            re = pl.sum_horizontal(*self.re_types)
             flows = (
                 hourly.lazy()
-                .with_columns(load_fossil=pl.col("load_fossil") - pl.col("backup"))
-                .rename({"load_fossil": f"load__{l_fos}", "backup": "load__backup"})
                 .with_columns(
-                    re=pl.sum_horizontal(*self.re_types),
-                    charge=-pl.min_horizontal(
+                    charge=-pl.min_horizontal(0.0, "es"),
+                    discharge=pl.max_horizontal(0.0, "es"),
+                    export_req__clean=pl.min_horizontal("export_requirement", "export_clean"),
+                    export_addl__clean=pl.col("export") - pl.col("export_requirement"),
+                )
+                .with_columns(
+                    es_fos.alias(f"storage__{l_fos}"),
+                    (pl.col("load_fossil") - es_fos).alias(f"load__{l_fos}"),
+                )
+                .with_columns(
+                    load__re=pl.min_horizontal(pl.col("load") - pl.col(f"load__{l_fos}"), re)
+                )
+                .with_columns(
+                    export_addl__re=pl.min_horizontal("export_addl__clean", re - c.load__re),
+                )
+                .with_columns(
+                    export_req__re=pl.max_horizontal(
                         0.0,
-                        pl.sum_horizontal(cs.contains("discharge"))
-                        - pl.sum_horizontal(cs.contains("_charge")),
-                    ),
-                    discharge=pl.max_horizontal(
-                        0.0,
-                        pl.sum_horizontal(cs.contains("discharge"))
-                        - pl.sum_horizontal(cs.contains("_charge")),
-                    ),
-                    load__clean=c.load - pl.sum_horizontal(f"load__{l_fos}", "load__backup"),
-                    load__re=pl.min_horizontal(
-                        c.load - pl.sum_horizontal(f"load__{l_fos}", "load__backup"),
-                        pl.sum_horizontal(*self.re_types),
-                    ),
-                    export_req__clean=pl.min_horizontal(c.export_requirement, c.export_clean),
-                    export_addl__clean=c.export - c.export_requirement,
-                )
-                .with_columns(
-                    export_addl__re=pl.min_horizontal(c.export_addl__clean, c.re - c.load__re),
-                )
-                .with_columns(
-                    export_req__re=c.re
-                    - pl.sum_horizontal(
-                        "export_addl__re", "load__re", "charge", "curtailment"
+                        re
+                        - pl.sum_horizontal(
+                            "export_addl__re", "load__re", "charge", "curtailment"
+                        ),
                     ),
                 )
                 .with_columns(
-                    export_req__storage=c.export_req__clean - c.export_req__re,
-                    export_req__fossil=c.export_requirement - c.export_req__clean,
+                    export_req__storage=pl.max_horizontal(
+                        0.0, c.export_req__clean - c.export_req__re
+                    ),
+                    export_req__fossil=pl.max_horizontal(
+                        0.0, c.export_requirement - c.export_req__clean
+                    ),
                     export_addl__storage=c.export_addl__clean - c.export_addl__re,
                     load__storage=pl.min_horizontal(
-                        c.load
-                        - pl.sum_horizontal(f"load__{l_fos}", "load__backup")
-                        - c.load__re,
-                        c.discharge,
+                        pl.col("load") - pl.sum_horizontal(f"load__{l_fos}", "load__re"),
+                        "discharge",
                     ),
-                    storage__re=pl.min_horizontal(c.re, c.charge),
+                    storage__re=c.charge - es_fos,
                     curtailment__re=c.curtailment,
                 )
             )
@@ -2768,6 +2563,13 @@ class Model(IOMixin):
                 & ~cs.ends_with("_soc")
                 & ~cs.starts_with("redispatch_sys_")
                 & (~cs.starts_with("baseline_sys_") | cs.contains("baseline_sys_lambda"))
+                & ~cs.contains("baseline")
+                & ~cs.contains("redispatch")
+                & ~cs.starts_with("c_")
+                & ~cs.starts_with("cp_")
+                & ~cs.ends_with("_co2")
+                & ~cs.starts_with("rev_")
+                & ~cs.starts_with("cost_")
             )
             check = (
                 flows.with_columns(
@@ -2781,9 +2583,11 @@ class Model(IOMixin):
                     ).abs(),
                     fossil_check=(
                         c.fossil
-                        - c.export_req__fossil
-                        - pl.col(f"load__{l_fos}")
-                        - pl.col("load__backup")
+                        - pl.sum_horizontal(
+                            "export_req__fossil",
+                            f"load__{l_fos}",
+                            f"storage__{l_fos}",
+                        )
                     ).abs(),
                     discharge_check=(
                         c.discharge - pl.sum_horizontal(cs.matches(".*__storage$"))
@@ -2804,6 +2608,15 @@ class Model(IOMixin):
                     | (c.charge_check > 0.1)
                     | (c.curtailment_check > 0.1)
                 )
+                .select(
+                    ~cs.contains("baseline")
+                    & ~cs.contains("redispatch")
+                    & ~cs.starts_with("c_")
+                    & ~cs.starts_with("cp_")
+                    & ~cs.ends_with("_co2")
+                    & ~cs.starts_with("rev_")
+                    & ~cs.starts_with("cost_")
+                )
                 .collect()
             )
         econ_df = pl.DataFrame()
@@ -2823,19 +2636,22 @@ class Model(IOMixin):
                 )
             self.add_to_result_dict(flows_time=t0() + t1())
             if run_econ:
-                # with timer() as t:
-                #     try:
-                #         econ_df_old = self.create_df_for_econ_model_old(flows_hourly, hourly).collect()
-                #     except Exception as exc:
-                #         self.errors.append(f"could not create econ_df, {exc!r}")
-                #         self.logger.error(self.errors[-1], extra=self.extra)
-                # self.add_to_result_dict(econ_df_time_old=t())
                 with timer() as t:
                     try:
                         econ_df = self.create_df_for_econ_model(flows_hourly, hourly).collect()
+                    except pl.exceptions.PolarsError as exc:
+                        self.errors.append(
+                            "could not create econ_df, "
+                            + repr(exc).split("Resolved plan until failure")[0]
+                            + "')"
+                        )
+                        self.logger.error(self.errors[-1], extra=self.extra)
+                        self.logger.info(self.errors[-1], exc_info=exc, extra=self.extra)
+                        self.to_file()
                     except Exception as exc:
                         self.errors.append(f"could not create econ_df, {exc!r}")
                         self.logger.error(self.errors[-1], extra=self.extra)
+                        self.logger.info(self.errors[-1], extra=self.extra, exc_info=exc)
                         self.to_file()
                 self.add_to_result_dict(econ_df_time=t())
             else:

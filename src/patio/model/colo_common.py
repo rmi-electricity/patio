@@ -1007,6 +1007,20 @@ def _(df: pl.LazyFrame):
     return df.select(*out_cols)
 
 
+def keep_nonzero_cols(df, keep=()):
+    cols = dict.fromkeys(
+        df.lazy()
+        .fill_null(0.0)
+        .sum()
+        .collect()
+        .transpose(include_header=True)
+        .filter(pl.col("column_0") != 0)["column"]
+    )
+    old_cols = df.lazy().collect_schema().names()
+    keep = dict.fromkeys(c for c in {"datetime", *keep} if c in old_cols)
+    return df.select(*list(keep | cols))
+
+
 def get_summary(run, ad, pudl_release=None, fs=None):
     if fs is None:
         fs = rmi_cloud_fs()

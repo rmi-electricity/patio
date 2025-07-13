@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import gc
+import io
 import json
 import logging
 import logging.handlers
@@ -22,9 +23,12 @@ from typing import Literal
 import pandas as pd
 import polars as pl
 import polars.selectors as cs
+from etoolbox.utils.cloud import rmi_cloud_fs
+from pypdf import PdfReader, PdfWriter
 from tqdm.asyncio import tqdm
 
 from patio.constants import PATIO_PUDL_RELEASE, ROOT_PATH, TECH_CODES
+from patio.data import AssetData
 from patio.helpers import (
     _git_commit_info,
 )
@@ -33,9 +37,15 @@ from patio.model.colo_common import (
     FAIL_SELECT,
     FAIL_SERVICE,
     FAIL_SMALL,
+    FANCY_COLS,
     STATUS,
     SUCCESS,
     SUM_COL_ORDER,
+    best_at_site,
+    get_flows,
+    get_summary,
+    good_screen,
+    make_case_sheets,
     timer,
 )
 from patio.model.colo_lp import Data, Info, Model
@@ -278,6 +288,12 @@ def model_colo_config(
     except AssertionError as exc:
         logger.info("%r", exc, extra=model.extra)
         model.errors.append(repr(exc))
+        model.to_file()
+    except pl.exceptions.PolarsError as exc:
+        e_str = repr(exc).split("Resolved plan until failure")[0] + "')"
+        logger.error("%s", e_str, extra=model.extra)
+        logger.info("error ", exc_info=exc, extra=model.extra)
+        model.errors.append(e_str)
         model.to_file()
     except Exception as exc:
         logger.error("%r", exc, extra=model.extra)
@@ -1253,3 +1269,109 @@ def break_summary(summary):
 
 if __name__ == "__main__":
     main()
+
+
+class Results:
+    def __init__(self, *results):
+        self.ad = AssetData()
+        self.fs = rmi_cloud_fs()
+        self.names = results
+        self.back_names = {n: i for i, n in enumerate(self.names)}
+        self.summaries = []
+        self.aligned = []
+        self.flows = []
+        for result in self.names:
+            self.summaries.append(get_summary(run=result, ad=self.ad, fs=self.fs))
+            self.aligned.append(best_at_site(self.summaries[-1]))
+            self.get_flows.append(get_flows(result))
+
+    def norm_run(self, run):
+        if isinstance(run, str):
+            return self.back_names[run]
+        return run
+
+    def for_dataroom(self, run, *, clip=False):
+        out = (
+            self.summaries[self.norm_run(run)]
+            .query("run_status == 'SUCCESS'")
+            .replace(
+                {
+                    "tech": TECH_CODES,
+                    "name": {"form_fos": "form_new_fossil", "pure_surplus": "new_fossil"},
+                }
+            )[list(FANCY_COLS)]
+            .rename(columns=FANCY_COLS)
+        )
+        if clip:
+            out.to_clipboard(index=False)
+        return out
+
+    def case_sheets(self, run, *, land_screen=True):
+        run = self.norm_run(run)
+        subplots = make_case_sheets(
+            self.summaries[run].replace(
+                {"name": {"form_fos": "form_new_fossil", "pure_surplus": "new_fossil"}}
+            ),
+            self.flows[run].with_columns(
+                name=pl.col("name").replace(
+                    {"form_fos": "form_new_fossil", "pure_surplus": "new_fossil"}
+                )
+            ),
+            test=False,
+            land_screen=land_screen,
+        )
+        if not (fig_path := Path.home() / "patio_data/figures").exists():
+            if not fig_path.parent.exists():
+                fig_path.parent.mkdir()
+            fig_path.mkdir()
+        file = fig_path / f"{run} screened.pdf"
+        if file.exists():
+            file.unlink()
+        with PdfWriter(file) as pdf:
+            for plot in tqdm(subplots):
+                if "**" not in plot.layout.title.text:
+                    continue
+                o = PdfReader(
+                    io.BytesIO(
+                        plot.to_image(
+                            format="pdf", height=plot.layout.height, width=plot.layout.width
+                        )
+                    )
+                )
+                for page in o.pages:
+                    if page.get_contents() is not None:
+                        pdf.add_page(page)
+                    else:
+                        print(page)
+
+    def package_econ_data(self, run, ad, addl_filter, *, local=False):
+        colo_dir = Path.home() / "patio_data" / run
+        econ_dir = colo_dir / "econ"
+        econ_dir.mkdir()
+
+        good = good_screen(
+            pl.from_pandas(self.summaries[self.norm_run(run)]).filter(addl_filter)
+        )
+        selector = ~cs.by_dtype(pl.List(pl.Int64)) & ~cs.by_dtype(pl.Duration)
+        for info in tqdm(set(Info.from_df(good))):
+            for o_ids in (
+                good.filter(info.filter()).select("regime", "ix").iter_rows(named=True)
+            ):
+                ftsv_scr = info.filter(**o_ids)
+                pdir = econ_dir / info.file(**o_ids, suffix="")
+                pdir.mkdir(parents=True, exist_ok=True)
+                for file in (
+                    "summary",
+                    "annual",
+                    "cost_detail",
+                    "flows",
+                    "re_selected",
+                    "full",
+                ):
+                    try:
+                        with self.fs.open(f"patio-results/{run}/colo_{file}.parquet") as f:
+                            pl.scan_parquet(f).filter(ftsv_scr).select(selector).sink_csv(
+                                pdir / f"{file}.csv"
+                            )
+                    except Exception as e:
+                        print(f"{info} {o_ids} {e!r}")

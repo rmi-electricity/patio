@@ -121,7 +121,7 @@ base = { cmd = "echo base {{ datestr }}", args = [ "datestr" ] }
 hh = { cmd = "echo hh {{ datestr }}", args = [ "datestr" ], depends-on = [{ task = 'base', args = [ "{{ datestr }}" ] } ] }
 
 [tool.pixi.feature.econ.dependencies]
-r-base = ">=4.4.3,<4.5"
+r-base = ">=4.4.3,<4.6"
 r-lubridate = ">=1.9.4,<2"
 r-arrow = ">=19.0.1,<20"
 r-readxl = ">=1.4.5,<2"
@@ -144,7 +144,7 @@ r-shiny = ">=1.11.0,<2"
 
 [tool.pixi.feature.econ]
 target.linux.tasks.rstudio = "rstudio"
-target.osx.tasks.rstudio = "open -a rstudio"
+target.osx.tasks.rstudio = "RSTUDIO_WHICH_R=$(pixi run which R) /Applications/RStudio.app/Contents/MacOS/RStudio"
 # this is needed because r-reticulate needs conda-meta/history that pixi doesn't provide
 # we also need to download the BBB....xlsm config file, and install other R packages
 activation.scripts = [ "activation/env_setup.sh", "activation/r_setup.sh" ]
@@ -293,3 +293,4 @@ pydocstyle.convention = "google"
 "__init__.py" = [ "F401" ]
 "docs/conf.py" = [ "E501" ]
 "tests/*.py" = [ "S101", "SIM117", "F841", "D100", "D101", "PD901", "PT028", "PD011", "B011", "RUF012", "PT015", "PT006" ]
+"notebooks/*.ipynb" = [ "F401" ]

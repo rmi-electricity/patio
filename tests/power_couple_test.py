@@ -21,12 +21,12 @@ from patio.model.colo_resources import (
     Curtailment,
     EndogenousDurationStorage,
     EndogenousLoad,
-    ExportOnlyIncumbentFossil,
+    ExportIncumbentFossil,
     FeStorage,
     FixedDurationStorage,
     FlexLoad,
-    IncumbentFossil,
-    LoadOnlyFossil,
+    LoadIncumbentFossil,
+    LoadNewFossil,
     Renewables,
 )
 
@@ -53,14 +53,14 @@ class TestPowerCouple:
     @pytest.mark.parametrize(
         "pid,scenario,expected",
         [
+            (55234, "moderate", (600.0, 1890.0, 1140.0, 600.0, 10.0, None, None)),
             pytest.param(
                 55234,
-                "moderate",
-                (600.0, 1550.0, 1350.0, 600.0, 10.0, None, None),
+                "form",
+                (600.0, 2750.0, 2120.0, 0.0, 0.0, 1000.0, None),
                 marks=pytest.mark.skip,
             ),
-            (55234, "form", (600.0, 2750.0, 2120.0, 0.0, 0.0, 1000.0, None)),
-            (55234, "pure_surplus", (600.0, 1720.0, 1690.0, 600.0, 10.0, None, 400.0)),
+            (55234, "pure_surplus", (975.0, 2710.0, 2120.0, 1975.0, 18.0, None, 375.0)),
         ],
         ids=idfn,
     )
@@ -93,6 +93,8 @@ class TestPowerCouple:
             if result.get(name, None) != expected[name]:
                 bad.append(f"{result.get(name, None)=} != {expected[name]=}")
         assert not bad, "\n".join(bad)
+        if "ppa_ex_fossil_export_profit" not in result:
+            raise AssertionError("cost and other metrics failed")
 
 
 @pytest.mark.skip(reason="test_colo_config approach is easier to target.")
@@ -328,7 +330,6 @@ class OLD:
         EndogenousDurationStorage(pc)
         CleanExport(pc)
         Curtailment(pc)
-        IncumbentFossil(pc, mcoe=pc.d.mcoe)
         o = pc.pre_check(100.0)
         pc.select_resources(240)
         pc["storage"].cost_cap[pc.i.years]
@@ -370,7 +371,7 @@ class OLD:
         EndogenousDurationStorage(pc)
         CleanExport(pc)
         Curtailment(pc)
-        ExportOnlyIncumbentFossil(pc, mcoe=pc.d.mcoe)
+        ExportIncumbentFossil(pc, mcoe=pc.d.mcoe)
         FeStorage(pc)
         o = pc.pre_check(100.0)
         pc.select_resources(480)
@@ -403,8 +404,8 @@ class OLD:
         EndogenousDurationStorage(pc)
         CleanExport(pc)
         Curtailment(pc)
-        ExportOnlyIncumbentFossil(pc, mcoe=pc.d.mcoe)
-        LoadOnlyFossil(pc, mcoe=pc.d.mcoe.with_columns(pl.col("total_var_mwh") * 1.25))
+        ExportIncumbentFossil(pc, mcoe=pc.d.mcoe)
+        LoadNewFossil(pc, mcoe=pc.d.mcoe.with_columns(pl.col("total_var_mwh") * 1.25))
         o = pc.pre_check(100.0)
         pc.select_resources(480)
         pc.round()
@@ -700,7 +701,7 @@ class OLD:
         ids=idfn,
     )
     def test_fossil_export(self, pc, meth, args, expected):
-        s = IncumbentFossil(pc, pd.Series(25.0, index=self.DT_RNG))
+        s = ExportIncumbentFossil(pc, pd.Series(25.0, index=self.DT_RNG))
 
         method = getattr(s, meth)
         if hasattr(method, "_pre_cvx"):
@@ -744,7 +745,7 @@ class OLD:
         ids=idfn,
     )
     def test_fossil_no_export(self, pc, meth, args, expected):
-        s = IncumbentFossil(pc, pd.Series(25.0, index=self.DT_RNG), exportable=False)
+        s = LoadIncumbentFossil(pc, pd.Series(25.0, index=self.DT_RNG), exportable=False)
 
         method = getattr(s, meth)
         if hasattr(method, "_pre_cvx"):
@@ -815,7 +816,7 @@ class OLD:
         ids=idfn,
     )
     def test_new_fossil(self, pc, meth, args, expected):
-        s = LoadOnlyFossil(pc, pd.Series(25.0, index=self.DT_RNG), exportable=True)
+        s = LoadNewFossil(pc, pd.Series(25.0, index=self.DT_RNG), exportable=True)
 
         method = getattr(s, meth)
         if hasattr(method, "_pre_cvx"):
@@ -886,7 +887,7 @@ class OLD:
         ids=idfn,
     )
     def test_new_fossil_no_export(self, pc, meth, args, expected):
-        s = LoadOnlyFossil(pc, pd.Series(25.0, index=self.DT_RNG), exportable=False)
+        s = LoadNewFossil(pc, pd.Series(25.0, index=self.DT_RNG), exportable=False)
 
         method = getattr(s, meth)
         if hasattr(method, "_pre_cvx"):
