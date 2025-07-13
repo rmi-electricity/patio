@@ -288,18 +288,18 @@ def model_colo_config(
     except AssertionError as exc:
         logger.info("%r", exc, extra=model.extra)
         model.errors.append(repr(exc))
-        model.to_file()
+        # model.to_file()
     except pl.exceptions.PolarsError as exc:
         e_str = repr(exc).split("Resolved plan until failure")[0] + "')"
         logger.error("%s", e_str, extra=model.extra)
         logger.info("error ", exc_info=exc, extra=model.extra)
         model.errors.append(e_str)
-        model.to_file()
+        # model.to_file()
     except Exception as exc:
         logger.error("%r", exc, extra=model.extra)
         logger.info("%r", exc, exc_info=exc, extra=model.extra)
         model.errors.append(repr(exc))
-        model.to_file()
+        # model.to_file()
     finally:
         elapsed = perf_counter() - start
         logger.info("%s seconds=%d", STATUS[model.status], elapsed, extra=model.extra)

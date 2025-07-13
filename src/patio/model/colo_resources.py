@@ -142,70 +142,70 @@ class DecisionVariable:
     def cost_summary(self, every="1y", cap_grp=None, h_grp=None):
         if cap_grp is None:
             cap_grp = (pl.col("re_type").alias("type"),)
-        try:
-            parts = []
-            if self.cost_cap:
-                ovn = {
-                    "capex_gross": product("capex_raw", "reg_mult", "life_adj", "capacity_mw"),
-                    "itc": -product("capex_raw", "reg_mult", "life_adj", "capacity_mw")
-                    * (1 - pl.col("itc_adj")),
-                    "tx_capex": product("tx_capex_raw", "distance", "capacity_mw"),
-                }
-                ops = {
-                    "fom": product("opex_raw", "capacity_mw"),
-                    "ptc": -product("ptc_gen", "ptc", "capacity_mw"),
-                }
+        # try:
+        parts = []
+        if self.cost_cap:
+            ovn = {
+                "capex_gross": product("capex_raw", "reg_mult", "life_adj", "capacity_mw"),
+                "itc": -product("capex_raw", "reg_mult", "life_adj", "capacity_mw")
+                * (1 - pl.col("itc_adj")),
+                "tx_capex": product("tx_capex_raw", "distance", "capacity_mw"),
+            }
+            ops = {
+                "fom": product("opex_raw", "capacity_mw"),
+                "ptc": -product("ptc_gen", "ptc", "capacity_mw"),
+            }
 
-                parts.append(
-                    pl.concat(
-                        [
-                            v.with_columns(
-                                capacity_mw=self.x_cap.value,
-                                datetime=pl.datetime(
-                                    {self.m.i.years: min(self.m.d.opt_years)}.get(k, k[0]),
-                                    1,
-                                    1,
-                                ),
-                            ).with_columns(**(ops if len(k) == 1 else ovn))
-                            for k, v in self.cost_cap.items()
-                        ],
-                        how="diagonal_relaxed",
-                    )
-                    .group_by("datetime", *cap_grp, maintain_order=True)
-                    .agg(pl.first("capacity_mw"), pl.col(list(ovn) + list(ops)).sum())
+            parts.append(
+                pl.concat(
+                    [
+                        v.with_columns(
+                            capacity_mw=self.x_cap.value,
+                            datetime=pl.datetime(
+                                {self.m.i.years: min(self.m.d.opt_years)}.get(k, k[0]),
+                                1,
+                                1,
+                            ),
+                        ).with_columns(**(ops if len(k) == 1 else ovn))
+                        for k, v in self.cost_cap.items()
+                    ],
+                    how="diagonal_relaxed",
                 )
-            if self.cost:
-                parts.append(
-                    self.hourly()
-                    .with_columns(**{c: product(c, f"c_{c}") for c in self.var_names})
-                    .group_by_dynamic("datetime", every=every, group_by=h_grp)
-                    .agg(pl.col(*self.var_names).sum())
-                    .collect()
-                )
-            if parts:
-                out = pl.concat(parts, how="align")
-                if "type" in out.columns:
-                    return out
-                return out.with_columns(type=pl.lit(self.cat))
-            return pl.DataFrame()
-
-        except pl.exceptions.PolarsError as exc:
-            self.m.logger.error(
-                "%s cost summary failed %s msg=%s",
-                self.__class__.__qualname__,
-                exc.__class__,
-                str(exc).split("Resolved plan until failure:")[0],
-                extra=self.m.extra,
+                .group_by("datetime", *cap_grp, maintain_order=True)
+                .agg(pl.first("capacity_mw"), pl.col(list(ovn) + list(ops)).sum())
             )
-            return pl.DataFrame()
-        except Exception as exc:
-            self.m.logger.error(
-                "%s cost summary failed %r",
-                self.__class__.__qualname__,
-                exc,
-                extra=self.m.extra,
+        if self.cost:
+            parts.append(
+                self.hourly()
+                .with_columns(**{c: product(c, f"c_{c}") for c in self.var_names})
+                .group_by_dynamic("datetime", every=every, group_by=h_grp)
+                .agg(pl.col(*self.var_names).sum())
+                .collect()
             )
-            return pl.DataFrame()
+        if parts:
+            out = pl.concat(parts, how="align")
+            if "type" in out.columns:
+                return out
+            return out.with_columns(type=pl.lit(self.cat))
+        return pl.DataFrame()
+        #
+        # except pl.exceptions.PolarsError as exc:
+        #     self.m.logger.error(
+        #         "%s cost summary failed %s msg=%s",
+        #         self.__class__.__qualname__,
+        #         exc.__class__,
+        #         str(exc).split("Resolved plan until failure:")[0],
+        #         extra=self.m.extra,
+        #     )
+        #     return pl.DataFrame()
+        # except Exception as exc:
+        #     self.m.logger.error(
+        #         "%s cost summary failed %r",
+        #         self.__class__.__qualname__,
+        #         exc,
+        #         extra=self.m.extra,
+        #     )
+        #     return pl.DataFrame()
 
     def set_x_cap(self, cap_summary, re_selected, *args):
         return None

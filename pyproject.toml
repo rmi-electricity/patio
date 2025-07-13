@@ -117,8 +117,6 @@ test = { cmd = [
     "coverage", "report", "--sort=cover",
 ] }
 ci = { depends-on = [ "lint", "docs", "test" ] }
-base = { cmd = "echo base {{ datestr }}", args = [ "datestr" ] }
-hh = { cmd = "echo hh {{ datestr }}", args = [ "datestr" ], depends-on = [{ task = 'base', args = [ "{{ datestr }}" ] } ] }
 
 [tool.pixi.feature.econ.dependencies]
 r-base = ">=4.4.3,<4.6"
@@ -293,4 +291,4 @@ pydocstyle.convention = "google"
 "__init__.py" = [ "F401" ]
 "docs/conf.py" = [ "E501" ]
 "tests/*.py" = [ "S101", "SIM117", "F841", "D100", "D101", "PD901", "PT028", "PD011", "B011", "RUF012", "PT015", "PT006" ]
-"notebooks/*.ipynb" = [ "F401" ]
+"notebooks/*.ipynb" = [ "F401", "F403" ]

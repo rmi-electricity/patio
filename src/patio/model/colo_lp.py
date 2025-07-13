@@ -49,6 +49,7 @@ from patio.model.colo_common import (
     INFEASIBLE,
     STATUS,
     SUCCESS,
+    add_missing_col,
     aeo,
     capture_stderr,
     capture_stdout,
@@ -1072,7 +1073,7 @@ class Model(IOMixin):
             )
         )
 
-    def finance_df(self, hourly: pl.LazyFrame | None = None) -> pl.LazyFrame:
+    def finance_df(self, hourly: pl.LazyFrame | pl.DataFrame | None = None) -> pl.LazyFrame:
         core_cols = (
             "datetime",
             "type",
@@ -1097,13 +1098,23 @@ class Model(IOMixin):
             .select(~cs.starts_with("capacity_mw"))
             .sort("type", "datetime")
             .pivot(on=["type"], index="datetime")
+            .pipe(add_missing_col, "cost_load_fossil")
             .pipe(self.add_mapped_yrs)
             .rename({"rev_export": "rev_clean", "cost_curtailment": "cost_curt"})
             .with_columns(
                 cost_fossil=pl.sum_horizontal("cost_export_fossil", "cost_load_fossil")
             )
             .with_columns(cs.by_dtype(pl.Float64).fill_null(0.0))
-            .pipe(keep_nonzero_cols, keep=["cost_curt", *[f"ptc_{t}" for t in self.re_types]])
+            .pipe(
+                keep_nonzero_cols,
+                keep=[
+                    "cost_curt",
+                    "cost_load_fossil",
+                    "cost_export_fossil",
+                    "cost_fossil",
+                    *[f"ptc_{t}" for t in self.re_types],
+                ],
+            )
             .lazy()
         )
         if hourly is None:
@@ -1725,6 +1736,7 @@ class Model(IOMixin):
         exp = chk.filter((pl.col("export") - pl.col("_export")).abs() > 1)
         cur = chk.filter((pl.col("curtailment") - pl.col("_curtailment")).abs() > 1)
         ld = chk.filter((pl.col("load") - load).abs() > 1)
+        bat_curt = chk.filter((pl.col("curtailment") > 0) & (pl.col("es") > 0))
         nh = chk.shape[0]
 
         excess_fos = chk.filter(
@@ -1755,6 +1767,12 @@ class Model(IOMixin):
             h_pct = len(ld) / nh
             l_load = 1 - hourly.select("load").sum().collect().item() / (load * nh)
             self.errors.append(f"{l_load:.5%} of load not met affecting {h_pct:.4%} of hours")
+            self.logger.info(self.errors[-1], extra=self.extra)
+        if not bat_curt.is_empty():
+            h_pct = len(bat_curt) / nh
+            self.errors.append(
+                f"curtailment and storage discharge both nonzero in {h_pct:.4%} of hours"
+            )
             self.logger.info(self.errors[-1], extra=self.extra)
         return self
 
@@ -1803,7 +1821,7 @@ class Model(IOMixin):
             "unused_sqkm_pct": (total_sqkm - re_used_sqkm - load * sqkm_per_mw_load)
             / total_sqkm,
         }
-        if not self.dispatchs:
+        if self.status != SUCCESS:
             return nan_to_none(
                 base | {"errors": "; ".join(reversed(self.errors))} | self._out_result_dict
             )
@@ -1823,13 +1841,12 @@ class Model(IOMixin):
             vio = to_dict(self.gas_violation_df(hrly))
             hrly = hrly.lazy().collect()
         except Exception as exc:
-            self.logger.error(
-                "out_result_dict failed %s",
-                repr(exc).split("Resolved plan until failure")[0],
-                extra=self.extra,
-            )
-            self.logger.info("out_result_dict failed", exc_info=exc, extra=self.extra)
             self.errors.append(repr(exc).split("Resolved plan until failure")[0])
+            if self.status == SUCCESS:
+                self.logger.error(
+                    "out_result_dict failed %s", self.errors[-1], extra=self.extra
+                )
+                self.logger.info(self.errors[-1], exc_info=exc, extra=self.extra)
             return nan_to_none(
                 base | {"errors": "; ".join(reversed(self.errors))} | self._out_result_dict
             )
@@ -2030,7 +2047,9 @@ class Model(IOMixin):
             try:
                 h = self._dfs.get("hourly", None)
                 self._dfs.update(
-                    annual=pl.concat([self.finance_df(h), self.energy_df(h)], how="align")
+                    annual=pl.concat(
+                        [self.finance_df(h).lazy(), self.energy_df(h).lazy()], how="align"
+                    ).collect()
                 )
             except Exception:
                 pass
@@ -2621,6 +2640,11 @@ class Model(IOMixin):
             )
         econ_df = pl.DataFrame()
         if not check.is_empty():
+            self.errors.append(
+                f"flows inaccurate in {len(check) / (self.life * 8760):.6%} of hours"
+            )
+            self.logger.error(self.errors[-1], extra=self.extra)
+        if len(check) > 9 * self.life:
             self.add_to_result_dict(flows_time=t0())
             self.logger.error("check of flows failed", extra=self.extra)
             flows = pl.DataFrame()

@@ -455,6 +455,12 @@ def safediv(a, b):
         return np.nan
 
 
+def add_missing_col[T: pl.LazyFrame | pl.DataFrame](df: T, col: str) -> T:
+    if col not in df.lazy().collect_schema().names():
+        df = df.with_columns(pl.lit(0.0).alias(col))
+    return df
+
+
 def prof[T: pl.DataFrame | pl.LazyFrame](
     df: T, years: tuple[int, ...], selection=cs.numeric
 ) -> T:
@@ -2791,3 +2797,13 @@ def flows_w_allocated_storage(run, fs=None):
         .is_empty()
     )
     return out
+
+
+def parse_log(run: str, *, local: bool = False) -> pl.DataFrame:
+    run = "colo_" + run.removeprefix("colo_")
+    if local:
+        return pl.read_ndjson(Path.home() / f"patio_data/{run}/log.jsonl")
+    else:
+        fs = rmi_cloud_fs()
+        with fs.open(f"patio-results/{run}/log.jsonl") as f:
+            return pl.read_ndjson(f)

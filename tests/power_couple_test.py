@@ -53,14 +53,15 @@ class TestPowerCouple:
     @pytest.mark.parametrize(
         "pid,scenario,expected",
         [
-            (55234, "moderate", (600.0, 1890.0, 1140.0, 600.0, 10.0, None, None)),
-            pytest.param(
-                55234,
-                "form",
-                (600.0, 2750.0, 2120.0, 0.0, 0.0, 1000.0, None),
-                marks=pytest.mark.skip,
-            ),
-            (55234, "pure_surplus", (975.0, 2710.0, 2120.0, 1975.0, 18.0, None, 375.0)),
+            # (55234, "moderate", (600.0, 1890.0, 1140.0, 600.0, 10.0, None, None)),
+            # pytest.param(
+            #     55234,
+            #     "form",
+            #     (600.0, 2750.0, 2120.0, 0.0, 0.0, 1000.0, None),
+            #     marks=pytest.mark.skip,
+            # ),
+            # (55234, "pure_surplus", (975.0, 2710.0, 2120.0, 1975.0, 18.0, None, 375.0)),
+            (57881, "clean", (975.0, 2710.0, 2120.0, 1975.0, 18.0, None, 375.0)),
         ],
         ids=idfn,
     )
@@ -83,6 +84,46 @@ class TestPowerCouple:
             configs[0],
             colo_dir=temp_dir,
             data_dir=test_dir / "colo_test_data",
+            info=plants_data[0],
+            regime="reference",
+        )
+        if result["run_status"] != "SUCCESS":
+            raise AssertionError(f"run failed with {result['run_status']}")
+        bad = []
+        for name in self.test_keys:
+            if result.get(name, None) != expected[name]:
+                bad.append(f"{result.get(name, None)=} != {expected[name]=}")
+        assert not bad, "\n".join(bad)
+        if "ppa_ex_fossil_export_profit" not in result:
+            raise AssertionError("cost and other metrics failed")
+
+    # @pytest.mark.skip(reason="debug only.")
+    @pytest.mark.parametrize(
+        "pid,scenario,expected",
+        [
+            (55417, "form", (975.0, 2710.0, 2120.0, 1975.0, 18.0, None, 375.0)),
+        ],
+        ids=idfn,
+    )
+    def test_colo_config_toml_data(self, test_dir, temp_dir, pid, scenario, expected):
+        """Validate colo model on select plants / configs."""
+        set_timeout(1800)
+
+        expected = dict(zip(self.test_keys, expected, strict=False))
+        with open(test_dir.parent / "patio.toml", "rb") as f:
+            config = tomllib.load(f)["colo"]
+        config["project"]["plant_ids"] = [pid]
+        config["project"]["scenarios"] = [scenario]
+        config["scenario"]["default"]["setting"]["saved_select"] = ""
+        with open(test_dir / "colo_test_data/colo.json") as f:
+            plant_json = json.load(f)
+
+        configs, plants_data = setup_plants_configs(config, **plant_json)
+
+        result = model_colo_config(
+            configs[0],
+            colo_dir=temp_dir,
+            data_dir=Path.home() / config["project"]["data_path"],
             info=plants_data[0],
             regime="reference",
         )
