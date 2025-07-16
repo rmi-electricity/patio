@@ -199,6 +199,7 @@ SUM_COL_ORDER = [
     "name",
     "regime",
     "icx_shared",
+    "good",
     "best_at_site",
     "land_available",
     "fossil_mw",
@@ -1331,6 +1332,13 @@ def get_summary(run, ad, pudl_release=None, fs=None):
         dict.fromkeys([co for co in SUM_COL_ORDER if co in out.columns])
         | dict.fromkeys(out.columns)
     )
+    out = out.merge(
+        good_screen(out)[["icx_id", "icx_gen", "name", "regime"]],
+        on=["icx_id", "icx_gen", "name", "regime"],
+        how="left",
+        indicator="good",
+    ).assign(good=lambda x: x.good == "both")
+    print("good" in out)
     return out.pipe(order_columns).sort_values(["state", "utility_name_eia_lse", "icx_id"])
 
 
@@ -1344,7 +1352,7 @@ def good_screen[T: pl.DataFrame | pl.LazyFrame | pd.DataFrame](df: T) -> T:
         & (pl.col("served_pct") >= 0.999)
         & (pl.col("pct_load_clean") >= 0.6)
         & (pl.col("ppa_ex_fossil_export_profit") <= 200)
-        & (pl.col("reg_rank") <= 7)
+        & (pl.col("reg_rank") <= 9)
     ).filter(
         (pl.col("new_fossil_mw").fill_null(0.0) == 0.0)
         | (

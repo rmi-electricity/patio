@@ -13,7 +13,7 @@ from etoolbox.utils.testing import idfn
 from patio.constants import ROOT_PATH
 from patio.helpers import make_core_lhs_rhs, solver
 from patio.model.colo_common import get_flows, get_summary, hstack, make_case_sheets, vstack
-from patio.model.colo_core import model_colo_config, set_timeout, setup_plants_configs
+from patio.model.colo_core import Results, model_colo_config, set_timeout, setup_plants_configs
 from patio.model.colo_lp import Data, Info, Model
 from patio.model.colo_resources import (
     CleanExport,
@@ -35,8 +35,112 @@ def test_os_solver(os_solver):
     assert solver() == "HIGHS"
 
 
+@pytest.fixture(scope="session")
+def run():
+    return "202507130115"
+
+
+@pytest.fixture(scope="session")
+def results(run):
+    return Results(
+        run,
+        "202507070053",
+        "202505261158",
+        "202507031241",
+    )
+
+
 def test_default_solver():
     assert solver() == "COPT"
+
+
+class TestPowerCoupleResults:
+    def test_summaries(self, run, results):
+        out = results.summaries[run]
+        assert not out.is_empty()
+
+    def test_fig_case_subplots(self, run, results):
+        out = results.fig_case_subplots(run)
+        assert True
+
+    def test_fig_scatter_geo(self, run, results):
+        out = results.fig_scatter_geo(run)
+        assert True
+
+    def test_fig_supply_curve(self, run, results):
+        out = results.fig_supply_curve(run)
+        assert True
+
+    def test_fig_selection_map(self, run, results):
+        out = results.fig_selection_map(run)
+        assert True
+
+    def test_for_summary_stats(self, run, results):
+        out = results.summary_stats()
+        assert not out.is_empty()
+
+    def test_for_dataroom(self, run, results):
+        out = results.for_dataroom(run, clip=False)
+        assert not out.is_empty()
+
+    def test_for_xl(self, run, results):
+        out = results.for_xl(run, clip=False)
+        assert not out.is_empty()
+
+    @pytest.mark.skip
+    def test_package_econ_data(self, run, results):
+        results.package_econ_data(run)
+
+    def test_compare(self, run, results):
+        out = results.compare(run, "202507070053")
+        assert not out.is_empty()
+
+    @pytest.mark.skip
+    def test_results(self, run, results):
+        a = Results(run)
+        error_sum = (
+            a.summaries["202507130115"]
+            .filter(pl.col("run_status") == "SUCCESS")
+            .with_columns(
+                error_category=pl.when(
+                    pl.col("errors").str.contains("flows inaccurate")
+                    & pl.col("errors").str.contains("curtailment and storage discharge both")
+                    & pl.col("has_flows")
+                )
+                .then(pl.lit("discharge flow error"))
+                .when(pl.col("errors").str.contains("flows inaccurate") & pl.col("has_flows"))
+                .then(pl.lit("other flow error"))
+                .when(
+                    pl.col("errors").str.contains("curtailment and storage discharge both")
+                    & pl.col("has_flows")
+                )
+                .then(pl.lit("only discharge/curtailment error"))
+                .when(pl.col("has_flows").not_())
+                .then(pl.lit("no flows"))
+                .otherwise(pl.lit("no flow or discharge error"))
+            )
+            .group_by("good", "name", "error_category")
+            .agg(pl.sum("load_mw").alias("sum"), pl.count("load_mw").alias("count"))
+            .sort("good", "name", "error_category")
+        )
+
+        a.summaries["202507130115"].filter(
+            (pl.col("run_status") == "SUCCESS")
+            & pl.col("errors").str.contains("flow")
+            & pl.col("has_flows")
+        ).with_columns(pl.col("errors").str.split(";")).explode("errors").filter(
+            pl.col("errors")
+            .str.contains("energy in econ df not reconciled for following resource")
+            .not_()
+        ).group_by(*a.id_cols).agg(
+            pl.exclude("errors", *a.id_cols).first(), pl.col("errors").str.join(";")
+        ).write_clipboard()
+        assert (
+            not a.summaries["202507130115"]
+            .filter(pl.col("run_status") == "SUCCESS")
+            .group_by("has_flows")
+            .agg(pl.sum("load_mw"))
+        )
 
 
 class TestPowerCouple:

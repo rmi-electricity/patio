@@ -131,6 +131,7 @@ RE_NAME = {
     "pid": "icx_id",
     "gens": "icx_gen",
     "tech": "tech",
+    "fuel": "fuel",
     "status": "status",
     "cap": "fossil_mw",
 }
@@ -140,6 +141,7 @@ CONVERTERS = {
         "pid": lambda x: x,
         "gens": lambda x: tuple(x.split(",")),
         "tech": lambda x: x,
+        "fuel": lambda x: x,
         "status": lambda x: x,
         "cap": lambda x: x,
     },
@@ -148,6 +150,7 @@ CONVERTERS = {
         "pid": lambda x: x[0],
         "gens": lambda x: tuple(x[0].split(",")),
         "tech": lambda x: x[0],
+        "fuel": lambda x: x[0],
         "status": lambda x: x[0],
         "cap": lambda x: x[0],
     },
@@ -165,7 +168,9 @@ class Info(NamedTuple):
     years: tuple[int, int] = ()
     max_re: float = 0.0
 
-    def file(self, regime, ix, suffix=".json", **kwargs):
+    def file(self, regime=None, ix=None, suffix=".json", **kwargs):
+        if regime is None and ix is None:
+            return f"{self.ba}_{self.pid}_{self.tech}_{self.status}{suffix}"
         return f"{self.ba}_{self.pid}_{self.tech}_{self.status}_{regime}_{ix}{suffix}"
 
     def extra(self, regime="", name=None, **kwargs):
@@ -1789,6 +1794,7 @@ class Model(IOMixin):
             "fossil_mw": self.i.cap,
             "max_re_mw": self.i.max_re,
             "tech": self.i.tech,
+            "fuel": self.i.fuel,
             "status": self.i.status,
             "regime": self.regime,
             "baseline_fossil_cf": icx_df["icx"].item() / (icx_df["n"].item() * self.i.cap),

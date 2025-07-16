@@ -684,10 +684,13 @@ class AssetData:
             .query("state not in ('AK', 'HI')")
             .pipe(self.add_regulatory_ranking)
         )
-        print(
+        LOGGER.info(
+            "%s",
             self.gens.query("technology_description == 'Natural Gas Fired Combustion Turbine'")
             .groupby("reg_rank", dropna=False)
             .capacity_mw.sum()
+            .to_string()
+            .replace("\n", "\n\t"),
         )
 
         no_ba_test = (
