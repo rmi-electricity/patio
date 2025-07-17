@@ -600,6 +600,7 @@ class FlexLoad(Load):
         m: "Model",
         sqkm_per_mw: float = 1 / 247,
         ld_value: float = 1000,
+        ld_value_select: float = 1000,
         uptime: float = 0.5,
         min_load: float = 0.5,
         x_cap: float | None = None,
@@ -608,6 +609,7 @@ class FlexLoad(Load):
         object:
         """
         super().__init__(m, sqkm_per_mw, ld_value)
+        self.ld_value_select = ld_value_select
         self.x_cap = cp.Variable(1, name="load_cap")
         self.uptime = cp.Parameter(1, value=[uptime], name="uptime")
         self.min_load = cp.Parameter(1, value=[min_load], name="min_load")
@@ -647,7 +649,7 @@ class FlexLoad(Load):
 
     def objective(self, yr: tuple, yr_fact_map, *args) -> cp.Expression:
         if is_resource_selection(yr):
-            self.cost[yr] = -self.ld_value * 17_520
+            self.cost[yr] = -self.ld_value_select * 17_520
             return self.cost[yr] * self.x_cap
         self.cost[yr] = -self.ld_value
         return cp.sum(self.cost[yr] * self.get_x(yr))

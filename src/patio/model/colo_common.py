@@ -7,6 +7,7 @@ import sys
 import tempfile
 import threading
 import time
+import traceback
 from collections.abc import Generator, Sequence  # noqa: TC003
 from contextlib import contextmanager
 from functools import reduce, singledispatch
@@ -226,6 +227,7 @@ SUM_COL_ORDER = [
     "attr_rev_export_clean",
     "attr_rev_export_fossil",
     "attr_rev_full_ptc",
+    "load_fossil_mcoe",
     "avg_cost_export_fossil",
     "avg_cost_load_fossil",
     "avg_rev_export_clean",
@@ -233,6 +235,7 @@ SUM_COL_ORDER = [
     "com_rate",
     "ind_rate",
     "cc_lcoe",
+    "capex_per_mw",
     "solar_mw",
     "onshore_wind_mw",
     "offshore_wind_mw",
@@ -244,6 +247,9 @@ SUM_COL_ORDER = [
     "solar_max_distance_km",
     "onshore_wind_max_distance_km",
     "offshore_wind_max_distance_km",
+    "pct_load_onshore_wind",
+    "pct_load_solar",
+    "pct_load_fossil",
     "fossil_cf",
     "load_fossil_cf",
     "load_stored_fuel_cf",
@@ -300,6 +306,7 @@ SUM_COL_ORDER = [
     "export_clean_mwh_disc",
     "export_fossil_mwh_disc",
     "export_mwh_disc",
+    "capex",
     "net_capex",
     "tx_capex",
     "func_disc",
@@ -411,9 +418,12 @@ FANCY_COLS = {
     "ppa_ex_fossil_export_profit": "PPA $/MWh",
     "attr_rev_export_clean": "Contribution from Clean Export $/MWh",
     "avg_rev_export_clean": "Average Revenue of Clean Export $/MWh",
+    "load_fossil_mcoe": "Fossil for Load MCOE",
     "com_rate": "Average Commercial Rate $/MWh",
     "ind_rate": "Average Industrial Rate $/MWh",
     "cc_lcoe": "Estimated Combined Cycle LCOE",
+    "capex": "Gross CapEx",
+    "capex_per_mw": "Gross CapEx per MW Load",
     "solar_mw": "Solar MW",
     "onshore_wind_mw": "Onshore Wind MW",
     "li_mw": "Li Battery MW",
@@ -425,6 +435,9 @@ FANCY_COLS = {
     "unserved_mwh": "Unserved MWh",
     "unserved_pct_hrs": "Unserved Hrs %",
     "pct_load_clean": "Hourly Matched Clean %",
+    "pct_load_solar": "Load Served by Solar %",
+    "pct_load_onshore_wind": "Load Served by Wind %",
+    "pct_load_fossil": "Load Served by Fossil %",
     "fossil_cf": "Fossil Combined CF",
     "load_fossil_cf": "Fossil Load CF",
     "export_fossil_cf": "Fossil Export CF",
@@ -474,6 +487,15 @@ def prof[T: pl.DataFrame | pl.LazyFrame](
 
 def to_dict[T: pl.LazyFrame | pl.DataFrame](d: T, suf="") -> dict[str, int | float]:
     return {k + suf: v[0] for k, v in d.lazy().collect().to_dict(as_series=False).items()}
+
+
+def pl_exc_fmt(exc):
+    if not isinstance(exc, pl.exceptions.PolarsError):
+        return repr(exc)
+    tb = [x for x in traceback.format_tb(exc.__traceback__) if "src/patio" in x][-1].split(
+        "\n"
+    )[0]
+    return f"{tb} pl.{exc.__class__.__qualname__}({exc.args[0].split('\n')[0]})"
 
 
 def _when_to_num(when):

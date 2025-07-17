@@ -54,6 +54,7 @@ from patio.model.colo_common import (
     SUM_COL_ORDER,
     f_pmt,
     order_columns,
+    pl_exc_fmt,
     pl_filter,
     sankey,
     text_position,
@@ -1328,7 +1329,7 @@ class Results:
         min_pct_load_clean=0.6,
         max_ppa=200,
         max_reg_rank=9,
-        max_violation=0.25,
+        max_violation=0.50,
         max_attr_rev_export_clean=100,
         font="Gill Sans",
     ):
@@ -1359,6 +1360,9 @@ class Results:
                 self.fig_path.parent.mkdir()
             self.fig_path.mkdir()
 
+    def __getitem__(self, item=None):
+        return self.summaries[self.norm_name(item)]
+
     def update_params(self, **kwargs):
         update = False
         for k, v in kwargs.items():
@@ -1376,21 +1380,16 @@ class Results:
             self.load()
 
     def load(self):
+        self.flows = {}
         for run in self.names:
             try:
                 self.summaries[run] = self.get_summary(run)
             except Exception as exc:
-                print(f"no summary for {run} {exc!r}")
-            try:
-                self.flows[run] = self.get_flows(run)
-            except Exception as exc:
-                print(f"no flows for {run} {exc!r}")
+                print(f"no summary for {run} {pl_exc_fmt(exc)}")
 
     def get_aligned(self, run=None, *, land_screen=False):
-        if run is None:
-            run = self.last
         run = self.norm_name(run)
-        df = self.summaries[run]
+        df = self.all_summaries() if run == "all" else self.summaries[run]
         if land_screen:
             df = df.filter(pl.col("land_available"))
         return self.best_at_site(df)
@@ -1415,19 +1414,78 @@ class Results:
             )
         )
 
+    def all_summaries(self):
+        return pl.concat(
+            [v for _, v in self.summaries.items()],
+            how="diagonal_relaxed",
+        )
+
     def best_at_site[T: pl.DataFrame | pl.LazyFrame](self, df: T) -> T:
         colo_cols = df.lazy().collect_schema().names()
+        r_col = ("run",) if "run" in colo_cols else ()
         return (
             df.pipe(self.good_screen)
             .sort("load_mw", descending=True)
-            .group_by("icx_id", "icx_gen")
+            .group_by("icx_id", "icx_gen", *r_col)
             .agg(pl.all().first())
             .select(*colo_cols)
             .sort("state", "utility_name_eia", "plant_name_eia")
         )
 
+    def source_for_load(self, run):
+        run = self.norm_name(run)
+        flows = self.get_flows(run)
+        es_for_load = flows.filter(
+            (pl.col("target_") == "Load") & (pl.col("source_") == "Storage")
+        ).select(*self.id_cols, "value")
+        es_allocated = (
+            flows.filter(pl.col("target_") == "Storage")
+            .with_columns(pl.col("value") / pl.sum("value").over(*self.id_cols))
+            .join(es_for_load, on=self.id_cols, how="left", validate="m:1")
+            .select(
+                *self.id_cols,
+                "source_",
+                target_=pl.lit("Load"),
+                value=pl.col("value") * pl.col("value_right"),
+            )
+        )
+        assert (
+            es_allocated.group_by(*self.id_cols)
+            .agg(pl.sum("value"))
+            .join(es_for_load, on=self.id_cols)
+            .fill_nan(0.0)
+            .filter((pl.col("value") - pl.col("value_right")).abs() > 0.1)
+            .is_empty()
+        ), "storage allocation failed"
+
+        return (
+            pl.concat(
+                [
+                    flows.filter(
+                        (pl.col("target_") == "Load") & (pl.col("source_") != "Storage")
+                    ),
+                    es_allocated,
+                ]
+            )
+            .group_by(
+                *self.id_cols,
+                source_="pct_load_"
+                + pl.col("source_")
+                .replace({"New Fossil": "Fossil", "Backup": "Fossil"})
+                .str.to_lowercase()
+                .str.replace(" ", "_"),
+            )
+            .agg(pl.sum("value"))
+            .with_columns(pl.col("value") / pl.sum("value").over(*self.id_cols))
+            .sort(*self.id_cols)
+            .filter(pl.col("value") > 0)
+            .pivot(on="source_", index=self.id_cols, values="value")
+        )
+
     def get_flows(self, run) -> pl.DataFrame:
         run = self.norm_name(run)
+        if run in self.flows:
+            return self.flows[run]
         with (
             all_logging_disabled(),
             self.fs.open(f"az://patio-results/colo_{run}/colo_flows.parquet") as f,
@@ -1456,17 +1514,6 @@ class Results:
                 .alias("target_"),
                 "value",
             )
-        )
-        self.summaries[run] = (
-            self.summaries[run]
-            .join(
-                out.select(
-                    *self.id_cols, has_flows=pl.sum("value").over(*self.id_cols) > 0
-                ).unique(),
-                on=self.id_cols,
-                how="left",
-            )
-            .with_columns(has_flows=pl.col("has_flows").fill_null(False))
         )
         return out
 
@@ -1680,13 +1727,63 @@ class Results:
             out.group_by("icx_id", "icx_gen").agg(pl.sum("best_at_site"))["best_at_site"].max()
             == 1
         )
+        try:
+            with (
+                all_logging_disabled(),
+                self.fs.open(f"az://patio-results/colo_{run}/colo_annual.parquet") as f,
+            ):
+                annual = (
+                    pl.scan_parquet(f)
+                    .group_by(*self.id_cols)
+                    .agg(cs.numeric().sum())
+                    .select(
+                        *self.id_cols,
+                        capex=pl.sum_horizontal(cs.contains("capex")),
+                        itc=pl.sum_horizontal(cs.contains("itc")),
+                        load_fossil_mcoe=pl.col("cost_load_fossil") / pl.col("load_fossil"),
+                    )
+                    .collect()
+                )
+                out = out.join(
+                    annual,
+                    on=self.id_cols,
+                    how="left",
+                    validate="1:1",
+                ).with_columns(
+                    capex_per_mw=pl.col("capex") / pl.col("load_mw"),
+                    net_capex=pl.sum_horizontal("capex", "itc"),
+                )
+        except Exception as exc:
+            print(f"no annual data for {run} {pl_exc_fmt(exc)}")
+
+        try:
+            self.flows[run] = self.get_flows(run)
+        except Exception as exc:
+            print(f"no flows for {run} {pl_exc_fmt(exc)}")
+        else:
+            out = (
+                out.join(
+                    self.flows[run]
+                    .select(*self.id_cols, has_flows=pl.sum("value").over(*self.id_cols) > 0)
+                    .unique(),
+                    on=self.id_cols,
+                    how="left",
+                )
+                .with_columns(has_flows=pl.col("has_flows").fill_null(False))
+                .join(
+                    self.source_for_load(run),
+                    on=self.id_cols,
+                    how="left",
+                )
+            )
+
         return (
             out.join(
                 self.good_screen(out).select(*self.id_cols, good=pl.lit(True)),
                 on=self.id_cols,
                 how="left",
             )
-            .with_columns(good=pl.col("good").fill_null(False))
+            .with_columns(good=pl.col("good").fill_null(False), run=pl.lit(run))
             .pipe(order_columns)
             .sort("state", "utility_name_eia_lse", "icx_id")
         )
@@ -1755,6 +1852,8 @@ class Results:
                 return pl.read_ndjson(f)
 
     def norm_name(self, run: str | int) -> str:
+        if run is None:
+            return self.last
         if isinstance(run, int):
             return self.name_indices[run]
         return run.removeprefix("colo_")
@@ -1774,30 +1873,27 @@ class Results:
         )
 
     def for_dataroom(self, run=None, *, clip=False) -> pl.DataFrame:
-        if run is None:
-            run = self.last
+        run = self.norm_name(run)
         out = (
-            self.summaries[self.norm_name(run)]
+            self.summaries[run]
             .filter(pl.col("good"))
             .with_columns(pl.col("tech").replace(TECH_CODES), name=self.renamer)
-            .select(*list(FANCY_COLS))
-            .rename(FANCY_COLS)
         )
+        if missing_cols := set(FANCY_COLS) - set(out.columns):
+            LOGGER.warning("%s missing columns %s", run, missing_cols)
+            out = out.with_columns(**dict.fromkeys(missing_cols))
+        out = out.sort(*self.id_cols).select(*list(FANCY_COLS)).rename(FANCY_COLS)
         if clip:
             out.write_clipboard()
         return out
 
     def for_xl(self, run=None, *, clip=False) -> pl.DataFrame:
-        if run is None:
-            run = self.last
         out = self.summaries[self.norm_name(run)].filter(pl.col("run_status") == "SUCCESS")
         if clip:
             out.write_clipboard()
         return out
 
     def case_sheets(self, run=None, *, land_screen=False) -> list[go.Figure]:
-        if run is None:
-            run = self.last
         run = self.norm_name(run)
         subplots = self.fig_case_subplots(
             run,
@@ -1827,9 +1923,6 @@ class Results:
         return subplots
 
     def fig_case_subplots(self, run=None, *, land_screen=False, test=False) -> list(go.Figure):
-        if run is None:
-            run = self.last
-
         colo = self.summaries[run].with_columns(name=self.renamer)
         if land_screen:
             colo = colo.filter(pl.col("land_available"))
@@ -2307,12 +2400,10 @@ class Results:
                 if test and j > 25:
                     break
             except Exception as exc:
-                logging.error("%s", keys, exc_info=exc)
+                LOGGER.error("%s", keys, exc_info=exc)
         return subplots
 
     def package_econ_data(self, run=None, addl_filter=None, *, local=False):
-        if run is None:
-            run = self.last
         run = self.norm_name(run)
         colo_dir = Path.home() / "patio_data" / f"colo_{run}"
         if not colo_dir.exists():
@@ -2348,7 +2439,7 @@ class Results:
                         pdir.mkdir()
                     data.filter(ftsv_scr).select(selector).write_csv(pdir / f"{file}.csv")
                 except Exception as e:
-                    print(f"{info} {o_ids} {e!r}")
+                    print(f"{info} {o_ids} {pl_exc_fmt(e)}")
 
     def compare(
         self,
@@ -2367,37 +2458,42 @@ class Results:
             "name",
             "regime",
         ),
-        values=("load_mw", "served_pct", "pct_load_clean", "ppa_ex_fossil_export_profit"),
+        values=(
+            "run_status",
+            "load_mw",
+            "served_pct",
+            "pct_load_clean",
+            "ppa_ex_fossil_export_profit",
+        ),
         clip=False,
     ) -> pl.DataFrame:
         c = (
             self.summaries[self.norm_name(a)]
-            .filter(pl.col("run_status") == "SUCCESS")
             .select(*on, *values)
             .join(
-                self.summaries[self.norm_name(b)]
-                .filter(pl.col("run_status") == "SUCCESS")
-                .select(*on, *values),
+                self.summaries[self.norm_name(b)].select(*on, *values),
                 on=on,
                 suffix="_b",
                 how="full",
                 coalesce=True,
             )
-        )
+        ).filter((pl.col("run_status") == "SUCCESS") | (pl.col("run_status_b") == "SUCCESS"))
         c = c.select(list(dict.fromkeys(on) | dict.fromkeys(sorted(c.columns))))
         if clip:
             c.write_clipboard()
         return c
 
     def fig_scatter_geo(self, run=None, sixe_max=25, *, land_screen=False) -> go.Figure:
-        if run is None:
-            run = self.last
         run = self.norm_name(run)
+        kwargs = {"facet_row": "run"} if run == "all" else {}
+        data = self.get_aligned(run, land_screen=land_screen)
+        cmax = data["ppa_ex_fossil_export_profit"].max()
+        cmax = int(cmax + (100 - cmax) % 100)
         return (
             px.scatter_geo(
-                self.get_aligned(run, land_screen=land_screen),
-                "latitude",
-                "longitude",
+                data,
+                lat="latitude",
+                lon="longitude",
                 hover_name="plant_name_eia",
                 hover_data=[
                     "pct_load_clean",
@@ -2413,6 +2509,7 @@ class Results:
                 width=900,
                 locationmode="USA-states",
                 size_max=sixe_max,
+                **kwargs,
             )
             .update_geos(
                 fitbounds="locations",
@@ -2421,8 +2518,8 @@ class Results:
             )
             .update_coloraxes(
                 colorbar_title="PPA<br>Price",
-                cmax=200,
-                cmid=100,
+                cmax=cmax,
+                cmid=int(cmax / 2),
                 cmin=0,
                 colorscale="portland",
                 colorbar_tickformat="$.0f",
@@ -2441,6 +2538,7 @@ class Results:
                 textposition="top center",
                 # marker_opacity=1, marker_line_width=0
             )
+            .for_each_annotation(lambda a: a.update(text=a.text.split("=")[-1]))
         )
 
     def fig_selection_map(
@@ -2453,37 +2551,75 @@ class Results:
         selected_size=1,
         potential_size=0.8,
     ) -> go.Figure:
-        if run is None:
-            run = self.last
         run = self.norm_name(run)
-        with (
-            all_logging_disabled(),
-            self.fs.open(f"patio-results/colo_{run}/all_re_sites.parquet") as f,
-        ):
-            all_re = (
-                pl.scan_parquet(f)
-                .cast({"re_site_id": pl.Int32})
-                .filter(pl.col("re_type") != "offshore_wind")
-                .join(
-                    pl_scan_pudl("core_eia860m__changelog_generators", self.pudl_release)
-                    .sort("valid_until_date", descending=True)
-                    .group_by(pl.col("plant_id_eia").alias("icx_id"))
-                    .agg(pl.col("latitude", "longitude").first()),
-                    on="icx_id",
-                    how="left",
-                    validate="m:1",
+        runs = list(self.summaries) if run == "all" else (run,)
+
+        all_re = []
+        for r in runs:
+            with (
+                all_logging_disabled(),
+                self.fs.open(f"patio-results/colo_{r}/all_re_sites.parquet") as f,
+            ):
+                all_re.append(
+                    pl.read_parquet(f)
+                    .cast({"re_site_id": pl.Int32})
+                    .filter(pl.col("re_type") != "offshore_wind")
+                    .with_columns(run=pl.lit(r))
                 )
-                .collect()
-            )
-        with (
-            all_logging_disabled(),
-            self.fs.open(f"patio-results/colo_{run}/colo_re_selected.parquet") as f,
-        ):
-            re_selected = pl.read_parquet(f).cast({"re_site_id": pl.Int32})
+        all_re = pl.concat(all_re).join(
+            pl_scan_pudl("core_eia860m__changelog_generators", self.pudl_release)
+            .sort("valid_until_date", descending=True)
+            .group_by(pl.col("plant_id_eia").alias("icx_id"))
+            .agg(pl.col("latitude", "longitude").first())
+            .collect(),
+            on="icx_id",
+            how="left",
+            validate="m:1",
+        )
+
+        # with (
+        #     all_logging_disabled(),
+        #     self.fs.open(f"patio-results/colo_{run}/all_re_sites.parquet") as f,
+        # ):
+        #     all_re = (
+        #         pl.scan_parquet(f)
+        #         .cast({"re_site_id": pl.Int32})
+        #         .filter(pl.col("re_type") != "offshore_wind")
+        #         .join(
+        #             pl_scan_pudl("core_eia860m__changelog_generators", self.pudl_release)
+        #             .sort("valid_until_date", descending=True)
+        #             .group_by(pl.col("plant_id_eia").alias("icx_id"))
+        #             .agg(pl.col("latitude", "longitude").first()),
+        #             on="icx_id",
+        #             how="left",
+        #             validate="m:1",
+        #         )
+        #         .with_columns(run=pl.lit(run))
+        #         .collect()
+        #     )
+        re_selected = []
+        for r in runs:
+            with (
+                all_logging_disabled(),
+                self.fs.open(f"patio-results/colo_{r}/colo_re_selected.parquet") as f,
+            ):
+                re_selected.append(
+                    pl.read_parquet(f)
+                    .cast({"re_site_id": pl.Int32})
+                    .with_columns(run=pl.lit(run))
+                )
+        re_selected = pl.concat(re_selected)
+
+        # with (
+        #     all_logging_disabled(),
+        #     self.fs.open(f"patio-results/colo_{run}/colo_re_selected.parquet") as f,
+        # ):
+        #     re_selected = pl.read_parquet(f).cast({"re_site_id": pl.Int32}) .with_columns(run=pl.lit(run))
 
         potential = (
             all_re.filter(pl.col("distance") < 25)
             .select(
+                "run",
                 plant_id="re_site_id",
                 tech="re_type",
                 icx_id="icx_id",
@@ -2502,22 +2638,25 @@ class Results:
         )
         selected = (
             self.get_aligned(run, land_screen=land_screen)
-            .select("icx_id", "icx_gen", "regime", "name", "latitude", "longitude")
+            .select("run", "icx_id", "icx_gen", "regime", "name", "latitude", "longitude")
             .join(
                 re_selected.with_columns(
                     re_site_id=pl.when(pl.col("re_type") == "solar")
                     .then(pl.lit(1))
                     .otherwise(pl.col("re_site_id"))
                 )
-                .group_by("icx_id", "icx_gen", "re_type", "re_site_id", "regime", "name")
+                .group_by(
+                    "run", "icx_id", "icx_gen", "re_type", "re_site_id", "regime", "name"
+                )
                 .agg(
                     pl.col("latitude_nrel_site", "longitude_nrel_site").first(),
                     pl.sum("capacity_mw"),
                 ),
-                on=["icx_id", "icx_gen", "regime", "name"],
+                on=["run", "icx_id", "icx_gen", "regime", "name"],
                 how="left",
             )
             .select(
+                "run",
                 plant_id="re_site_id",
                 tech="re_type",
                 icx_id="icx_id",
@@ -2542,6 +2681,7 @@ class Results:
             .sort("tech", descending=False)
         )
         fossil = all_re.select(
+            "run",
             plant_id="icx_id",
             tech="icx_tech",
             icx_id="icx_id",
@@ -2577,6 +2717,7 @@ class Results:
                     "Solar": "#ffeda9",
                     "Onshore Wind": "#c9e3f0",
                 },
+                facet_row="run",
             )
             .update_geos(
                 fitbounds="locations",
@@ -2588,8 +2729,32 @@ class Results:
         )
 
     def fig_supply_curve(self, run=None, *, land_screen=False) -> go.Figure:
-        if run is None:
-            run = self.last
+        run = self.norm_name(run)
+        if run == "all":
+            plt = make_subplots(
+                len(self.names),
+                1,
+                subplot_titles=self.names,
+                vertical_spacing=0.075,
+                shared_xaxes=True,
+            )
+            for i, r in enumerate(self.names, 1):
+                plt.add_traces(self.fig_supply_curve(r, land_screen=land_screen).data, i, 1)
+            return plt.update_yaxes(
+                tickformat="$.0f",
+                title="PPA Price ($/MWh)",
+            ).update_layout(
+                template="ggplot2",
+                font_family=self.font,
+                height=int(25 + 275 * i * 1.25),
+                width=int(700 * 1.25),
+                margin_t=25,
+                margin_b=5,
+                margin_l=5,
+                margin_r=0,
+                **{f"xaxis{i}_title": "GW", f"xaxis{i}_tickformat": ",.0f"},
+            )
+
         own_rn = {  # noqa: F841
             "Virginia Electric & Power Co": "Dominion",
             "Duke Energy Progress - (NC)": "Duke",
@@ -2701,3 +2866,9 @@ class Results:
             # .write_image(f"{runs[r_num]}_var_width.pdf", height=580 * 0.8, width=1300 * 0.8)
             # .write_image(f"varw_meta.pdf")
         )
+
+    def hourly_analysis(
+        self,
+        run,
+    ):
+        pl.scan_parquet(Path.home() / "patio_data")

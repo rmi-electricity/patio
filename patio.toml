@@ -84,7 +84,7 @@ param.ptc = 0.0
 param.itc = 0.3
 param.gas_window_seasonal = false
 param.con_fossil_load_hrly = false
-dv.FlexLoad = { uptime = 0.0, ld_value = 10000, min_load = 0.5, sqkm_per_mw = 0.004 }
+dv.FlexLoad = { uptime = 0.0, ld_value_select = 1000, ld_value = 10000, min_load = 0.5, sqkm_per_mw = 0.004 }
 dv.Renewables = {}
 dv.EndogenousDurationStorage = { pre_charge = 0.5, min_soc_hrs = 1 }
 dv.CleanExport = {}
