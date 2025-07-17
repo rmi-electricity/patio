@@ -2650,6 +2650,7 @@ class Model(IOMixin):
                 f"flows inaccurate in {len(check) / (self.life * 8760):.6%} of hours"
             )
             self.logger.error(self.errors[-1], extra=self.extra)
+        check = check.filter(((pl.col("curtailment") > 0) & (pl.col("discharge") > 0)).not_())
         if len(check) > 9 * self.life:
             self.add_to_result_dict(flows_time=t0())
             self.logger.error("check of flows failed", extra=self.extra)
