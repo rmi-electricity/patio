@@ -21,6 +21,7 @@ from tqdm.asyncio import tqdm
 from tqdm.contrib.logging import tqdm_logging_redirect
 
 from patio.constants import (
+    BAD_COLO_BAS,
     CCS_FACTORS,
     ES_TECHS,
     MTDF,
@@ -39,7 +40,6 @@ from patio.model.base import (
     fuel_auc,
     optimize_equal_energy,
 )
-from patio.model.colo_core import BAD_COLO_BAS
 
 LOGGER = logging.getLogger("patio")
 MIN_HIST_FOSSIL = 0.05

@@ -12,4 +12,5 @@ The RMI Python Project Template
   Licensing <LICENSE>
   Code of Conduct <code_of_conduct>
   Release Notes <release_notes>
+  CLI <cli>
   autoapi/index

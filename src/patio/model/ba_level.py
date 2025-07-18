@@ -45,6 +45,7 @@ from tqdm.auto import tqdm
 from tqdm.contrib.logging import logging_redirect_tqdm
 
 from patio.constants import (
+    BAD_COLO_BAS,
     CLEAN_TD_MAP,
     ES_TECHS,
     FOSSIL_PRIME_MOVER_MAP,
@@ -70,7 +71,6 @@ from patio.helpers import _git_commit_info, make_core_lhs_rhs, pl_distance, solv
 from patio.model.ba_scenario import BAScenario
 from patio.model.base import ScenarioConfig
 from patio.model.colo_common import capture_stderr, capture_stdout
-from patio.model.colo_core import BAD_COLO_BAS
 
 LOGGER = logging.getLogger("patio")
 # warnings.simplefilter("once")

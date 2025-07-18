@@ -32,6 +32,8 @@ dependencies = [
     "polars[connectorx,fsspec,xlsx2csv,calamine,xlsxwriter]>=1.25.0,<1.29.0",
     "pypdf>=5.4.0,<6",
     "tqdm>=4.67.1,<5",
+    "click>=8.2.1,<9",
+    "mpax>=0.2.4,<0.3",
 ]
 
 [project.optional-dependencies]
@@ -47,11 +49,11 @@ dev = [
     "sphinx-issues>=1.2,<5.1",
     "sphinx-autodoc-typehints>1.19,<3.2.0",
     "sphinxcontrib-mermaid>0.7,<1.1.0",
+    "sphinx-click>=6.0.0,<7"
 ]
 
 [project.scripts]  # entry points
 patio = "patio.cli:main"
-patio-colo = "patio.model.colo_core:main"
 
 [tool.setuptools]
 include-package-data = true
@@ -200,7 +202,7 @@ filterwarnings = [
 report_level = "WARNING"
 ignore_roles = [ "pr", "issue", "user", "include" ]
 ignore_messages = '(Hyperlink target .* is not referenced\.$|Duplicate implicit target name:|An `AttributeError` error occured.*)'
-ignore_directives = [ "bibliography", "todo", "include" ]
+ignore_directives = [ "bibliography", "todo", "include", "click" ]
 
 [tool.ruff]
 line-length = 95

@@ -939,3 +939,4 @@ TECH_CODES = {
     "onshore_wind": "Onshore Wind Turbine",
     "offshore_wind": "Offshore Wind Turbine",
 }
+BAD_COLO_BAS = ("130",)

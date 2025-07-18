@@ -16,7 +16,6 @@ from copy import deepcopy
 from datetime import datetime
 from pathlib import Path
 from time import perf_counter
-from types import SimpleNamespace
 from typing import Literal
 
 import pandas as pd
@@ -43,7 +42,6 @@ from patio.model.colo_lp import Data, Info, Model
 
 LOGGER = logging.getLogger("patio")
 
-BAD_COLO_BAS = ("130",)
 if platform.system() == "Darwin" and platform.machine() == "arm64":
     if os.cpu_count() >= 16:
         WORKERS = os.cpu_count() // 2
@@ -1107,100 +1105,32 @@ def combine_runs(*runs):
 
 
 def main(
-    *,
-    test=False,
-    colo_dir="",
-    keep=True,
-    local=True,
-    rerun=False,
-    workers=1,
-    combine="",
-    config="",
-    plants="",
+    run_dir="",
+    config_dir="",
     source_data="",
+    resume=False,
+    plants="",
+    workers=-1,
+    keep=False,
+    local=False,
+    saved="",
+    assemble=False,
 ):
+    if not config_dir:
+        config_dir = str(ROOT_PATH.relative_to(Path.home()) / "patio.toml")
+    print(
+        f"{run_dir=}, {config_dir=}, {source_data=}, {resume=}, {plants=}, {workers=}, {keep=}, {local=}, {saved=}, {assemble=}"
+    )
     multiprocessing.set_start_method("spawn")
 
     from etoolbox.utils.cloud import put
 
-    if test:
-        args = SimpleNamespace(
-            dir=colo_dir,
-            keep=keep,
-            local=local,
-            rerun=rerun,
-            dry_run=False,
-            workers=workers,
-            combine=combine,
-            assemble=False,
-            config=config,
-            plants=plants,
-            source_data=source_data,
-            saved="",
-        )
-    else:
-        import argparse
-
-        parser = argparse.ArgumentParser(description="Run colo.")
-        arg_config = [
-            {
-                "name": "-D, --dir",
-                "type": str,
-                "default": "",
-                "help": "path from home, overrides `run_dir_path` in patio.toml",
-            },
-            {"name": "-r, --resume", "help": "resume most recent run"},
-            {
-                "name": "-C, --config",
-                "type": str,
-                "default": "",
-                "help": "path to patio.toml config file relative to home",
-            },
-            {
-                "name": "-L, --source-data",
-                "type": str,
-                "default": "",
-                "help": "path from home, overrides `data_path` and `colo_json_path` in patio.toml",
-            },
-            {
-                "name": "-p, --plants",
-                "type": str,
-                "default": "",
-                "help": "override of plants to run",
-            },
-            {
-                "name": "-w, --workers",
-                "type": int,
-                "help": "number of workers in colo analysis, default is core_count / 2 for Apple Silicon, otherwise core_count - 1",
-                "default": -1,
-            },
-            {"name": "-k, --keep", "help": "keep intermediate files"},
-            {"name": "-A, --assemble", "help": "assemble and upload finished results"},
-            {"name": "-l, --local", "help": "do not upload to Azure"},
-            {
-                "name": "-S, --saved",
-                "help": "re-run all plants/configs",
-                "type": str,
-                "default": "",
-            },
-            {"name": "-d, --dry-run", "help": "file deletion plan and exit"},
-        ]
-        for conf in arg_config:
-            if "type" not in conf:
-                conf.update({"action": "store_true", "default": False})
-            parser.add_argument(*conf.pop("name").split(", "), **conf, required=False)
-        args = parser.parse_args()
-    print(args)
-    if args.config != "":  # noqa: SIM108
-        toml_path = Path.home() / args.config
-    else:
-        toml_path = ROOT_PATH / "patio.toml"
-
+    toml_path = Path.home() / config_dir
     with open(toml_path, "rb") as f:
         config = tomllib.load(f)["colo"]
-    if args.dir != "":
-        config["project"]["run_dir_path"] = args.dir
-    elif args.resume:
+    if run_dir != "":
+        config["project"]["run_dir_path"] = run_dir
+    elif resume:
         config["project"]["run_dir_path"] = str(
             sorted(
                 Path.home().glob(f"{Path(config['project']['run_dir_path']).parent}/colo_20*")
@@ -1212,9 +1142,9 @@ def main(
             "{NOW}", datetime.now().strftime("%Y%m%d%H%M")
         )
 
-    if args.source_data != "":
-        config["project"]["source_data_path"] = Path.home() / args.source_data
-        config["project"]["colo_json_path"] = Path.home() / args.source_data / "colo.json"
+    if source_data != "":
+        config["project"]["source_data_path"] = Path.home() / source_data
+        config["project"]["colo_json_path"] = Path.home() / source_data / "colo.json"
 
     colo_dir = Path.home() / config["project"]["run_dir_path"]
     if not colo_dir.exists():
@@ -1225,17 +1155,17 @@ def main(
         colo_dir.mkdir()
     shutil.copy(toml_path, colo_dir / toml_path.name)
 
-    if args.plants != "":
-        config["project"]["plant_ids"] = [int(x.strip()) for x in args.plants.split(",")]
+    if plants != "":
+        config["project"]["plant_ids"] = [int(x.strip()) for x in plants.split(",")]
 
-    if (workers := args.workers) != -1:
+    if workers != -1:
         config["workers"] = workers
     shutil.copy(Path.home() / config["project"]["colo_json_path"], colo_dir)
     _add_to_json(
         colo_dir / "colo.json",
         {"created": colo_dir.stem.replace("colo_", ""), "colo_run_commit": _git_commit_info()},
     )
-    config["scenario"]["default"]["setting"]["saved_select"] = args.saved
+    config["scenario"]["default"]["setting"]["saved_select"] = saved
 
     queue = multiprocessing.Manager().Queue(-1)
     lp = threading.Thread(target=logging_process, args=(queue,))
@@ -1243,11 +1173,11 @@ def main(
     lp.start()
 
     try:
-        if not args.assemble:
+        if not assemble:
             run_colo_mp(config, queue)
 
-        assemble_results(colo_dir, keep=args.keep)
-        if not args.local:
+        assemble_results(colo_dir, keep=keep)
+        if not local:
             put(colo_dir, "patio-results/")
     finally:
         queue.put(None)
