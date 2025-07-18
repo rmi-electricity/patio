@@ -12,8 +12,8 @@ from etoolbox.utils.testing import idfn
 
 from patio.constants import ROOT_PATH
 from patio.helpers import make_core_lhs_rhs, solver
-from patio.model.colo_common import get_flows, get_summary, hstack, make_case_sheets, vstack
-from patio.model.colo_core import Results, model_colo_config, set_timeout, setup_plants_configs
+from patio.model.colo_common import hstack, vstack
+from patio.model.colo_core import model_colo_config, set_timeout, setup_plants_configs
 from patio.model.colo_lp import Data, Info, Model
 from patio.model.colo_resources import (
     CleanExport,
@@ -29,6 +29,7 @@ from patio.model.colo_resources import (
     LoadNewFossil,
     Renewables,
 )
+from patio.model.colo_results import Results
 
 
 def test_os_solver(os_solver):
@@ -201,7 +202,7 @@ class TestPowerCouple:
         if "ppa_ex_fossil_export_profit" not in result:
             raise AssertionError("cost and other metrics failed")
 
-    # @pytest.mark.skip(reason="debug only.")
+    @pytest.mark.skip(reason="debug only.")
     @pytest.mark.parametrize(
         "pid,scenario,expected",
         [
@@ -265,23 +266,6 @@ def test_patio_colo_entry_point(script_runner, test_dir, temp_dir):
         print_result=True,
     )
     assert ret.success
-
-
-@pytest.mark.skip(reason="debug only.")
-def test_case_sheets(asset_data, run="colo_202507070053"):
-    subplots = make_case_sheets(
-        get_summary(run=run, ad=asset_data).replace(
-            {"name": {"form_fos": "form_new_fossil", "pure_surplus": "new_fossil"}}
-        ),
-        get_flows(run).with_columns(
-            name=pl.col("name").replace(
-                {"form_fos": "form_new_fossil", "pure_surplus": "new_fossil"}
-            )
-        ),
-        test=False,
-        land_screen=False,
-    )
-    assert subplots
 
 
 @pytest.mark.skip
