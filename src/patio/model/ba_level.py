@@ -1907,13 +1907,10 @@ class BAs:
         self.bad_scenarios = defaultdict(list)
         self.good_objs = []
         now = datetime.now().strftime("%Y%m%d%H%M")
-        colo_dir = Path.home() / f"patio_data/colo_{now}"
+        colo_dir = Path.home() / f"patio_data/colo_data_{now}"
         if self.data_kwargs.get("colo_techs"):
-            (colo_dir / "data").mkdir(parents=True)
-            # (result_dir := colo_dir / "results").mkdir()
-            # (result_dir / "hourly").mkdir()
-            # (result_dir / "coef_ts").mkdir()
-            # (result_dir / "coef_mw").mkdir()
+            if not colo_dir.exists():
+                colo_dir.mkdir()
             with open(colo_dir / "colo.json", "w") as colo:
                 json.dump(
                     {

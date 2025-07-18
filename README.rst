@@ -121,7 +121,7 @@ Most git GUI tools work with pre-commit but don't work that well. The terminal b
 `notes on git for <https://github.com/rmi-electricity/.github-private/blob/main/profile/notes_on_git.md>`__
 for recommendations and instructions.
 
-Running the model
+Running the clean repowering model model
 =======================================================================================
 To run the resource model:
 

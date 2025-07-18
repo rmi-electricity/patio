@@ -2294,7 +2294,7 @@ class BAScenario:
             "fuel_curve": self.ba.fuel_curve.query("datetime.dt.year >= @first_year"),
         }
         with DataZip(
-            Path.home() / f"{self.ba.colo_dir}/data/{self.ba.ba_code}.zip",
+            Path.home() / f"{self.ba.colo_dir}/{self.ba.ba_code}.zip",
             "w",
         ) as dz:
             for k, v in out.items():
@@ -2569,7 +2569,7 @@ class BAScenario:
         }
         with DataZip(
             Path.home()
-            / f"{self.ba.colo_dir}/data/{self.ba.ba_code}_{pid}_{icx_tech}_{status}.zip",
+            / f"{self.ba.colo_dir}/{self.ba.ba_code}_{pid}_{icx_tech}_{status}.zip",
             "w",
         ) as dz:
             for k, v in out.items():
