@@ -1651,7 +1651,8 @@ class AssetData:
         ]
         return fuel_by_gen
 
-    def raw_curves(self, atb_year, regime: Literal["reference", "limited"]):
+    @staticmethod
+    def raw_curves(atb_year, regime: Literal["reference", "limited"], pudl_release):
         links = {
             "reference": {
                 "onshore_wind": "https://www.nrel.gov/gis/assets/docs/reference-access-siting-regime-atb-mid-turbine-fy21.csv",
@@ -1688,7 +1689,7 @@ class AssetData:
                 scenario="Moderate",
                 crp=30,
                 report_year=2023,
-                pudl_release=self.pudl_release,
+                pudl_release=pudl_release,
             )
             .filter(
                 (pl.col("technology_description").is_in(list(re_mapper)))
@@ -1702,7 +1703,7 @@ class AssetData:
                 pl.col("capex_per_kw").alias("capex_atb").cast(pl.Float64),
                 pl.col("capacity_factor").alias("cf_atb").cast(pl.Float64),
                 pl.col("fom_per_kw").alias("fom_atb").cast(pl.Float64),
-                pl.col("levelized_cost_of_energy_per_mwh").alias("loce_atb").cast(pl.Float64),
+                pl.col("levelized_cost_of_energy_per_mwh").alias("lcoe_atb").cast(pl.Float64),
             )
             .to_pandas()
         )
@@ -1833,7 +1834,7 @@ class AssetData:
             )
         LOGGER.warning("rebuilding proposed ATB classes, this can take a while")
 
-        s, on, off = self.raw_curves(2025, regime="reference")
+        s, on, off = self.raw_curves(2025, regime="reference", pudl_release=self.pudl_release)
         curve_sites = (
             pl.from_pandas(
                 pd.concat([s.assign(re_code=1), on.assign(re_code=2), off.assign(re_code=3)])
@@ -1893,7 +1894,9 @@ class AssetData:
 
     def re_sites_for_encom(self):
         curve_sites = (
-            pd.concat(self.raw_curves(2025, regime="reference"))[["latitude", "longitude"]]
+            pd.concat(
+                self.raw_curves(2025, regime="reference", pudl_release=self.pudl_release)
+            )[["latitude", "longitude"]]
             .drop_duplicates()
             .assign(site_type="curve")
         )
@@ -1915,10 +1918,12 @@ class AssetData:
         regime: Literal["reference", "limited"] | None = None,
     ):
         solar_curve_r, wind_curve_r, off_curve_r = self.raw_curves(
-            atb_year, regime="reference"
+            atb_year, regime="reference", pudl_release=self.pudl_release
         )
         LOGGER.warning("reference curves setup.")
-        solar_curve_l, wind_curve_l, off_curve_l = self.raw_curves(atb_year, regime="limited")
+        solar_curve_l, wind_curve_l, off_curve_l = self.raw_curves(
+            atb_year, regime="limited", pudl_release=self.pudl_release
+        )
         LOGGER.warning("limited curves setup.")
         common = [
             "sc_point_gid",
@@ -2058,7 +2063,7 @@ class AssetData:
                 ),
                 pl.read_csv(
                     PACKAGE_DATA_PATH / "re_site_ids.csv",
-                    dtypes={
+                    schema_overrides={
                         "plant_id_eia": pl.Int64,
                         "re_type": pl.Utf8,
                         "latitude": pl.Float64,
@@ -2321,7 +2326,9 @@ class AssetData:
         return out
 
     def re_curve(self, atb_year, assumed_ilr):
-        solar_curve, wind_curve, off_curve = self.raw_curves(atb_year, regime="reference")
+        solar_curve, wind_curve, off_curve = self.raw_curves(
+            atb_year, regime="reference", pudl_release=self.pudl_release
+        )
 
         re_profs = (
             pl.scan_parquet(Path.home() / "patio_data/all_re.parquet")

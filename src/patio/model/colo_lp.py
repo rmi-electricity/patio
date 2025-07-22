@@ -1,10 +1,10 @@
 import logging
-import operator
 import tomllib
 from collections.abc import Iterator, Sequence
 from dataclasses import dataclass, field
 from functools import cached_property, reduce, singledispatchmethod
 from io import BytesIO, StringIO
+from operator import and_, or_
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Literal, NamedTuple, Self
@@ -18,7 +18,7 @@ import polars as pl
 import polars.selectors as cs
 from dispatch import DispatchModel
 from etoolbox.datazip import DataZip, IOMixin
-from etoolbox.utils.cloud import rmi_cloud_fs
+from etoolbox.utils.cloud import get, rmi_cloud_fs
 from polars import col as c
 from scipy.signal import argrelextrema
 
@@ -30,11 +30,13 @@ from patio.constants import (
     SIMPLE_TD_MAP,
     TECH_CODES,
 )
+from patio.data.asset_data import USER_DATA_PATH, AssetData
 from patio.helpers import (
     generate_projection_from_historical_pl as gen_proj,
 )
 from patio.helpers import (
     make_core_lhs_rhs,
+    pl_distance,
     solver,
 )
 from patio.model.base import adjust_profiles, calc_redispatch_cost
@@ -55,6 +57,7 @@ from patio.model.colo_common import (
     hstack,
     keep_nonzero_cols,
     nt,
+    pl_filter,
     prof,
     safediv,
     timer,
@@ -70,6 +73,7 @@ from patio.model.colo_resources import (
     Storage,
     is_resource_selection,
 )
+from patio.package_data import PACKAGE_DATA_PATH
 
 OPT_THREADS = 2
 
@@ -164,6 +168,7 @@ class Info(NamedTuple):
     fuel: str
     years: tuple[int, int] = ()
     max_re: float = 0.0
+    area_sqkm: float = 0.0
 
     def file(self, regime=None, ix=None, suffix=".json", **kwargs):
         if regime is None and ix is None:
@@ -192,7 +197,7 @@ class Info(NamedTuple):
 
     def filter(self, **kwargs):
         return reduce(
-            operator.and_,
+            and_,
             [pl.col("icx_id") == self.pid, pl.col("icx_gen") == ",".join(self.gens)]
             + [pl.col(k) == v for k, v in kwargs.items()],
         )
@@ -202,6 +207,67 @@ class Info(NamedTuple):
         #     & (pl.col("regime") == regime)
         #     & (pl.col("name") == name)
         # )
+
+    @staticmethod
+    def get_re_data(lat, lon, sqkm):
+        sites = (
+            pl.read_csv(PACKAGE_DATA_PATH / "re_site_ids.csv")
+            .filter(pl.col("re_type").is_in(("solar", "onshore_wind")))
+            .with_columns(lat=lat, lon=lon)
+            .pipe(pl_distance, "latitude", "lat", "longitude", "lon")
+            .sort("distance")
+            .group_by("re_type")
+            .agg(pl.first("plant_id_eia"))
+        )
+        if not (
+            all_re_path := USER_DATA_PATH.parent / "all_re_new_too_big_tabled.parquet"
+        ).exists():
+            get("patio-data/all_re_new_too_big_tabled.parquet", all_re_path)
+        profs = (
+            pl.scan_parquet(all_re_path)
+            .filter(reduce(or_, [pl_filter(**v) for v in sites.iter_rows(named=True)]))
+            .collect()
+        )
+        solar, wind, _ = AssetData.raw_curves(
+            2025, regime="reference", pudl_release="v2025.7.0"
+        )
+        nrel_site_data = (
+            sites.join(
+                pl.from_pandas(
+                    pd.concat(
+                        [solar.assign(re_type="solar"), wind.assign(re_type="onshore_wind")]
+                    )
+                ),
+                on="re_type",
+            )
+            .with_columns(lat=lat, lon=lon)
+            .pipe(pl_distance, "latitude", "lat", "longitude", "lon")
+            .sort("distance")
+        )
+        combi_id = pl.concat_str(pl.lit("0"), pl.lit("0"), "re_type", separator="_")
+        # these specs represent the site itself, addl sites might be intereting to include?
+        specs = (
+            nrel_site_data.group_by("re_type")
+            .agg(pl.all().first())
+            .rename({"capacity_mw_ac": "capacity_mw_nrel_site"})
+            .with_columns(
+                icx_genid=pl.lit("0"),
+                re_site_id=0,
+                combi_id=combi_id,
+                area_per_mw=pl.col("area_sq_km") / pl.col("capacity_mw_nrel_site"),
+                capacity_mw_nrel_site=(pl.col("capacity_mw_nrel_site") / pl.col("area_sq_km"))
+                * sqkm,
+                area_sq_km=sqkm,
+            )
+            .sort("combi_id")
+        )
+
+        return specs, profs.with_columns(combi_id=combi_id).pivot(
+            on="combi_id", index="datetime", values="generation"
+        ).select(
+            "datetime",
+            *specs["combi_id"],
+        )
 
     @classmethod
     def fix(cls, i: Self) -> Self:
