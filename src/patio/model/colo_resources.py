@@ -1697,6 +1697,40 @@ class CleanExport(DecisionVariable):
         return self.get_x(yr) >= 0.0, self.get_x(yr) <= self.m.i.cap
 
 
+class ExportIncumbentFixed(DecisionVariable):
+    """x_ft"""
+
+    _var_names = ("export_fixed",)
+    _cat = "export_fixed"
+    _dz = {"profs": ["x", "cost"]}
+
+    def __init__(self, m, mcoe: pl.DataFrame | None = None):
+        super().__init__(m)
+
+    def common_hrly_constraint(self, yr):
+        if is_resource_selection(yr):
+            perf_mult = (1 - self.m.solar_degrade_per_year) ** 20
+        else:
+            perf_mult = (1 - self.m.solar_degrade_per_year) ** (yr[0] - self.m.d.opt_years[0])
+        pro = (
+            prof(self.m.d.re_pro.with_columns(cs.contains("solar") * perf_mult), yr)
+            .collect()
+            .to_numpy()
+        )
+        return cp.Constant(pro @ self.x_cap.value)
+
+    @check_shape()
+    def export_req(self, yr: tuple, *args) -> cp.Expression:
+        return self.common_hrly_constraint(yr)
+
+    @check_shape()
+    def icx_ops(self, yr: tuple, *args) -> cp.Expression:
+        return self.common_hrly_constraint(yr)
+
+    def incumbent_ops(self, yr: tuple, *args) -> cp.Expression:
+        return self.common_hrly_constraint(yr)
+
+
 class Fossil(DecisionVariable):
     def __init__(self, m, mcoe: pl.DataFrame | None = None):
         super().__init__(m)

@@ -2688,6 +2688,9 @@ class Model(IOMixin):
         return econ_df, flows
 
     def aeo_fuel_price(self, fuel):
+        if fuel == "ethanol":
+            self.logger.info("using distillate_fuel_oil prices for ethanol", extra=self.extra)
+            fuel = "distillate_fuel_oil"
         ba, state = (
             self.d.ba_data["plant_data"]
             .query("plant_id_eia == @self.i.pid")[["balancing_authority_code_eia", "state"]]

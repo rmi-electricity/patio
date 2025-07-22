@@ -23,6 +23,7 @@ from tqdm.contrib.logging import tqdm_logging_redirect
 from patio.constants import (
     BAD_COLO_BAS,
     CCS_FACTORS,
+    CLEAN_TD_MAP,
     ES_TECHS,
     MTDF,
     OTHER_TD_MAP,
@@ -2487,8 +2488,14 @@ class BAScenario:
                 .groupby(pd.Grouper(freq="MS", level="datetime"))
                 .mean()
             )
-        else:
-            pass
+        elif icx_tech in CLEAN_TD_MAP:
+            icx_pro_all = pd.Series(poi, index=re_pro_.index)
+            icx_histpro_all = pd.Series(poi, index=re_pro_.index)
+            var_all = (
+                pd.Series(0.0, index=re_pro_.index, name="total_var_mwh")
+                .groupby(pd.Grouper(freq="MS", level="datetime"))
+                .mean()
+            )
         # re_pro_ = self.ba.setup_re_profiles(re)[1]
         # _esd = self.dm[0].storage_dispatch
         # cr_req_pro_all = np.minimum(

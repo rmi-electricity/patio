@@ -119,12 +119,10 @@ def clean_repower(bas, config, warnings, local):
 
     with open(Path.home() / config, "rb") as f:
         config = tomllib.load(f)
-
     if bas:
         config["project"]["balancing_authorities"] = [s.strip() for s in bas.split(",")]
     elif not config["project"]["balancing_authorities"]:
         config["project"]["balancing_authorities"] = None
-
     kwargs = (
         config["data"]
         | config["cr"]["project"]
@@ -132,10 +130,8 @@ def clean_repower(bas, config, warnings, local):
             "colo_techs": config["colo"]["data"],
         }
     )
-
     if not warnings:
         warnings_.simplefilter("ignore")
-
     try:
         patio = BAs(
             name="BAs_" + now,
@@ -315,3 +311,15 @@ def colo_run(
         saved=saved,
         assemble=assemble,
     )
+
+
+@click.command(name="patio-econ")
+@click.argument("datestr", type=str)
+def patio_econ(datestr):
+    """Run the patio economic model.
+
+    DATESTR: The name of the resource model run to apply the economic model to, e.g. 202504270143
+
+    Note: actual implementation is in R and interface is defined using pixi tasks.
+    """
+    pass

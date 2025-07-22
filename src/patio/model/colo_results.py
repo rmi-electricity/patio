@@ -441,7 +441,14 @@ class Results:
                 ).first()
             )
         )
-        cols = ["latitude", "longitude", "plant_name_eia", "state", "county"]
+        cols = [
+            "latitude",
+            "longitude",
+            "plant_name_eia",
+            "state",
+            "county",
+            "parent_name_lse",
+        ]
         with_utils = (
             colo_.join(
                 pl.from_pandas(self.ad.gens)
@@ -545,9 +552,7 @@ class Results:
         except KeyError:
             pass
         out = out.join(
-            self.best_at_site(out.filter(pl.col("land_available"))).select(
-                *self.id_cols, best_at_site=pl.lit(True)
-            ),
+            self.best_at_site(out).select(*self.id_cols, best_at_site=pl.lit(True)),
             on=self.id_cols,
             how="left",
             validate="m:1",
@@ -692,6 +697,7 @@ class Results:
         return pl.concat(
             self.get_aligned(r).select(
                 run=pl.lit(r),
+                num=pl.count("name"),
                 load_mw=pl.col("load_mw").sum(),
                 weighted_ppa=(pl.col("ppa_ex_fossil_export_profit") * weights).sum(),
                 weighted_pct_clean=(pl.col("pct_load_clean") * weights).sum(),
@@ -717,7 +723,8 @@ class Results:
         return out
 
     def for_xl(self, run=None, *, clip=False) -> pl.DataFrame:
-        out = self.summaries[self.norm_name(run)].filter(pl.col("run_status") == "SUCCESS")
+        out = self.all_summaries() if run == "all" else self.summaries[self.norm_name(run)]
+        out = out.filter(pl.col("run_status") == "SUCCESS")
         if clip:
             out.write_clipboard()
         return out
@@ -1547,6 +1554,51 @@ class Results:
             .update_traces(
                 marker={"opacity": 1, "line": {"width": 0}}, selector={"mode": "markers"}
             )
+        )
+
+    def fig_indicator_distributions(
+        self,
+        metrics: tuple = ("load_mw", "ppa_ex_fossil_export_profit", "pct_overbuild"),
+        color="good",
+    ):
+        data = (
+            self.all_summaries()
+            .unpivot(on=metrics, index=list({"run", "good", *self.id_cols, "tech", color}))
+            .with_columns(pl.col("run").str.replace("2025", ""))
+        )
+
+        def fix(axis):
+            try:
+                num = int(axis.anchor.replace("y", ""))
+            except ValueError:
+                num = 1
+            if num > len(metrics):
+                match = num % len(metrics)
+                match = {1: "", 0: len(metrics)}.get(match, match)
+                axis.update(matches=f"x{match}")
+            else:
+                dmax = data.filter(pl.col("variable") == metrics[num - 1])["value"].max()
+                dmin = data.filter(pl.col("variable") == metrics[num - 1])["value"].min()
+                axis.update(range=[dmin, dmax], matches=None)
+
+        return (
+            px.histogram(
+                data,
+                x="value",
+                facet_row="run",
+                facet_col="variable",
+                height=600,
+                template="ggplot2",
+                color=color,
+                barmode="overlay",
+                opacity=0.75,
+                category_orders={"run": sorted(data["run"].unique())},
+            )
+            .for_each_annotation(lambda a: a.update(text=a.text.split("=")[-1]))
+            .update_yaxes(matches=None, showticklabels=True)
+            .update_xaxes(matches=None)
+            .for_each_xaxis(fix)
+            .update_layout(font_family=self.font)
         )
 
     def fig_supply_curve(self, run=None, *, land_screen=False) -> go.Figure:

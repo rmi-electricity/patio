@@ -1,7 +1,6 @@
 [project]
 pudl_release = "v2025.7.0"
 # colo generates colo data, otherwise CR
-run_type = "colo"
 balancing_authorities = []
 regime = "limited"
 solar_ilr = 1.34
@@ -40,16 +39,16 @@ reg_rank = [ 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
 
 [colo.project]
 scenarios = [
-#    "moderate",
-#    "moderate_ej",
     "clean",
     "dirty",
-#    "low_crit",
     "pure_surplus",
     "form",
-#    "form_backup",
     "form_fos",
-#    "thermal_load"
+    "clean_xhc",
+    "dirty_xhc",
+    "pure_surplus_xhc",
+    "form_xhc",
+    "form_fos_xhc",
 ]
 # relative to home or user dir
 #data_path = "patio_data/colo_data"
@@ -89,23 +88,6 @@ dv.Renewables = {}
 dv.EndogenousDurationStorage = { pre_charge = 0.5, min_soc_hrs = 1 }
 dv.CleanExport = {}
 dv.Curtailment = {}
-dv.ExportIncumbentFossil = {}
-
-
-[colo.scenario.moderate]
-ix = 0
-techs = [ "Natural Gas Fired Combined Cycle", "Natural Gas Fired Combustion Turbine" ]
-param.max_pct_hist_fos = 20.0
-param.load_icx_max_mult = 0.75
-dv.LoadIncumbentFossil = {}
-
-
-[colo.scenario.moderate_ej]
-ix = 1
-techs = [ "Natural Gas Fired Combined Cycle", "Natural Gas Fired Combustion Turbine" ]
-param.max_pct_hist_fos = 1.0
-param.load_icx_max_mult = 0.75
-dv.LoadIncumbentFossil = {}
 
 [colo.scenario.clean]
 ix = 2
@@ -113,6 +95,7 @@ techs = [ "Natural Gas Fired Combined Cycle", "Natural Gas Fired Combustion Turb
 param.max_pct_fos = 0.05
 param.max_pct_hist_fos = 1.0
 param.load_icx_max_mult = 0.75
+dv.ExportIncumbentFossil = {}
 dv.LoadIncumbentFossil = {}
 
 [colo.scenario.dirty]
@@ -121,15 +104,7 @@ techs = [ "Natural Gas Fired Combined Cycle", "Natural Gas Fired Combustion Turb
 param.max_pct_fos = 0.4
 param.max_pct_hist_fos = 20.0
 param.load_icx_max_mult = 0.75
-dv.LoadIncumbentFossil = {}
-
-[colo.scenario.low_crit]
-ix = 9
-techs = [ "Natural Gas Fired Combined Cycle", "Natural Gas Fired Combustion Turbine" ]
-param.num_crit_hrs = 10
-param.max_pct_fos = 0.2
-param.max_pct_hist_fos = 5.0
-param.load_icx_max_mult = 0.75
+dv.ExportIncumbentFossil = {}
 dv.LoadIncumbentFossil = {}
 
 [colo.scenario.pure_surplus]
@@ -138,8 +113,8 @@ param.num_crit_hrs = 0
 param.max_pct_fos = 0.2
 param.max_pct_hist_fos = 3.0
 param.load_icx_max_mult = 10.0
+dv.ExportIncumbentFossil = {}
 dv.LoadNewFossil = { tech = "rice", primary_fuel = "natural_gas" }
-
 
 [colo.scenario.form]
 ix = 11
@@ -147,17 +122,8 @@ param.num_crit_hrs = 0
 param.max_pct_fos = 0.2
 param.max_pct_hist_fos = 1.0
 param.load_icx_max_mult = 0.75
+dv.ExportIncumbentFossil = {}
 dv.FeStorage = { pre_charge = 0.5, min_soc_hrs = 1 }
-
-
-[colo.scenario.form_backup]
-ix = 12
-param.num_crit_hrs = 0
-param.max_pct_fos = 0.2
-param.max_pct_hist_fos = 2.0
-param.load_icx_max_mult = 10.0
-dv.FeStorage = { pre_charge = 0.5, min_soc_hrs = 24 }
-
 
 [colo.scenario.form_fos]
 ix = 13
@@ -166,11 +132,93 @@ param.max_pct_fos = 0.2
 param.max_pct_hist_fos = 3.0
 param.load_icx_max_mult = 10.0
 dv.FeStorage = { pre_charge = 0.5, min_soc_hrs = 1 }
+dv.ExportIncumbentFossil = {}
 dv.LoadNewFossil = { tech = "rice", primary_fuel = "natural_gas" }
 
+[colo.scenario.clean_xhc]
+ix = 14
+techs = [ "Natural Gas Fired Combined Cycle", "Natural Gas Fired Combustion Turbine" ]
+param.max_pct_fos = 0.05
+param.max_pct_hist_fos = 1.0
+param.load_icx_max_mult = 0.75
+param.mkt_rev_mult = 1.0
+dv.ExportIncumbentFossil = {}
+dv.LoadIncumbentFossil = {}
+
+[colo.scenario.dirty_xhc]
+ix = 15
+techs = [ "Natural Gas Fired Combined Cycle", "Natural Gas Fired Combustion Turbine" ]
+param.max_pct_fos = 0.4
+param.max_pct_hist_fos = 20.0
+param.load_icx_max_mult = 0.75
+param.mkt_rev_mult = 1.0
+dv.ExportIncumbentFossil = {}
+dv.LoadIncumbentFossil = {}
+
+[colo.scenario.pure_surplus_xhc]
+ix = 16
+param.num_crit_hrs = 0
+param.max_pct_fos = 0.2
+param.max_pct_hist_fos = 3.0
+param.load_icx_max_mult = 10.0
+param.mkt_rev_mult = 1.0
+dv.ExportIncumbentFossil = {}
+dv.LoadNewFossil = { tech = "rice", primary_fuel = "natural_gas" }
+
+[colo.scenario.form_xhc]
+ix = 17
+param.num_crit_hrs = 0
+param.max_pct_fos = 0.2
+param.max_pct_hist_fos = 1.0
+param.load_icx_max_mult = 0.75
+param.mkt_rev_mult = 1.0
+dv.ExportIncumbentFossil = {}
+dv.FeStorage = { pre_charge = 0.5, min_soc_hrs = 1 }
+
+[colo.scenario.form_fos_xhc]
+ix = 18
+param.num_crit_hrs = 0
+param.max_pct_fos = 0.2
+param.max_pct_hist_fos = 3.0
+param.load_icx_max_mult = 10.0
+param.mkt_rev_mult = 1.0
+dv.FeStorage = { pre_charge = 0.5, min_soc_hrs = 1 }
+dv.ExportIncumbentFossil = {}
+dv.LoadNewFossil = { tech = "rice", primary_fuel = "natural_gas" }
+
+[colo.scenario.rei_pure_surplus]
+ix = 19
+param.num_crit_hrs = 0
+param.max_pct_fos = 0.2
+param.max_pct_hist_fos = 3.0
+param.load_icx_max_mult = 100.0
+techs = [ "Solar Photovoltaic", "Onshore Wind Turbine" ]
+dv.ExportIncumbentFixed = {}
+dv.LoadNewFossil = { tech = "rice", primary_fuel = "distillate_fuel_oil" }
+
+[colo.scenario.rei_form]
+ix = 20
+param.num_crit_hrs = 0
+param.max_pct_fos = 0.2
+param.max_pct_hist_fos = 1.0
+param.load_icx_max_mult = 100.0
+techs = [ "Solar Photovoltaic", "Onshore Wind Turbine" ]
+dv.ExportIncumbentFixed = {}
+dv.FeStorage = { pre_charge = 0.5, min_soc_hrs = 1 }
+
+[colo.scenario.rei_form_fos]
+ix = 21
+param.num_crit_hrs = 0
+param.max_pct_fos = 0.2
+param.max_pct_hist_fos = 3.0
+param.load_icx_max_mult = 100.0
+dv.FeStorage = { pre_charge = 0.5, min_soc_hrs = 1 }
+techs = [ "Solar Photovoltaic", "Onshore Wind Turbine" ]
+dv.ExportIncumbentFixed = {}
+dv.LoadNewFossil = { tech = "rice", primary_fuel = "distillate_fuel_oil" }
 
 [colo.scenario.thermal_load]
-ix = 14
+ix = 22
 param.num_crit_hrs = 25
 param.max_pct_fos = 0.05
 param.max_pct_hist_fos = 1.0
@@ -178,6 +226,22 @@ param.load_icx_max_mult = 0.75
 dv.IncumbentFossil = {}
 dv.Curtailment = { min_cost = 0.05 }
 dv.ThermalStorageLoad = {}
+
+[colo.scenario.moderate]
+ix = 0
+techs = [ "Natural Gas Fired Combined Cycle", "Natural Gas Fired Combustion Turbine" ]
+param.max_pct_hist_fos = 20.0
+param.load_icx_max_mult = 0.75
+dv.ExportIncumbentFossil = {}
+dv.LoadIncumbentFossil = {}
+
+[colo.scenario.moderate_ej]
+ix = 1
+techs = [ "Natural Gas Fired Combined Cycle", "Natural Gas Fired Combustion Turbine" ]
+param.max_pct_hist_fos = 1.0
+param.load_icx_max_mult = 0.75
+dv.ExportIncumbentFossil = {}
+dv.LoadIncumbentFossil = {}
 
 [cr.project]
 # 'both', true, false

@@ -470,7 +470,7 @@ class AssetData:
             )
             for col in cols:
                 if "date" in col:
-                    df[col] = pd.to_datetime(df[col + "_new"].fillna(df[col]))
+                    df[col] = pd.to_datetime(df[col + "_new"]).fillna(df[col])
                 else:
                     df[col] = df[col + "_new"].fillna(df[col])
             return df[[*in_cols, "sc_cat"]]
@@ -1070,7 +1070,7 @@ class AssetData:
             heat_rate=lambda x: np.minimum(
                 np.maximum(
                     x.fuel_mmbtu / x.fossil_mwh,
-                    x.technology_description.replace(MIN_HEAT_RATE),
+                    x.technology_description.map(MIN_HEAT_RATE),
                 ),
                 20.0,
             ),
@@ -1078,7 +1078,7 @@ class AssetData:
             fuel_per_mwh=lambda x: x.fuel_per_mmbtu * x.heat_rate,
             total_var_mwh=lambda x: x[["vom_per_mwh", "fuel_per_mwh"]].sum(axis=1),
             # emission intensity from cost data not usable
-            co2_factor=lambda x: x.technology_description.replace(CARB_INTENSITY),
+            co2_factor=lambda x: x.technology_description.map(CARB_INTENSITY),
         ).set_index(["plant_id_eia", "generator_id", "datetime"])[cost_out_cols]
 
         assert self.costs.index.is_unique
@@ -1164,21 +1164,49 @@ class AssetData:
                 get(PATIO_DATA_AZURE_URLS["lse"], file.with_suffix(".kml.zip"))
             shutil.unpack_archive(file.with_suffix(".kml.zip"), USER_DATA_PATH)
             file.with_suffix(".kml.zip").unlink()
+        with fs.open(f"az://patio-data/{PATIO_DATA_RELEASE}/utility_ids.parquet") as f:
+            parent = (
+                pl.scan_parquet(f)
+                .filter(
+                    pl.col("utility_id_eia").is_not_null()
+                    & pl.col("parent_name").is_not_null()
+                )
+                .group_by(id=pl.col("utility_id_eia").cast(pl.Int32))
+                .agg(parent_name_lse=pl.col("parent_name").first())
+                .collect()
+            )
         utils = (
-            pd_read_pudl(
+            pl_scan_pudl(
                 "core_eia861__yearly_operational_data_misc", release=self.pudl_release
             )
-            .query("retail_sales_mwh.notna() & retail_sales_mwh > 0 & data_observed")
-            .groupby("utility_id_eia", as_index=False)
-            .last()
-            .rename(
-                columns={
-                    "utility_id_eia": "id",
-                    "entity_type": "entity_type_lse",
-                    "utility_name_eia": "utility_name_eia_lse",
-                }
-            )[["id", "utility_name_eia_lse", "entity_type_lse"]]
+            .filter(
+                pl.col("retail_sales_mwh").is_not_null()
+                & (pl.col("retail_sales_mwh") > 0)
+                & pl.col("data_observed")
+            )
+            .group_by(id="utility_id_eia")
+            .agg(
+                entity_type_lse=pl.last("entity_type"),
+                utility_name_eia_lse=pl.last("utility_name_eia"),
+            )
+            .collect()
+            .to_pandas()
         )
+        # utils = (
+        #     pd_read_pudl(
+        #         "core_eia861__yearly_operational_data_misc", release=self.pudl_release
+        #     )
+        #     .query("retail_sales_mwh.notna() & retail_sales_mwh > 0 & data_observed")
+        #     .groupby("utility_id_eia", as_index=False)
+        #     .last()
+        #     .rename(
+        #         columns={
+        #             "utility_id_eia": "id",
+        #             "entity_type": "entity_type_lse",
+        #             "utility_name_eia": "utility_name_eia_lse",
+        #         }
+        #     )[["id", "utility_name_eia_lse", "entity_type_lse"]]
+        # )
         lse = (
             gpd.read_file(file)
             .query(
@@ -1250,7 +1278,7 @@ class AssetData:
                         gpd.GeoDataFrame(
                             for_geo[non_geo_cols],
                             geometry=gpd.points_from_xy(
-                                for_geo["longitude"], for_geo["latitude"]
+                                for_geo["longitude"], for_geo["latitude"], crs="EPSG:4326"
                             ),
                         ),
                         lse,
@@ -1267,8 +1295,9 @@ class AssetData:
                 "Name",
                 "SOURCE",
                 "REGULATED",
-                "HOLDING_CO",
+                holding_co_lse="HOLDING_CO",
             )
+            .join(parent, on="id", how="left")
             .with_columns(
                 n_matches_o=pl.col("id").n_unique().over("plant_id_eia", "generator_id"),
                 _id_match=pl.col("id") == pl.col("utility_id_eia"),
@@ -1369,6 +1398,8 @@ class AssetData:
                 "id",
                 "entity_type_lse",
                 "utility_name_eia_lse",
+                "parent_name_lse",
+                "holding_co_lse",
                 "reg_rank",
                 "n_reg_ranks",
                 "n_matches_o",
@@ -1409,8 +1440,10 @@ class AssetData:
                     "entity_type",
                     "entity_type_lse",
                     "utility_name_eia_lse",
+                    "parent_name_lse",
+                    "holding_co_lse",
+                    pl.col("id").cast(pl.Utf8).alias("utility_id_eia_lse"),
                     "balancing_authority_code_eia",
-                    "id",
                 ),
                 gen_lse.filter((pl.col("n_matches") != 1) & (pl.col("n_types") == 1))
                 .group_by("plant_id_eia", "generator_id")
@@ -1419,6 +1452,14 @@ class AssetData:
                     pl.col("entity_type").first(),
                     pl.col("entity_type_lse").unique().sort().str.join("|"),
                     pl.col("utility_name_eia_lse").unique().sort().str.join("|"),
+                    pl.col("parent_name_lse").unique().sort().str.join("|"),
+                    pl.col("holding_co_lse").unique().sort().str.join("|"),
+                    pl.col("id")
+                    .unique()
+                    .sort()
+                    .cast(pl.Utf8)
+                    .str.join(",")
+                    .alias("utility_id_eia_lse"),
                     pl.col("balancing_authority_code_eia").first(),
                 ),
                 gen_lse.filter(
@@ -1432,6 +1473,14 @@ class AssetData:
                     pl.col("entity_type").first(),
                     pl.col("entity_type_lse").unique().sort().str.join("|"),
                     pl.col("utility_name_eia_lse").unique().sort().str.join("|"),
+                    pl.col("parent_name_lse").unique().sort().str.join("|"),
+                    pl.col("holding_co_lse").unique().sort().str.join("|"),
+                    pl.col("id")
+                    .unique()
+                    .sort()
+                    .cast(pl.Utf8)
+                    .str.join(",")
+                    .alias("utility_id_eia_lse"),
                     pl.col("balancing_authority_code_eia").first(),
                 ),
                 mess.filter(pl.col("n_matches") == 1).select(
@@ -1441,8 +1490,10 @@ class AssetData:
                     "entity_type",
                     "entity_type_lse",
                     "utility_name_eia_lse",
+                    "parent_name_lse",
+                    "holding_co_lse",
+                    pl.col("id").cast(pl.Utf8).alias("utility_id_eia_lse"),
                     "balancing_authority_code_eia",
-                    "id",
                 ),
                 mess.filter((pl.col("n_matches") != 1) & pl.col("all_good_ranks"))
                 .group_by("plant_id_eia", "generator_id")
@@ -1451,6 +1502,14 @@ class AssetData:
                     pl.col("entity_type").first(),
                     pl.col("entity_type_lse").unique().sort().str.join("|"),
                     pl.col("utility_name_eia_lse").unique().sort().str.join("|"),
+                    pl.col("parent_name_lse").unique().sort().str.join("|"),
+                    pl.col("holding_co_lse").unique().sort().str.join("|"),
+                    pl.col("id")
+                    .unique()
+                    .sort()
+                    .cast(pl.Utf8)
+                    .str.join(",")
+                    .alias("utility_id_eia_lse"),
                     pl.col("balancing_authority_code_eia").first(),
                 ),
                 mess.filter(
@@ -1470,8 +1529,10 @@ class AssetData:
                     "entity_type",
                     "entity_type_lse",
                     "utility_name_eia_lse",
+                    "parent_name_lse",
+                    "holding_co_lse",
+                    pl.col("id").cast(pl.Utf8).alias("utility_id_eia_lse"),
                     "balancing_authority_code_eia",
-                    "id",
                 ),
             ],
             how="diagonal",
@@ -1497,6 +1558,8 @@ class AssetData:
                     "reg_rank",
                     "entity_type_lse",
                     "utility_name_eia_lse",
+                    "parent_name_lse",
+                    "holding_co_lse",
                 ).to_pandas(),
                 on=["plant_id_eia", "generator_id"],
                 how="left",
@@ -2822,7 +2885,9 @@ def add_ec_flag(
 ):
     lat, lon = lat_lon_cols
     sites = df.groupby(key_col, as_index=False)[[lat, lon]].first()
-    gdf = gpd.GeoDataFrame(sites, geometry=gpd.points_from_xy(sites[lon], sites[lat]))
+    gdf = gpd.GeoDataFrame(
+        sites, geometry=gpd.points_from_xy(sites[lon], sites[lat], crs="EPSG:4269")
+    )
 
     # Perform spatial join to match points and polygons
     # - identify which sites are in energy communities

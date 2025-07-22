@@ -186,6 +186,7 @@ COSTS = {
     },
 }
 SUM_COL_ORDER = [
+    "run",
     "run_status",
     "balancing_authority_code_eia",
     "icx_id",
@@ -202,6 +203,7 @@ SUM_COL_ORDER = [
     "plant_name_eia",
     "utility_name_eia",
     "utility_name_eia_lse",
+    "parent_name_lse",
     "state",
     "county",
     "load_mw",
@@ -629,6 +631,13 @@ def pl_filter(**kwargs):
     return reduce(
         operator.and_,
         [pl.col(k) == v for k, v in kwargs.items()],
+    )
+
+
+def pl_str_contains(col, *args):
+    return reduce(
+        operator.or_,
+        [pl.col(col).str.contains(v) for v in args],
     )
 
 
