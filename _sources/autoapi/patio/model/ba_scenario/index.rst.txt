@@ -1,0 +1,237 @@
+patio.model.ba_scenario
+=======================
+
+.. py:module:: patio.model.ba_scenario
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   patio.model.ba_scenario.LOGGER
+   patio.model.ba_scenario.MIN_HIST_FOSSIL
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   patio.model.ba_scenario.BAScenario
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   patio.model.ba_scenario.plot_year_hourly
+
+
+Module Contents
+---------------
+
+.. py:data:: LOGGER
+
+.. py:data:: MIN_HIST_FOSSIL
+   :value: 0.05
+
+
+.. py:class:: BAScenario(ba=None, config=ScenarioConfig(1, 0, 0.25, 0, 0))
+
+   .. py:attribute:: cfl
+      :value: False
+
+
+
+   .. py:attribute:: ba
+      :value: None
+
+
+
+   .. py:attribute:: config
+
+
+   .. py:attribute:: is_max_scen
+      :value: False
+
+
+
+   .. py:attribute:: no_limit_prime
+
+
+   .. py:attribute:: to_replace
+
+
+   .. py:attribute:: msg
+      :value: []
+
+
+
+   .. py:attribute:: ccs
+
+
+   .. py:attribute:: es_specs
+
+
+   .. py:attribute:: dm
+      :type:  tuple[dispatch.DispatchModel, Ellipsis]
+
+
+   .. py:attribute:: good_scenario
+
+
+   .. py:attribute:: _outputs
+
+
+   .. py:attribute:: colo_hourly
+
+
+   .. py:attribute:: colo_coef_ts
+
+
+   .. py:attribute:: colo_coef_mw
+
+
+   .. py:attribute:: colo_summary
+
+
+   .. py:method:: select_re_site_capacity()
+
+
+   .. py:method:: chunk_re(re_out, par)
+
+
+   .. py:method:: prof_match_and_final_econ(energy_Ab, re_size0, lb)
+
+
+   .. py:method:: _dzsetstate_(state)
+
+
+   .. py:method:: _dzgetstate_()
+
+
+   .. py:method:: monthly_fuel()
+
+
+   .. py:method:: get_figs()
+
+
+   .. py:method:: is_duplicate_scen(others)
+
+
+   .. py:property:: ccs_pid_gid
+
+
+   .. py:method:: add_pid_gid(df, fos=True)
+      :staticmethod:
+
+
+
+   .. py:method:: adj_re_specs(re_plant_specs)
+
+
+   .. py:method:: make_dm()
+
+
+   .. py:method:: allocate_es()
+
+
+   .. py:method:: _adjust_profs_make_dm(dm_kwargs, disp_profiles, re_profs)
+
+
+   .. py:property:: re_capacity_mw
+
+      Capacity of RE adjusted for nuclear.
+
+
+   .. py:method:: hrs_to_check(cutoff=0.01)
+
+      Hours with positive deficits are ones where not all of net load was served
+      we want to be able to easily check the two hours immediately before these
+      positive deficit hours
+
+
+
+   .. py:method:: checks(cutoff)
+
+
+   .. py:method:: storage_durations()
+
+      Number of hours during which state of charge was in various duration bins.
+
+
+
+   .. py:method:: storage_capacity()
+
+      Number of hours where storage charge or discharge was in various bins.
+
+
+
+   .. py:method:: re_allocate_deficit(df)
+
+      Spread 2x the annual deficit across operating fossil.
+
+
+
+   .. py:method:: dm_full_output()
+
+
+   .. py:method:: allocate_curtailment(df, dm)
+
+
+   .. py:method:: chunk_output(df)
+
+
+   .. py:method:: rechunk_patio_clean()
+
+
+   .. py:method:: add_curve_price(df, dm)
+
+
+   .. py:method:: full_output()
+
+
+   .. py:method:: system_output(variant='redispatch')
+
+
+   .. py:method:: messages()
+
+
+   .. py:method:: allocated_output()
+
+      RE summary by fossil plant.
+
+
+
+   .. py:method:: outputs_wrapper_pl(df)
+
+
+   .. py:method:: outputs_wrapper(df)
+
+
+   .. py:method:: setup_colo_data(selection)
+
+
+   .. py:method:: setup_ba_colo_data(first_year)
+
+
+   .. py:method:: setup_re_colo_data(pid, gens, poi, first_year)
+
+
+   .. py:property:: ix
+      :type: tuple
+
+
+
+   .. py:property:: ix_names
+      :type: tuple
+
+
+
+   .. py:method:: __repr__()
+
+
+.. py:function:: plot_year_hourly(hourly, year)
+

@@ -1,0 +1,797 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" /><link rel="next" title="patio.re_ninja" href="../../re_ninja/index.html" /><link rel="prev" title="patio.model.colo_resources" href="../colo_resources/index.html" />
+        <link rel="prefetch" href="../../../../_static/Small_PNG-RMI_logo_PrimaryUse.PNG" as="image" />
+        <link rel="prefetch" href="../../../../_static/Small_PNG-RMI_logo_PrimaryUse_White_Horizontal.PNG" as="image" />
+
+    <!-- Generated with Sphinx 8.2.3 and Furo 2025.07.19 -->
+        <title>patio.model.colo_results - Patio 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=25af2a20" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #2b2b2b;
+  --color-code-foreground: #f8f8f2;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #2b2b2b;
+  --color-code-foreground: #f8f8f2;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../../index.html"><div class="brand">Patio 0.1 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../../../../_static/Small_PNG-RMI_logo_PrimaryUse.PNG" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../../../../_static/Small_PNG-RMI_logo_PrimaryUse_White_Horizontal.PNG" alt="Dark Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">Patio 0.1 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../LICENSE.html">Licensing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cli.html">CLI</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../../../index.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current has-children"><a class="reference internal" href="../../index.html">patio</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of patio</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../_version/index.html">patio._version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli/index.html">patio.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../constants/index.html">patio.constants</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../data/index.html">patio.data</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of patio.data</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../data/asset_data/index.html">patio.data.asset_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../data/cems/index.html">patio.data.cems</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../data/entity_ids/index.html">patio.data.entity_ids</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../data/profile_data/index.html">patio.data.profile_data</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../exceptions/index.html">patio.exceptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../helpers/index.html">patio.helpers</a></li>
+<li class="toctree-l3 current has-children"><a class="reference internal" href="../index.html">patio.model</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of patio.model</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../ba_level/index.html">patio.model.ba_level</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../ba_scenario/index.html">patio.model.ba_scenario</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../base/index.html">patio.model.base</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../colo_common/index.html">patio.model.colo_common</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../colo_core/index.html">patio.model.colo_core</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../colo_data/index.html">patio.model.colo_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../colo_lp/index.html">patio.model.colo_lp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../colo_resources/index.html">patio.model.colo_resources</a></li>
+<li class="toctree-l4 current current-page"><a class="current reference internal" href="#">patio.model.colo_results</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../re_ninja/index.html">patio.re_ninja</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="https://github.com/rmi-electricity/patio/blob/main/docs/autoapi/patio/model/colo_results/index.rst?plain=true" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div><div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/rmi-electricity/patio/edit/main/docs/autoapi/patio/model/colo_results/index.rst" rel="edit" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="module-patio.model.colo_results">
+<span id="patio-model-colo-results"></span><h1>patio.model.colo_results<a class="headerlink" href="#module-patio.model.colo_results" title="Link to this heading">¶</a></h1>
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#patio.model.colo_results.LOGGER" title="patio.model.colo_results.LOGGER"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LOGGER</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#patio.model.colo_results.Results" title="patio.model.colo_results.Results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Results</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#patio.model.colo_results.text_position" title="patio.model.colo_results.text_position"><code class="xref py py-obj docutils literal notranslate"><span class="pre">text_position</span></code></a>(scen_df, pid)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#patio.model.colo_results.sankey" title="patio.model.colo_results.sankey"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sankey</span></code></a>(h3)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">¶</a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="patio.model.colo_results.LOGGER">
+<span class="sig-prename descclassname"><span class="pre">patio.model.colo_results.</span></span><span class="sig-name descname"><span class="pre">LOGGER</span></span><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#LOGGER"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.LOGGER" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.model.colo_results.text_position">
+<span class="sig-prename descclassname"><span class="pre">patio.model.colo_results.</span></span><span class="sig-name descname"><span class="pre">text_position</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scen_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pid</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#text_position"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.text_position" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.model.colo_results.sankey">
+<span class="sig-prename descclassname"><span class="pre">patio.model.colo_results.</span></span><span class="sig-name descname"><span class="pre">sankey</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h3</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#sankey"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.sankey" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">patio.model.colo_results.</span></span><span class="sig-name descname"><span class="pre">Results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">results</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_served</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_pct_load_clean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_ppa</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_reg_rank</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_violation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_attr_rev_export_clean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">font</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Gill</span> <span class="pre">Sans'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results" title="Link to this definition">¶</a></dt>
+<dd><dl class="py attribute">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.id_cols">
+<span class="sig-name descname"><span class="pre">id_cols</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('ba_code',</span> <span class="pre">'icx_id',</span> <span class="pre">'icx_gen',</span> <span class="pre">'regime',</span> <span class="pre">'name')</span></em><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.id_cols"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.id_cols" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.renamer">
+<span class="sig-name descname"><span class="pre">renamer</span></span><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.renamer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.renamer" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.colors">
+<span class="sig-name descname"><span class="pre">colors</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['#003B63',</span> <span class="pre">'#45CFCC',</span> <span class="pre">'#58595B',</span> <span class="pre">'#92AEC5',</span> <span class="pre">'#135908',</span> <span class="pre">'#00CC66',</span> <span class="pre">'#FFCB00',</span> <span class="pre">'#E04D39',...</span></em><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.colors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.colors" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.fs">
+<span class="sig-name descname"><span class="pre">fs</span></span><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.fs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.fs" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.min_served">
+<span class="sig-name descname"><span class="pre">min_served</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.min_served"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.min_served" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.min_pct_load_clean">
+<span class="sig-name descname"><span class="pre">min_pct_load_clean</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.6</span></em><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.min_pct_load_clean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.min_pct_load_clean" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.max_ppa">
+<span class="sig-name descname"><span class="pre">max_ppa</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">200</span></em><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.max_ppa"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.max_ppa" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.max_reg_rank">
+<span class="sig-name descname"><span class="pre">max_reg_rank</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">9</span></em><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.max_reg_rank"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.max_reg_rank" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.max_violation">
+<span class="sig-name descname"><span class="pre">max_violation</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.5</span></em><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.max_violation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.max_violation" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.max_attr_rev_export_clean">
+<span class="sig-name descname"><span class="pre">max_attr_rev_export_clean</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">100</span></em><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.max_attr_rev_export_clean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.max_attr_rev_export_clean" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.font">
+<span class="sig-name descname"><span class="pre">font</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Gill</span> <span class="pre">Sans'</span></em><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.font"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.font" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.names">
+<span class="sig-name descname"><span class="pre">names</span></span><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.names" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.name_indices">
+<span class="sig-name descname"><span class="pre">name_indices</span></span><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.name_indices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.name_indices" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.pudl_release">
+<span class="sig-name descname"><span class="pre">pudl_release</span></span><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.pudl_release"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.pudl_release" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.summaries">
+<span class="sig-name descname"><span class="pre">summaries</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">polars.DataFrame</span><span class="p"><span class="pre">]</span></span></em><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.summaries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.summaries" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.flows">
+<span class="sig-name descname"><span class="pre">flows</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">polars.DataFrame</span><span class="p"><span class="pre">]</span></span></em><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.flows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.flows" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.fig_path">
+<span class="sig-name descname"><span class="pre">fig_path</span></span><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.fig_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.fig_path" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.__getitem__">
+<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.__getitem__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.__getitem__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.update_params">
+<span class="sig-name descname"><span class="pre">update_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.update_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.update_params" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.load">
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.load" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.get_aligned">
+<span class="sig-name descname"><span class="pre">get_aligned</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">land_screen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.get_aligned"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.get_aligned" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.last">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">last</span></span><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.last"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.last" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.good_screen">
+<span class="sig-name descname"><span class="pre">good_screen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.good_screen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.good_screen" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>df</strong> (<em>Results.good_screen.T</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Results.good_screen.T</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.all_summaries">
+<span class="sig-name descname"><span class="pre">all_summaries</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.all_summaries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.all_summaries" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.best_at_site">
+<span class="sig-name descname"><span class="pre">best_at_site</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.best_at_site"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.best_at_site" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>df</strong> (<em>Results.best_at_site.T</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Results.best_at_site.T</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.source_for_load">
+<span class="sig-name descname"><span class="pre">source_for_load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.source_for_load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.source_for_load" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.get_flows">
+<span class="sig-name descname"><span class="pre">get_flows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.get_flows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.get_flows" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>polars.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.get_summary">
+<span class="sig-name descname"><span class="pre">get_summary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.get_summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.get_summary" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>polars.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results._cc_cost">
+<span class="sig-name descname"><span class="pre">_cc_cost</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results._cc_cost"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results._cc_cost" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>polars.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.parse_log">
+<span class="sig-name descname"><span class="pre">parse_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">local</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.parse_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.parse_log" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>run</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>)</p></li>
+<li><p><strong>local</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>polars.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.norm_name">
+<span class="sig-name descname"><span class="pre">norm_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.norm_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.norm_name" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>run</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.summary_stats">
+<span class="sig-name descname"><span class="pre">summary_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.summary_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.summary_stats" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.for_dataroom">
+<span class="sig-name descname"><span class="pre">for_dataroom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.for_dataroom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.for_dataroom" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>polars.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.for_xl">
+<span class="sig-name descname"><span class="pre">for_xl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.for_xl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.for_xl" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>polars.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.case_sheets">
+<span class="sig-name descname"><span class="pre">case_sheets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">land_screen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.case_sheets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.case_sheets" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a>[plotly.graph_objects.Figure]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.fig_case_subplots">
+<span class="sig-name descname"><span class="pre">fig_case_subplots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">land_screen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.fig_case_subplots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.fig_case_subplots" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a>[plotly.graph_objects.Figure]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.package_econ_data">
+<span class="sig-name descname"><span class="pre">package_econ_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addl_filter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">local</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.package_econ_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.package_econ_data" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.compare">
+<span class="sig-name descname"><span class="pre">compare</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">on</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('balancing_authority_code_eia',</span> <span class="pre">'plant_name_eia',</span> <span class="pre">'utility_name_eia_lse',</span> <span class="pre">'owner_utility_name_eia',</span> <span class="pre">'state',</span> <span class="pre">'icx_id',</span> <span class="pre">'tech',</span> <span class="pre">'status',</span> <span class="pre">'name',</span> <span class="pre">'regime')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('run_status',</span> <span class="pre">'load_mw',</span> <span class="pre">'served_pct',</span> <span class="pre">'pct_load_clean',</span> <span class="pre">'ppa_ex_fossil_export_profit')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.compare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.compare" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>polars.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.fig_scatter_geo">
+<span class="sig-name descname"><span class="pre">fig_scatter_geo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sixe_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">land_screen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.fig_scatter_geo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.fig_scatter_geo" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>plotly.graph_objects.Figure</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.fig_selection_map">
+<span class="sig-name descname"><span class="pre">fig_selection_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">land_screen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">px_size_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fossil_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selected_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">potential_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.8</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.fig_selection_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.fig_selection_map" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>plotly.graph_objects.Figure</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.fig_indicator_distributions">
+<span class="sig-name descname"><span class="pre">fig_indicator_distributions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metrics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('load_mw',</span> <span class="pre">'ppa_ex_fossil_export_profit',</span> <span class="pre">'pct_overbuild')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'good'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.fig_indicator_distributions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.fig_indicator_distributions" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>metrics</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.fig_supply_curve">
+<span class="sig-name descname"><span class="pre">fig_supply_curve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">land_screen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.fig_supply_curve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.fig_supply_curve" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>plotly.graph_objects.Figure</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.model.colo_results.Results.hourly_analysis">
+<span class="sig-name descname"><span class="pre">hourly_analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/model/colo_results.html#Results.hourly_analysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.model.colo_results.Results.hourly_analysis" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="../../re_ninja/index.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">patio.re_ninja</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="../colo_resources/index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">patio.model.colo_resources</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2025, RMI, CC-BY-4.0
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/rmi-electricity/patio" aria-label="GitHub">
+        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+        </svg>
+    </a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">patio.model.colo_results</a><ul>
+<li><a class="reference internal" href="#attributes">Attributes</a></li>
+<li><a class="reference internal" href="#classes">Classes</a></li>
+<li><a class="reference internal" href="#functions">Functions</a></li>
+<li><a class="reference internal" href="#module-contents">Module Contents</a><ul>
+<li><a class="reference internal" href="#patio.model.colo_results.LOGGER"><code class="docutils literal notranslate"><span class="pre">LOGGER</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.text_position"><code class="docutils literal notranslate"><span class="pre">text_position()</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.sankey"><code class="docutils literal notranslate"><span class="pre">sankey()</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results"><code class="docutils literal notranslate"><span class="pre">Results</span></code></a><ul>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.id_cols"><code class="docutils literal notranslate"><span class="pre">Results.id_cols</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.renamer"><code class="docutils literal notranslate"><span class="pre">Results.renamer</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.colors"><code class="docutils literal notranslate"><span class="pre">Results.colors</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.fs"><code class="docutils literal notranslate"><span class="pre">Results.fs</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.min_served"><code class="docutils literal notranslate"><span class="pre">Results.min_served</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.min_pct_load_clean"><code class="docutils literal notranslate"><span class="pre">Results.min_pct_load_clean</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.max_ppa"><code class="docutils literal notranslate"><span class="pre">Results.max_ppa</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.max_reg_rank"><code class="docutils literal notranslate"><span class="pre">Results.max_reg_rank</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.max_violation"><code class="docutils literal notranslate"><span class="pre">Results.max_violation</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.max_attr_rev_export_clean"><code class="docutils literal notranslate"><span class="pre">Results.max_attr_rev_export_clean</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.font"><code class="docutils literal notranslate"><span class="pre">Results.font</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.names"><code class="docutils literal notranslate"><span class="pre">Results.names</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.name_indices"><code class="docutils literal notranslate"><span class="pre">Results.name_indices</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.pudl_release"><code class="docutils literal notranslate"><span class="pre">Results.pudl_release</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.summaries"><code class="docutils literal notranslate"><span class="pre">Results.summaries</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.flows"><code class="docutils literal notranslate"><span class="pre">Results.flows</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.fig_path"><code class="docutils literal notranslate"><span class="pre">Results.fig_path</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.__getitem__"><code class="docutils literal notranslate"><span class="pre">Results.__getitem__()</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.update_params"><code class="docutils literal notranslate"><span class="pre">Results.update_params()</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.load"><code class="docutils literal notranslate"><span class="pre">Results.load()</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.get_aligned"><code class="docutils literal notranslate"><span class="pre">Results.get_aligned()</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.last"><code class="docutils literal notranslate"><span class="pre">Results.last</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.good_screen"><code class="docutils literal notranslate"><span class="pre">Results.good_screen()</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.all_summaries"><code class="docutils literal notranslate"><span class="pre">Results.all_summaries()</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.best_at_site"><code class="docutils literal notranslate"><span class="pre">Results.best_at_site()</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.source_for_load"><code class="docutils literal notranslate"><span class="pre">Results.source_for_load()</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.get_flows"><code class="docutils literal notranslate"><span class="pre">Results.get_flows()</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.get_summary"><code class="docutils literal notranslate"><span class="pre">Results.get_summary()</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results._cc_cost"><code class="docutils literal notranslate"><span class="pre">Results._cc_cost()</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.parse_log"><code class="docutils literal notranslate"><span class="pre">Results.parse_log()</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.norm_name"><code class="docutils literal notranslate"><span class="pre">Results.norm_name()</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.summary_stats"><code class="docutils literal notranslate"><span class="pre">Results.summary_stats()</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.for_dataroom"><code class="docutils literal notranslate"><span class="pre">Results.for_dataroom()</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.for_xl"><code class="docutils literal notranslate"><span class="pre">Results.for_xl()</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.case_sheets"><code class="docutils literal notranslate"><span class="pre">Results.case_sheets()</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.fig_case_subplots"><code class="docutils literal notranslate"><span class="pre">Results.fig_case_subplots()</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.package_econ_data"><code class="docutils literal notranslate"><span class="pre">Results.package_econ_data()</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.compare"><code class="docutils literal notranslate"><span class="pre">Results.compare()</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.fig_scatter_geo"><code class="docutils literal notranslate"><span class="pre">Results.fig_scatter_geo()</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.fig_selection_map"><code class="docutils literal notranslate"><span class="pre">Results.fig_selection_map()</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.fig_indicator_distributions"><code class="docutils literal notranslate"><span class="pre">Results.fig_indicator_distributions()</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.fig_supply_curve"><code class="docutils literal notranslate"><span class="pre">Results.fig_supply_curve()</span></code></a></li>
+<li><a class="reference internal" href="#patio.model.colo_results.Results.hourly_analysis"><code class="docutils literal notranslate"><span class="pre">Results.hourly_analysis()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../../_static/documentation_options.js?v=fce13f47"></script>
+    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>

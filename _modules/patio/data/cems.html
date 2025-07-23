@@ -1,0 +1,1496 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
+        <link rel="prefetch" href="../../../_static/Small_PNG-RMI_logo_PrimaryUse.PNG" as="image" />
+        <link rel="prefetch" href="../../../_static/Small_PNG-RMI_logo_PrimaryUse_White_Horizontal.PNG" as="image" />
+
+    <!-- Generated with Sphinx 8.2.3 and Furo 2025.07.19 -->
+        <title>patio.data.cems - Patio 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=25af2a20" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #2b2b2b;
+  --color-code-foreground: #f8f8f2;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #2b2b2b;
+  --color-code-foreground: #f8f8f2;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">Patio 0.1 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../../../_static/Small_PNG-RMI_logo_PrimaryUse.PNG" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../../../_static/Small_PNG-RMI_logo_PrimaryUse_White_Horizontal.PNG" alt="Dark Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">Patio 0.1 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../LICENSE.html">Licensing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cli.html">CLI</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../autoapi/index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../autoapi/patio/index.html">patio</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of patio</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/patio/_version/index.html">patio._version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/patio/cli/index.html">patio.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/patio/constants/index.html">patio.constants</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../autoapi/patio/data/index.html">patio.data</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of patio.data</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../autoapi/patio/data/asset_data/index.html">patio.data.asset_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../autoapi/patio/data/cems/index.html">patio.data.cems</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../autoapi/patio/data/entity_ids/index.html">patio.data.entity_ids</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../autoapi/patio/data/profile_data/index.html">patio.data.profile_data</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/patio/exceptions/index.html">patio.exceptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/patio/helpers/index.html">patio.helpers</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../autoapi/patio/model/index.html">patio.model</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of patio.model</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../autoapi/patio/model/ba_level/index.html">patio.model.ba_level</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../autoapi/patio/model/ba_scenario/index.html">patio.model.ba_scenario</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../autoapi/patio/model/base/index.html">patio.model.base</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../autoapi/patio/model/colo_common/index.html">patio.model.colo_common</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../autoapi/patio/model/colo_core/index.html">patio.model.colo_core</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../autoapi/patio/model/colo_data/index.html">patio.model.colo_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../autoapi/patio/model/colo_lp/index.html">patio.model.colo_lp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../autoapi/patio/model/colo_resources/index.html">patio.model.colo_resources</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../autoapi/patio/model/colo_results/index.html">patio.model.colo_results</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/patio/re_ninja/index.html">patio.re_ninja</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <h1>Source code for patio.data.cems</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">lru_cache</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">traceback</span><span class="w"> </span><span class="kn">import</span> <span class="n">TracebackException</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">etoolbox.datazip</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataZip</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">etoolbox.utils.pudl_helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">simplify_columns</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numba</span><span class="w"> </span><span class="kn">import</span> <span class="n">njit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tqdm.contrib.concurrent</span><span class="w"> </span><span class="kn">import</span> <span class="n">process_map</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tqdm.contrib.logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">logging_redirect_tqdm</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">patio.constants</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">CEMS_CARB_INTENSITY</span><span class="p">,</span>
+    <span class="n">CEMS_COL_MAP</span><span class="p">,</span>
+    <span class="n">CROSSWALK_COL_MAP</span><span class="p">,</span>
+    <span class="n">CROSSWALK_DTYPES</span><span class="p">,</span>
+    <span class="n">EGRID_COL_MAP</span><span class="p">,</span>
+    <span class="n">EGRID_DTYPES</span><span class="p">,</span>
+    <span class="n">FOSSIL_PRIME_MOVER_MAP</span><span class="p">,</span>
+    <span class="n">ROOT_PATH</span><span class="p">,</span>
+    <span class="n">STATE_BOUNDS</span><span class="p">,</span>
+    <span class="n">UDAY_FOSSIL_FUEL_MAP</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">patio.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">agg_profile</span><span class="p">,</span> <span class="n">fix_cems_datetime</span><span class="p">,</span> <span class="n">lstrip0</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;CEMS&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;all_cems_daily&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;all_cems_normalized_daily&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;all_cems_starts&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;all_state_cems_normalized_daily&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;clean_all_cems&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;combine_crosswalk&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;compare_crosswalks&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;egrid_crosswalk&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;epa_eia_crosswalk&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;make_ba_cems&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;make_eia_cems&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;patio&quot;</span><span class="p">)</span>
+
+
+<span class="nd">@lru_cache</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">emission_factors</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Data is in million tonnes / mmbtu so convert to tonnes / mmbtu, blank or null fuel</span>
+<span class="sd">    should have no emission factor</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span>
+            <span class="n">io</span><span class="o">=</span><span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="s2">&quot;notebooks/inputs/emissions_factors.xlsx&quot;</span><span class="p">,</span>
+            <span class="n">header</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">engine</span><span class="o">=</span><span class="s2">&quot;openpyxl&quot;</span><span class="p">,</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">energy_fuel_group_co2</span>
+        <span class="o">*</span> <span class="mf">1e6</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span> <span class="o">|</span> <span class="p">{</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">}</span>
+
+
+<span class="nd">@njit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fuel_split</span><span class="p">(</span><span class="n">heat_co2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">co2_factors</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Args:</span>
+<span class="sd">        heat_co2:       (0) heat in mmbtu</span>
+<span class="sd">                        (1) co2 tonnes</span>
+<span class="sd">        co2_factors:    (0) emission factor for fuel 1</span>
+<span class="sd">                        (1) emission factor for fuel 2</span>
+
+<span class="sd">    Returns: mmbtu fuel 1, mmbtu fuel 2</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fuel_mmbtu_1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+        <span class="c1"># if no second fuel all fuel is the first fuel, also if the emission</span>
+        <span class="c1"># factors are the same, this needs to be fixed later since that is</span>
+        <span class="c1"># wrong but requires 923</span>
+        <span class="p">(</span><span class="n">co2_factors</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">co2_factors</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">co2_factors</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]),</span>
+        <span class="n">heat_co2</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span>
+        <span class="c1"># if there is a second fuel, first need to make sure the result is &gt;0</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="c1"># then we need to make sure that our calculation doesn&#39;t give a</span>
+            <span class="c1"># an amount for the first fuel greater than the total</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span>
+                <span class="n">heat_co2</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span>
+                <span class="c1"># now we have the actual fuel split calculation</span>
+                <span class="p">(</span><span class="n">heat_co2</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">heat_co2</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">co2_factors</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+                <span class="o">/</span> <span class="p">(</span><span class="n">co2_factors</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">co2_factors</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]),</span>
+            <span class="p">),</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">fuel_mmbtu_1</span> <span class="o">&lt;=</span> <span class="n">heat_co2</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mf">1e4</span><span class="p">)),</span> <span class="s2">&quot;fuel 1 exceeds total&quot;</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">fuel_mmbtu_1</span> <span class="o">&gt;=</span> <span class="mf">0.0</span><span class="p">),</span> <span class="s2">&quot;fuel 1 has negatives&quot;</span>
+
+    <span class="n">fuel_mmbtu_2</span> <span class="o">=</span> <span class="n">heat_co2</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">fuel_mmbtu_1</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">fuel_mmbtu_2</span> <span class="o">&lt;=</span> <span class="n">heat_co2</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mf">1e4</span><span class="p">)),</span> <span class="s2">&quot;fuel 2 exceeds total&quot;</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">fuel_mmbtu_2</span> <span class="o">&gt;=</span> <span class="mf">0.0</span><span class="p">),</span> <span class="s2">&quot;fuel 2 has negatives&quot;</span>
+    <span class="k">return</span> <span class="n">fuel_mmbtu_1</span><span class="p">,</span> <span class="n">fuel_mmbtu_2</span>
+
+
+<span class="nd">@dataclass</span>
+<div class="viewcode-block" id="CEMS">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.CEMS">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CEMS</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;object to contain, process, clean and transform CEMS data for a state&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="CEMS.state">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.CEMS.state">[docs]</a>
+    <span class="n">state</span><span class="p">:</span> <span class="nb">str</span></div>
+
+<div class="viewcode-block" id="CEMS.years">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.CEMS.years">[docs]</a>
+    <span class="n">years</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2006</span><span class="p">,</span> <span class="mi">2020</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CEMS._cems">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.CEMS._cems">[docs]</a>
+    <span class="n">_cems</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="CEMS._crosswalk">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.CEMS._crosswalk">[docs]</a>
+    <span class="n">_crosswalk</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="CEMS._eia_cems">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.CEMS._eia_cems">[docs]</a>
+    <span class="n">_eia_cems</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="CEMS.__post_init__">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.CEMS.__post_init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crosswalk</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_crosswalk</span> <span class="o">=</span> <span class="n">new_crosswalk</span><span class="p">()</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;state == &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cems</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cems</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clean_cems</span><span class="p">()</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="CEMS.from_p">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.CEMS.from_p">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_p</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">DataZip</span><span class="p">(</span><span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="s2">&quot;state_cems&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">z</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+                    <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">,</span>
+                    <span class="n">_cems</span><span class="o">=</span><span class="n">z</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;cems_</span><span class="si">{</span><span class="n">state</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">],</span>
+                <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">FileNotFoundError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;Put `state_cems.zip` in `patio` dir, you can download it from from &quot;</span>
+                <span class="s2">&quot;https://rockmtnins.sharepoint.com/:f:/s/UTF/EmfCaHhei6NMtDuXhMhu_NsB_3GF_tM4FW546-2M1JxRZg?e=nUX0y3&quot;</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="CEMS.eia_from_p">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.CEMS.eia_from_p">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">eia_from_p</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">DataZip</span><span class="p">(</span><span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="s2">&quot;eia_cems&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">z</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+                    <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">,</span>
+                    <span class="n">_cems</span><span class="o">=</span><span class="n">z</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;cems_</span><span class="si">{</span><span class="n">state</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">],</span>
+                    <span class="n">_eia_cems</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">FileNotFoundError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;Put `eia_cems.zip` in `patio` dir, you can download it from from &quot;</span>
+                <span class="s2">&quot;https://rockmtnins.sharepoint.com/:f:/s/UTF/EmfCaHhei6NMtDuXhMhu_NsB_3GF_tM4FW546-2M1JxRZg?e=nUX0y3&quot;</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span></div>
+
+
+<div class="viewcode-block" id="CEMS.to_p">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.CEMS.to_p">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_p</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="s2">&quot;cems&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="p">(</span><span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="s2">&quot;cems&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cems</span><span class="o">.</span><span class="n">to_parquet</span><span class="p">(</span><span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;cems/cems_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span><span class="si">}</span><span class="s2">.parquet&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CEMS.cross_test">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.CEMS.cross_test">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cross_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cross</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">cross</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cross</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crosswalk</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cems</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;plant_id_cems&quot;</span><span class="p">,</span> <span class="s2">&quot;unit_id_cems&quot;</span><span class="p">])</span>
+                <span class="o">.</span><span class="n">count</span><span class="p">()</span>
+                <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+                <span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+                    <span class="n">cross</span><span class="p">,</span>
+                    <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;plant_id_cems&quot;</span><span class="p">,</span> <span class="s2">&quot;unit_id_cems&quot;</span><span class="p">],</span>
+                    <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span>
+                    <span class="n">validate</span><span class="o">=</span><span class="s2">&quot;1:1&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="n">pd</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">MergeError</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cems</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;plant_id_cems&quot;</span><span class="p">,</span> <span class="s2">&quot;unit_id_cems&quot;</span><span class="p">])</span>
+                <span class="o">.</span><span class="n">count</span><span class="p">()</span>
+                <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+                <span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+                    <span class="n">cross</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;plant_id_cems&quot;</span><span class="p">,</span> <span class="s2">&quot;unit_id_cems&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(),</span>
+                    <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;plant_id_cems&quot;</span><span class="p">,</span> <span class="s2">&quot;unit_id_cems&quot;</span><span class="p">],</span>
+                    <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span>
+                    <span class="n">validate</span><span class="o">=</span><span class="s2">&quot;1:1&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">out</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">out</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                    <span class="n">item</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">out</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">out</span></div>
+
+
+<div class="viewcode-block" id="CEMS.monthly_unit_fuel_by_type">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.CEMS.monthly_unit_fuel_by_type">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">monthly_unit_fuel_by_type</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">plant_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">unit_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span><span class="p">,</span> <span class="n">fuels</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Use emission factors to split a unit&#39;s generation between a</span>
+<span class="sd">        primary and secondary fuel</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">unit_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">unit_id</span><span class="p">)</span>
+        <span class="n">i0</span><span class="p">,</span> <span class="n">i1</span> <span class="o">=</span> <span class="n">CEMS_CARB_INTENSITY</span><span class="p">[</span><span class="n">fuels</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">CEMS_CARB_INTENSITY</span><span class="p">[</span><span class="n">fuels</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="p">(</span><span class="n">plant_id</span><span class="p">,</span> <span class="n">unit_id</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_cems</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;datetime&quot;</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;plant_id_cems == @plant_id &amp; unit_id_cems == @unit_id&quot;</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">assign</span><span class="p">(</span>
+                    <span class="n">f0</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">co2_tons</span> <span class="o">-</span> <span class="n">x</span><span class="o">.</span><span class="n">heat_in_mmbtu</span> <span class="o">*</span> <span class="n">i1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">i0</span> <span class="o">-</span> <span class="n">i1</span><span class="p">),</span>
+                    <span class="n">f1</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">heat_in_mmbtu</span> <span class="o">-</span> <span class="n">x</span><span class="o">.</span><span class="n">f0</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;f0&quot;</span><span class="p">:</span> <span class="n">fuels</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;f1&quot;</span><span class="p">:</span> <span class="n">fuels</span><span class="p">[</span><span class="mi">1</span><span class="p">]})</span>
+                <span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="n">pd</span><span class="o">.</span><span class="n">Grouper</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="s2">&quot;MS&quot;</span><span class="p">)])[</span>
+                    <span class="p">[</span><span class="s2">&quot;gross_gen&quot;</span><span class="p">,</span> <span class="s2">&quot;heat_in_mmbtu&quot;</span><span class="p">,</span> <span class="s2">&quot;co2_tons&quot;</span><span class="p">,</span> <span class="s2">&quot;op_time&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">fuels</span><span class="p">]</span>
+                <span class="p">]</span>
+                <span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="p">},</span>
+            <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;plant_id_cems&quot;</span><span class="p">,</span> <span class="s2">&quot;unit_id_cems&quot;</span><span class="p">,</span> <span class="s2">&quot;report_date&quot;</span><span class="p">],</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CEMS.fuel_by_type">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.CEMS.fuel_by_type">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fuel_by_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s2">&quot;MS&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;WIP do the primary/secondary fuel split for all plants/units</span>
+<span class="sd">        works because all energy is allocated to the first fuel if</span>
+<span class="sd">        secondary intensity is 0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eia_cems</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;we only support EIA CEMS&quot;</span><span class="p">)</span>
+        <span class="n">em</span> <span class="o">=</span> <span class="n">emission_factors</span><span class="p">()</span>
+        <span class="c1"># probably want to try and map over to</span>
+        <span class="n">merge_on</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;plant_id_eia&quot;</span><span class="p">,</span> <span class="s2">&quot;generator_id&quot;</span><span class="p">,</span> <span class="s2">&quot;capacity_year&quot;</span><span class="p">]</span>
+        <span class="n">cems</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cems</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">capacity_year</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">year</span><span class="p">)</span>
+        <span class="n">cw</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_crosswalk</span><span class="p">[</span>
+                <span class="p">[</span>
+                    <span class="o">*</span><span class="n">merge_on</span><span class="p">,</span>
+                    <span class="s2">&quot;eia_fuel_type_1_hist&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;eia_fuel_type_2_hist&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;eia_unit_type_hist&quot;</span><span class="p">,</span>
+                <span class="p">]</span>
+            <span class="p">]</span>
+            <span class="o">.</span><span class="n">assign</span><span class="p">(</span>
+                <span class="n">co2_factor_1</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">eia_fuel_type_1_hist</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">em</span><span class="p">),</span>
+                <span class="n">co2_factor_2</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">eia_fuel_type_2_hist</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">em</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="n">merge_on</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">merged</span> <span class="o">=</span> <span class="n">cems</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+            <span class="n">cw</span><span class="p">,</span>
+            <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">merge_on</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">cw</span> <span class="ow">and</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">cems</span><span class="p">],</span>
+            <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span>
+            <span class="n">validate</span><span class="o">=</span><span class="s2">&quot;m:1&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">fuel_mmbtu_1</span><span class="p">,</span> <span class="n">fuel_mmbtu_2</span> <span class="o">=</span> <span class="n">fuel_split</span><span class="p">(</span>
+            <span class="n">heat_co2</span><span class="o">=</span><span class="n">merged</span><span class="p">[[</span><span class="s2">&quot;heat_in_mmbtu&quot;</span><span class="p">,</span> <span class="s2">&quot;co2_tons&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+            <span class="n">co2_factors</span><span class="o">=</span><span class="n">merged</span><span class="p">[[</span><span class="s2">&quot;co2_factor_1&quot;</span><span class="p">,</span> <span class="s2">&quot;co2_factor_2&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">merged</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span>
+                <span class="n">fuel_1_mmbtu</span><span class="o">=</span><span class="n">fuel_mmbtu_1</span><span class="p">,</span>
+                <span class="n">fuel_2_mmbtu</span><span class="o">=</span><span class="n">fuel_mmbtu_2</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;plant_id_eia&quot;</span><span class="p">,</span> <span class="s2">&quot;generator_id&quot;</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Grouper</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;datetime&quot;</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="n">freq</span><span class="p">)])</span>
+            <span class="o">.</span><span class="n">agg</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;eia_fuel_type_1_hist&quot;</span><span class="p">:</span> <span class="s2">&quot;first&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;eia_fuel_type_2_hist&quot;</span><span class="p">:</span> <span class="s2">&quot;first&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;eia_unit_type_hist&quot;</span><span class="p">:</span> <span class="s2">&quot;first&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;gross_gen&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">,</span>
+                    <span class="s2">&quot;heat_in_mmbtu&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">,</span>
+                    <span class="s2">&quot;co2_tons&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">,</span>
+                    <span class="s2">&quot;fuel_1_mmbtu&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">,</span>
+                    <span class="s2">&quot;fuel_2_mmbtu&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">,</span>
+                    <span class="s2">&quot;co2_factor_1&quot;</span><span class="p">:</span> <span class="s2">&quot;first&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;co2_factor_2&quot;</span><span class="p">:</span> <span class="s2">&quot;first&quot;</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">cems_factor</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">co2_tons</span> <span class="o">/</span> <span class="n">x</span><span class="o">.</span><span class="n">heat_in_mmbtu</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CEMS.count_unit_starts">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.CEMS.count_unit_starts">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">count_unit_starts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s2">&quot;YS&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Identify each time that a unit starts generating electricity</span>
+<span class="sd">        and count the number of starts for each increment of time specified</span>
+<span class="sd">        in ``freq``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pid</span><span class="p">,</span> <span class="n">uid</span> <span class="o">=</span> <span class="s2">&quot;plant_id_cems&quot;</span><span class="p">,</span> <span class="s2">&quot;unit_id_cems&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eia_cems</span><span class="p">:</span>
+            <span class="n">pid</span><span class="p">,</span> <span class="n">uid</span> <span class="o">=</span> <span class="s2">&quot;plant_id_eia&quot;</span><span class="p">,</span> <span class="s2">&quot;generator_id&quot;</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cems</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">assign</span><span class="p">(</span>
+                <span class="nb">id</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">pid</span><span class="p">]</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">pid</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">uid</span><span class="p">]</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">uid</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)),</span>
+                <span class="n">gen_starts</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span>
+                    <span class="p">((</span><span class="n">x</span><span class="o">.</span><span class="n">gross_gen</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">|</span> <span class="n">x</span><span class="o">.</span><span class="n">gross_gen</span><span class="o">.</span><span class="n">isna</span><span class="p">())</span>
+                    <span class="o">&amp;</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">gross_gen</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+                    <span class="o">&amp;</span> <span class="n">x</span><span class="o">.</span><span class="n">id</span>
+                <span class="p">),</span>
+                <span class="n">fuel_starts</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span>
+                    <span class="p">((</span><span class="n">x</span><span class="o">.</span><span class="n">heat_in_mmbtu</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">|</span> <span class="n">x</span><span class="o">.</span><span class="n">heat_in_mmbtu</span><span class="o">.</span><span class="n">isna</span><span class="p">())</span>
+                    <span class="o">&amp;</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">heat_in_mmbtu</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+                    <span class="o">&amp;</span> <span class="n">x</span><span class="o">.</span><span class="n">id</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="n">pid</span><span class="p">,</span> <span class="n">uid</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Grouper</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;datetime&quot;</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="n">freq</span><span class="p">)])</span>
+            <span class="o">.</span><span class="n">agg</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;gen_starts&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;sum&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;fuel_starts&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;sum&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;gross_gen&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span> <span class="s2">&quot;max&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;heat_in_mmbtu&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span> <span class="s2">&quot;max&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;co2_tons&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span> <span class="s2">&quot;max&quot;</span><span class="p">],</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">out</span><span class="o">.</span><span class="n">set_axis</span><span class="p">(</span>
+            <span class="p">[(</span><span class="n">a</span> <span class="k">if</span> <span class="n">b</span> <span class="o">==</span> <span class="s2">&quot;sum&quot;</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">out</span><span class="o">.</span><span class="n">columns</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CEMS.fuel_by_type_and_starts">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.CEMS.fuel_by_type_and_starts">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fuel_by_type_and_starts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s2">&quot;MS&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fuel_by_type</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="n">freq</span><span class="p">)</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">count_unit_starts</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="n">freq</span><span class="p">),</span>
+            <span class="n">left_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">validate</span><span class="o">=</span><span class="s2">&quot;1:1&quot;</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CEMS.annual_summary">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.CEMS.annual_summary">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">annual_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cems</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span>
+            <span class="p">[</span><span class="s2">&quot;plant_id_cems&quot;</span><span class="p">,</span> <span class="s2">&quot;unit_id_cems&quot;</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Grouper</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;datetime&quot;</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s2">&quot;YS&quot;</span><span class="p">)]</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="CEMS.daily_cems">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.CEMS.daily_cems">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">daily_cems</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Aggregates cems by prime_mover and fuel then converts to daily</span>
+<span class="sd">        for utility-level analysis, does not normalize</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cems</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_crosswalk</span><span class="p">,</span>
+            <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;plant_id_cems&quot;</span><span class="p">,</span> <span class="s2">&quot;unit_id_cems&quot;</span><span class="p">],</span>
+            <span class="n">how</span><span class="o">=</span><span class="s2">&quot;inner&quot;</span><span class="p">,</span>
+            <span class="n">validate</span><span class="o">=</span><span class="s2">&quot;m:1&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="s2">&quot;plant_id_cems&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;prime_mover_code&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;fuel_type_code_pudl&quot;</span><span class="p">,</span>
+                    <span class="n">df</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">date</span><span class="p">,</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">agg</span><span class="p">({</span><span class="s2">&quot;gross_gen&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">})</span>
+            <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;state&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span>
+        <span class="k">return</span> <span class="n">df</span></div>
+
+
+<div class="viewcode-block" id="CEMS.normalized_daily_state_cems">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.CEMS.normalized_daily_state_cems">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">normalized_daily_state_cems</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Normalize cems monthly then convert aggregate to days&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cems</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_crosswalk</span><span class="p">,</span>
+                <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;plant_id_cems&quot;</span><span class="p">,</span> <span class="s2">&quot;unit_id_cems&quot;</span><span class="p">],</span>
+                <span class="n">how</span><span class="o">=</span><span class="s2">&quot;inner&quot;</span><span class="p">,</span>
+                <span class="n">validate</span><span class="o">=</span><span class="s2">&quot;m:1&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">groupby</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="s2">&quot;prime_mover_code&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;fuel_code&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;datetime&quot;</span><span class="p">,</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">agg</span><span class="p">({</span><span class="s2">&quot;gross_gen&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">})</span>
+        <span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">pivot</span><span class="p">(</span>
+                <span class="n">index</span><span class="o">=</span><span class="s2">&quot;datetime&quot;</span><span class="p">,</span>
+                <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;prime_mover_code&quot;</span><span class="p">,</span> <span class="s2">&quot;fuel_code&quot;</span><span class="p">],</span>
+                <span class="n">values</span><span class="o">=</span><span class="s2">&quot;gross_gen&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">agg_profile</span><span class="p">(</span>  <span class="c1"># noqa: PD013</span>
+                <span class="n">df</span> <span class="o">/</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">month</span><span class="p">])</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s2">&quot;sum&quot;</span><span class="p">),</span>
+                <span class="n">freq</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="o">.</span><span class="n">reorder_levels</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+            <span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">rename</span><span class="p">(</span>
+                <span class="n">columns</span><span class="o">=</span><span class="p">{</span>
+                    <span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;gross_gen&quot;</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;state&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">df</span></div>
+
+
+<div class="viewcode-block" id="CEMS.normalized_daily_cems">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.CEMS.normalized_daily_cems">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">normalized_daily_cems</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Normalize cems monthly then convert aggregate to days&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">agg_to_plant_prime_fuel</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">pivot</span><span class="p">(</span>
+                <span class="n">index</span><span class="o">=</span><span class="s2">&quot;datetime&quot;</span><span class="p">,</span>
+                <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;plant_id_cems&quot;</span><span class="p">,</span> <span class="s2">&quot;prime_mover_code&quot;</span><span class="p">,</span> <span class="s2">&quot;fuel_code&quot;</span><span class="p">],</span>
+                <span class="n">values</span><span class="o">=</span><span class="s2">&quot;gross_gen&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">agg_profile</span><span class="p">(</span>  <span class="c1"># noqa: PD013</span>
+                <span class="n">df</span> <span class="o">/</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">month</span><span class="p">])</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s2">&quot;sum&quot;</span><span class="p">),</span>
+                <span class="n">freq</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+            <span class="o">.</span><span class="n">reorder_levels</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+            <span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">rename</span><span class="p">(</span>
+                <span class="n">columns</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s2">&quot;level_0&quot;</span><span class="p">:</span> <span class="s2">&quot;plant_id_cems&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;level_1&quot;</span><span class="p">:</span> <span class="s2">&quot;prime_mover_code&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;level_2&quot;</span><span class="p">:</span> <span class="s2">&quot;fuel_code&quot;</span><span class="p">,</span>
+                    <span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;gross_gen&quot;</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CEMS.agg_to_plant_prime_fuel">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.CEMS.agg_to_plant_prime_fuel">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">agg_to_plant_prime_fuel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">agg_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">agg_dict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">agg_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;gross_gen&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">}</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cems</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_crosswalk</span><span class="p">,</span>
+                <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;plant_id_cems&quot;</span><span class="p">,</span> <span class="s2">&quot;unit_id_cems&quot;</span><span class="p">],</span>
+                <span class="n">how</span><span class="o">=</span><span class="s2">&quot;inner&quot;</span><span class="p">,</span>
+                <span class="n">validate</span><span class="o">=</span><span class="s2">&quot;m:1&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">groupby</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="s2">&quot;plant_id_cems&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;prime_mover_code&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;fuel_code&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;datetime&quot;</span><span class="p">,</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">agg_dict</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CEMS.write_daily">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.CEMS.write_daily">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_daily</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">daily_cems</span><span class="p">()</span><span class="o">.</span><span class="n">to_parquet</span><span class="p">(</span><span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;cems/daily_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span><span class="si">}</span><span class="s2">.parquet&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CEMS.write_normalized_daily">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.CEMS.write_normalized_daily">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_normalized_daily</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">normalized_daily_cems</span><span class="p">()</span><span class="o">.</span><span class="n">to_parquet</span><span class="p">(</span>
+            <span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;cems/daily_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span><span class="si">}</span><span class="s2">.parquet&quot;</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CEMS.write_normalized_daily_state">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.CEMS.write_normalized_daily_state">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_normalized_daily_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">normalized_daily_state_cems</span><span class="p">()</span><span class="o">.</span><span class="n">to_parquet</span><span class="p">(</span>
+            <span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;cems/daily_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span><span class="si">}</span><span class="s2">.parquet&quot;</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CEMS.apply_crosswalk">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.CEMS.apply_crosswalk">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">apply_crosswalk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">cems_m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cems</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">capacity_year</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">year</span><span class="p">)</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+            <span class="n">new_crosswalk</span><span class="p">()[</span>
+                <span class="p">[</span>
+                    <span class="s2">&quot;plant_id_cems&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;unit_id_cems&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;plant_id_eia&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;generator_id&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;capacity_year&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;allocation_factor&quot;</span><span class="p">,</span>
+                <span class="p">]</span>
+            <span class="p">],</span>
+            <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;plant_id_cems&quot;</span><span class="p">,</span> <span class="s2">&quot;unit_id_cems&quot;</span><span class="p">,</span> <span class="s2">&quot;capacity_year&quot;</span><span class="p">],</span>
+            <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span>
+            <span class="n">indicator</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">missing</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">cems_m</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;_merge == &#39;left_only&#39;&quot;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;plant_id_cems&quot;</span><span class="p">,</span> <span class="s2">&quot;unit_id_cems&quot;</span><span class="p">,</span> <span class="s2">&quot;capacity_year&quot;</span><span class="p">])</span>
+            <span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="n">matched</span> <span class="o">=</span> <span class="n">cems_m</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;_merge == &#39;both&#39;&quot;</span><span class="p">)</span>
+
+        <span class="n">allocation_factor_check</span> <span class="o">=</span> <span class="n">matched</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span>
+            <span class="p">[</span><span class="s2">&quot;plant_id_cems&quot;</span><span class="p">,</span> <span class="s2">&quot;unit_id_cems&quot;</span><span class="p">,</span> <span class="s2">&quot;datetime&quot;</span><span class="p">]</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">allocation_factor</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">allocation_factor_check</span> <span class="o">&lt;=</span> <span class="mf">1.00001</span><span class="p">),</span> <span class="p">(</span>
+            <span class="s2">&quot;allocation_factors for plant_id_cems, unit_id_cems, and datetime sum to more than 1 at least once&quot;</span>
+        <span class="p">)</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">matched</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span>
+                <span class="n">gross_gen</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">gross_gen</span> <span class="o">*</span> <span class="n">x</span><span class="o">.</span><span class="n">allocation_factor</span><span class="p">,</span>
+                <span class="n">heat_in_mmbtu</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">heat_in_mmbtu</span> <span class="o">*</span> <span class="n">x</span><span class="o">.</span><span class="n">allocation_factor</span><span class="p">,</span>
+                <span class="n">co2_tons</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">co2_tons</span> <span class="o">*</span> <span class="n">x</span><span class="o">.</span><span class="n">allocation_factor</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;plant_id_eia&quot;</span><span class="p">,</span> <span class="s2">&quot;generator_id&quot;</span><span class="p">,</span> <span class="s2">&quot;datetime&quot;</span><span class="p">])[</span>
+                <span class="p">[</span><span class="s2">&quot;gross_gen&quot;</span><span class="p">,</span> <span class="s2">&quot;heat_in_mmbtu&quot;</span><span class="p">,</span> <span class="s2">&quot;co2_tons&quot;</span><span class="p">]</span>
+            <span class="p">]</span>
+            <span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">validate</span><span class="p">:</span>
+            <span class="c1"># this check is very slow</span>
+            <span class="n">match_plant_total_check</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cems</span><span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="s2">&quot;plant_id_cems&quot;</span><span class="p">,</span> <span class="s2">&quot;unit_id_cems&quot;</span><span class="p">,</span> <span class="s2">&quot;datetime&quot;</span><span class="p">])</span>
+                <span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+                    <span class="n">matched</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span>
+                        <span class="p">[</span><span class="s2">&quot;plant_id_cems&quot;</span><span class="p">,</span> <span class="s2">&quot;unit_id_cems&quot;</span><span class="p">,</span> <span class="s2">&quot;datetime&quot;</span><span class="p">]</span>
+                    <span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">unique</span><span class="p">(),</span>
+                    <span class="p">[</span><span class="s2">&quot;gross_gen&quot;</span><span class="p">,</span> <span class="s2">&quot;heat_in_mmbtu&quot;</span><span class="p">,</span> <span class="s2">&quot;co2_tons&quot;</span><span class="p">],</span>
+                <span class="p">]</span>
+                <span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="p">)</span>
+            <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span>
+                <span class="n">match_plant_total_check</span><span class="o">.</span><span class="n">gross_gen</span><span class="p">,</span> <span class="n">out</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">gross_gen</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-3</span>
+            <span class="p">),</span> <span class="s2">&quot;check against pre-aggregation gross_gen total failed&quot;</span>
+        <span class="k">return</span> <span class="n">out</span><span class="p">,</span> <span class="n">missing</span></div>
+
+
+<div class="viewcode-block" id="CEMS.write_eia_matched_cems">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.CEMS.write_eia_matched_cems">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_eia_matched_cems</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">out</span><span class="p">,</span> <span class="n">missing</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_crosswalk</span><span class="p">()</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">to_parquet</span><span class="p">(</span><span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;cems/eia_cems/cems_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span><span class="si">}</span><span class="s2">.parquet&quot;</span><span class="p">)</span>
+        <span class="n">missing</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span><span class="o">.</span><span class="n">to_parquet</span><span class="p">(</span>
+            <span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;cems/eia_cems/missing_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span><span class="si">}</span><span class="s2">.parquet&quot;</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CEMS._clean_cems">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.CEMS._clean_cems">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_clean_cems</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">DataZip</span><span class="p">(</span><span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="s2">&quot;raw_cems&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">z</span><span class="p">:</span>
+                <span class="n">c</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;CEMS_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">FileNotFoundError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;Put `raw_cems.zip` in `patio` dir, you can download it from from &quot;</span>
+                <span class="s2">&quot;https://rockmtnins.sharepoint.com/:f:/s/UTF/EmfCaHhei6NMtDuXhMhu_NsB_3GF_tM4FW546-2M1JxRZg?e=nUX0y3&quot;</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">c</span>
+                <span class="c1"># .pipe(lstrip0, col=&quot;UNITID&quot;)</span>
+                <span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">fix_cems_datetime</span><span class="p">)[[</span><span class="o">*</span><span class="nb">list</span><span class="p">(</span><span class="n">CEMS_COL_MAP</span><span class="p">),</span> <span class="s2">&quot;datetime&quot;</span><span class="p">]]</span>
+                <span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">CEMS_COL_MAP</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">astype</span><span class="p">({</span><span class="s2">&quot;unit_id_cems&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">})</span>
+                <span class="c1"># .pipe(</span>
+                <span class="c1">#     combine_cols,</span>
+                <span class="c1">#     col1=&quot;plant_id_cems&quot;,</span>
+                <span class="c1">#     col2=&quot;unit_id_cems&quot;,</span>
+                <span class="c1">#     out_col=&quot;plant_unit_id&quot;,</span>
+                <span class="c1"># )</span>
+            <span class="p">)</span>
+
+            <span class="c1"># only keep plants that operated in 2020</span>
+            <span class="c1"># pid20 = list(df[df.datetime.dt.year == 2020].plant_unit_id.unique())</span>
+            <span class="c1"># print(&quot;.&quot;, end=&quot;&quot;, flush=True)</span>
+            <span class="c1"># return df.query(&quot;plant_unit_id in @pid20&quot;).drop([&quot;plant_unit_id&quot;], axis=1)</span>
+            <span class="k">return</span> <span class="n">df</span></div>
+
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="CEMS.raw_cems">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.CEMS.raw_cems">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">raw_cems</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cems</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
+
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="CEMS.cems_eia_plant_ids">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.CEMS.cems_eia_plant_ids">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cems_eia_plant_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eia_cems</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cems</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cems</span><span class="o">.</span><span class="n">replace</span><span class="p">({</span><span class="s2">&quot;plant_id_cems&quot;</span><span class="p">:</span> <span class="n">cems_to_eia_plant_id_dict</span><span class="p">()})</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span>
+            <span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;plant_id_cems&quot;</span><span class="p">:</span> <span class="s2">&quot;plant_id_eia&quot;</span><span class="p">}</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CEMS.count_plant_prime_fuel_starts">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.CEMS.count_plant_prime_fuel_starts">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">count_plant_prime_fuel_starts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s2">&quot;YS&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Identify each time that a plant/prime/fuel starts generating electricity</span>
+<span class="sd">        and count the number of starts for each increment of time specified</span>
+<span class="sd">        in ``freq``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">agg_to_plant_prime_fuel</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">assign</span><span class="p">(</span>
+                <span class="n">starts</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span>
+                    <span class="p">((</span><span class="n">x</span><span class="o">.</span><span class="n">gross_gen</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">|</span> <span class="n">x</span><span class="o">.</span><span class="n">gross_gen</span><span class="o">.</span><span class="n">isna</span><span class="p">())</span>
+                    <span class="o">&amp;</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">gross_gen</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+                    <span class="o">&amp;</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">plant_id_cems</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">plant_id_cems</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+                    <span class="o">&amp;</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">prime_mover_code</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">prime_mover_code</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+                    <span class="o">&amp;</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">fuel_code</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">fuel_code</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">groupby</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="s2">&quot;plant_id_cems&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;prime_mover_code&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;fuel_code&quot;</span><span class="p">,</span>
+                    <span class="n">pd</span><span class="o">.</span><span class="n">Grouper</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;datetime&quot;</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="n">freq</span><span class="p">),</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">agg</span><span class="p">({</span><span class="s2">&quot;starts&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">,</span> <span class="s2">&quot;gross_gen&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">})</span>
+            <span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;gross_gen&quot;</span><span class="p">:</span> <span class="s2">&quot;max_gross_gen&quot;</span><span class="p">})</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CEMS.units_with_missing_rows">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.CEMS.units_with_missing_rows">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">units_with_missing_rows</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cems</span><span class="o">.</span><span class="n">fillna</span><span class="p">({</span><span class="s2">&quot;gross_gen&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">})</span>
+            <span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;plant_id_cems&quot;</span><span class="p">,</span> <span class="s2">&quot;unit_id_cems&quot;</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Grouper</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;datetime&quot;</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s2">&quot;YS&quot;</span><span class="p">)])</span>
+            <span class="o">.</span><span class="n">count</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;gross_gen &lt; 8760&quot;</span><span class="p">)</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="make_eia_cems">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.make_eia_cems">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">make_eia_cems</span><span class="p">(</span><span class="n">mp</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Combine CEMS data from all relevant states into parquets</span>
+<span class="sd">    of hourly CEMS data for each BA</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        mp: bool use multiprocessing</span>
+
+<span class="sd">    Returns: None, produces BA CEMS parquets</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">eia_cems_dir</span> <span class="o">=</span> <span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="s2">&quot;cems/eia_cems&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">eia_cems_dir</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">eia_cems_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">logging_redirect_tqdm</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">mp</span><span class="p">:</span>
+            <span class="n">process_map</span><span class="p">(</span><span class="n">_eia_cems_mp_helper</span><span class="p">,</span> <span class="n">STATE_BOUNDS</span><span class="p">[</span><span class="s2">&quot;xmin&quot;</span><span class="p">],</span> <span class="n">max_workers</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">ba_tuple</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">STATE_BOUNDS</span><span class="p">[</span><span class="s2">&quot;xmin&quot;</span><span class="p">]):</span>
+                <span class="n">_eia_cems_mp_helper</span><span class="p">(</span><span class="n">ba_tuple</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_eia_cems_mp_helper</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;cems/eia_cems/cems_</span><span class="si">{</span><span class="n">state</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span><span class="si">}</span><span class="s2">.parquet&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">CEMS</span><span class="p">(</span><span class="n">state</span><span class="p">)</span><span class="o">.</span><span class="n">write_eia_matched_cems</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="make_ba_cems">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.make_ba_cems">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">make_ba_cems</span><span class="p">(</span><span class="n">ba_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span> <span class="n">mp</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Combine CEMS data from all relevant states into parquets</span>
+<span class="sd">    of hourly CEMS data for each BA</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ba_dict: dict of ba plant_data</span>
+<span class="sd">        mp: bool use multiprocessing</span>
+
+<span class="sd">    Returns: None, produces BA CEMS parquets</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ba_cems_dir</span> <span class="o">=</span> <span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="s2">&quot;cems/ba_cems&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ba_cems_dir</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">ba_cems_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">logging_redirect_tqdm</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">mp</span><span class="p">:</span>
+            <span class="n">process_map</span><span class="p">(</span><span class="n">_ba_cems_mp_helper</span><span class="p">,</span> <span class="n">ba_dict</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">max_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">ba_tuple</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">ba_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+                <span class="n">_ba_cems_mp_helper</span><span class="p">(</span><span class="n">ba_tuple</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_ba_cems_mp_helper</span><span class="p">(</span><span class="n">ba_tuple</span><span class="p">):</span>
+    <span class="n">ba</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">ba_tuple</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;cems/ba_cems/</span><span class="si">{</span><span class="n">ba</span><span class="si">}</span><span class="s2">_cems.parquet&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">state_cem_blocks</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># get the list of plant_ids in the ba</span>
+        <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">)))</span>
+        <span class="c1"># for each state, open the state cems parquet, pull out the relevant plants</span>
+        <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">unique</span><span class="p">():</span>
+            <span class="n">cems</span> <span class="o">=</span> <span class="n">CEMS</span><span class="o">.</span><span class="n">eia_from_p</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+            <span class="n">state_cem_blocks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">cems</span><span class="o">.</span><span class="n">cems_eia_plant_ids</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;plant_id_eia in @plant_list&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ba</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">state_cem_blocks</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">.</span><span class="n">to_parquet</span><span class="p">(</span>
+            <span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;cems/ba_cems/</span><span class="si">{</span><span class="n">ba</span><span class="si">}</span><span class="s2">_cems.parquet&quot;</span>
+        <span class="p">)</span>
+
+
+<div class="viewcode-block" id="clean_all_cems">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.clean_all_cems">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">clean_all_cems</span><span class="p">(</span><span class="n">mp</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ROOT_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;cems&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">ROOT_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;cems&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ROOT_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;raw_cems&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;process requires raw_cems data, contact Alex or Uday&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">mp</span><span class="p">:</span>
+        <span class="n">process_map</span><span class="p">(</span><span class="n">_clean_cems_mp_helper</span><span class="p">,</span> <span class="n">STATE_BOUNDS</span><span class="p">[</span><span class="s2">&quot;xmin&quot;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">STATE_BOUNDS</span><span class="p">[</span><span class="s2">&quot;xmin&quot;</span><span class="p">]):</span>
+            <span class="n">_clean_cems_mp_helper</span><span class="p">(</span><span class="n">state</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_clean_cems_mp_helper</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="ow">not</span> <span class="p">(</span><span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;cems/cems_</span><span class="si">{</span><span class="n">state</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span><span class="si">}</span><span class="s2">.parquet&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+        <span class="ow">and</span> <span class="p">(</span><span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;raw_cems/CEMS_</span><span class="si">{</span><span class="n">state</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span><span class="si">}</span><span class="s2">.parquet&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+    <span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">CEMS</span><span class="p">(</span><span class="n">state</span><span class="p">)</span><span class="o">.</span><span class="n">to_p</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="all_cems_starts">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.all_cems_starts">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">all_cems_starts</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s2">&quot;prime_fuel&quot;</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s2">&quot;YS&quot;</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">starts</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">assert</span> <span class="s2">&quot;prime&quot;</span> <span class="ow">in</span> <span class="n">by</span> <span class="ow">or</span> <span class="s2">&quot;fuel&quot;</span> <span class="ow">in</span> <span class="n">by</span> <span class="ow">or</span> <span class="s2">&quot;unit&quot;</span> <span class="ow">in</span> <span class="n">by</span><span class="p">,</span> <span class="s2">&quot;`by` must be &#39;prime_fuel&#39; or &#39;unit&#39;&quot;</span>
+    <span class="k">with</span> <span class="n">logging_redirect_tqdm</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">STATE_BOUNDS</span><span class="p">[</span><span class="s2">&quot;xmin&quot;</span><span class="p">]):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">cems</span> <span class="o">=</span> <span class="n">CEMS</span><span class="p">(</span><span class="n">state</span><span class="p">)</span> <span class="k">if</span> <span class="n">raw</span> <span class="k">else</span> <span class="n">CEMS</span><span class="o">.</span><span class="n">from_p</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+                <span class="k">if</span> <span class="s2">&quot;prime&quot;</span> <span class="ow">in</span> <span class="n">by</span> <span class="ow">or</span> <span class="s2">&quot;fuel&quot;</span> <span class="ow">in</span> <span class="n">by</span><span class="p">:</span>
+                    <span class="n">starts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cems</span><span class="o">.</span><span class="n">count_plant_prime_fuel_starts</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="n">freq</span><span class="p">))</span>
+                <span class="k">elif</span> <span class="s2">&quot;unit&quot;</span> <span class="ow">in</span> <span class="n">by</span><span class="p">:</span>
+                    <span class="n">starts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cems</span><span class="o">.</span><span class="n">count_unit_starts</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="n">freq</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
+                <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">state</span><span class="p">,</span> <span class="n">TracebackException</span><span class="o">.</span><span class="n">from_exception</span><span class="p">(</span><span class="n">exc</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">starts</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;datetime&quot;</span><span class="p">:</span> <span class="s2">&quot;report_date&quot;</span><span class="p">})</span>
+        <span class="o">.</span><span class="n">assign</span><span class="p">(</span>
+            <span class="n">year</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">report_date</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">year</span><span class="p">,</span>
+            <span class="n">month</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">report_date</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">month</span><span class="p">,</span>
+            <span class="n">gross_gen_max</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">gross_gen_max</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span>
+                <span class="n">x</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="s2">&quot;plant_id_cems&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;unit_id_cems&quot;</span><span class="p">,</span>
+                        <span class="n">pd</span><span class="o">.</span><span class="n">Grouper</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="s2">&quot;YS&quot;</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;report_date&quot;</span><span class="p">),</span>
+                    <span class="p">]</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">gross_gen_max</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s2">&quot;max&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">fillna</span><span class="p">(</span>
+                <span class="n">x</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;plant_id_cems&quot;</span><span class="p">,</span> <span class="s2">&quot;unit_id_cems&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">gross_gen_max</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s2">&quot;max&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mf">0.0</span><span class="p">),</span>
+        <span class="p">),</span>
+        <span class="n">errors</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="all_cems_normalized_daily">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.all_cems_normalized_daily">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">all_cems_normalized_daily</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create daily normlized cems data for patio model&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ROOT_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;cems&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;run `clean_all_cems()` first&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">STATE_BOUNDS</span><span class="p">[</span><span class="s2">&quot;xmin&quot;</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="p">(</span><span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;cems/daily_</span><span class="si">{</span><span class="n">state</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span><span class="si">}</span><span class="s2">.parquet&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;cems/cems_</span><span class="si">{</span><span class="n">state</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span><span class="si">}</span><span class="s2">.parquet&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+        <span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">CEMS</span><span class="o">.</span><span class="n">from_p</span><span class="p">(</span><span class="n">state</span><span class="p">)</span><span class="o">.</span><span class="n">write_normalized_daily</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span>
+    <span class="n">dfs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">ROOT_PATH</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;cems/daily_*.parquet&quot;</span><span class="p">)):</span>
+        <span class="n">dfs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">f</span><span class="o">.</span><span class="n">stem</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()))</span>
+    <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">dfs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;plant_id_cems&quot;</span><span class="p">:</span> <span class="s2">&quot;plant_id_eia&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span>
+        <span class="p">[</span><span class="s2">&quot;plant_id_eia&quot;</span><span class="p">,</span> <span class="s2">&quot;prime_mover_code&quot;</span><span class="p">,</span> <span class="s2">&quot;fuel_code&quot;</span><span class="p">,</span> <span class="s2">&quot;datetime&quot;</span><span class="p">]</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span><span class="o">.</span><span class="n">to_parquet</span><span class="p">(</span><span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="s2">&quot;patio_data/normalized_daily_cems.parquet&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="s2">&quot;patio_data/normalized_daily_cems.parquet&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">ROOT_PATH</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;cems/daily_*.parquet&quot;</span><span class="p">):</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="all_state_cems_normalized_daily">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.all_state_cems_normalized_daily">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">all_state_cems_normalized_daily</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create daily normlized cems data by state for patio model&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ROOT_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;cems&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;run `clean_all_cems()` first&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">STATE_BOUNDS</span><span class="p">[</span><span class="s2">&quot;xmin&quot;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="p">(</span><span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;cems/daily_</span><span class="si">{</span><span class="n">state</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span><span class="si">}</span><span class="s2">.parquet&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;cems/cems_</span><span class="si">{</span><span class="n">state</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span><span class="si">}</span><span class="s2">.parquet&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+        <span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">CEMS</span><span class="o">.</span><span class="n">from_p</span><span class="p">(</span><span class="n">state</span><span class="p">)</span><span class="o">.</span><span class="n">write_normalized_daily_state</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">exc</span><span class="si">!r}</span><span class="s2">.&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; done.&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">dfs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">ROOT_PATH</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;cems/daily_*.parquet&quot;</span><span class="p">):</span>
+        <span class="n">dfs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">f</span><span class="o">.</span><span class="n">stem</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">dfs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span>
+        <span class="p">[</span><span class="s2">&quot;state&quot;</span><span class="p">,</span> <span class="s2">&quot;prime_mover_code&quot;</span><span class="p">,</span> <span class="s2">&quot;fuel_code&quot;</span><span class="p">,</span> <span class="s2">&quot;datetime&quot;</span><span class="p">]</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span><span class="o">.</span><span class="n">to_parquet</span><span class="p">(</span><span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="s2">&quot;patio_data/daily_state_cems.parquet&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="s2">&quot;patio_data/daily_state_cems.parquet&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">ROOT_PATH</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;cems/daily_*.parquet&quot;</span><span class="p">):</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="all_cems_daily">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.all_cems_daily">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">all_cems_daily</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create non-normalized daily CEMS for utility-level analysis&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ROOT_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;cems&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;run `clean_all_cems()` first&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">STATE_BOUNDS</span><span class="p">[</span><span class="s2">&quot;xmin&quot;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="p">(</span><span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;cems/daily_</span><span class="si">{</span><span class="n">state</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span><span class="si">}</span><span class="s2">.parquet&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;cems/cems_</span><span class="si">{</span><span class="n">state</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span><span class="si">}</span><span class="s2">.parquet&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+        <span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">CEMS</span><span class="o">.</span><span class="n">from_p</span><span class="p">(</span><span class="n">state</span><span class="p">)</span><span class="o">.</span><span class="n">write_daily</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">exc</span><span class="si">!r}</span><span class="s2">.&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; done.&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">dfs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">ROOT_PATH</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;cems/daily_*.parquet&quot;</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">dfs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">dfs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;plant_id_cems&quot;</span><span class="p">:</span> <span class="s2">&quot;plant_id_eia&quot;</span><span class="p">})</span>
+        <span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="s2">&quot;plant_id_eia&quot;</span><span class="p">,</span> <span class="s2">&quot;prime_mover_code&quot;</span><span class="p">,</span> <span class="s2">&quot;fuel_type_code_pudl&quot;</span><span class="p">,</span> <span class="s2">&quot;datetime&quot;</span><span class="p">])</span>
+        <span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+    <span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;id_pm_fuel&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">plant_id_eia</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">prime_mover_code</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">fuel_type_code_pudl</span><span class="p">],</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;_&quot;</span>
+    <span class="p">)</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="s2">&quot;id_pm_fuel&quot;</span><span class="p">,</span> <span class="s2">&quot;datetime&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">to_parquet</span><span class="p">(</span>
+        <span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="s2">&quot;patio_data/daily_cems.parquet&quot;</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="s2">&quot;patio_data/daily_cems.parquet&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">ROOT_PATH</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;cems/daily_*.parquet&quot;</span><span class="p">):</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span></div>
+
+
+
+<span class="c1"># ================= CROSSWALKS =================</span>
+
+
+<div class="viewcode-block" id="epa_eia_crosswalk">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.epa_eia_crosswalk">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">epa_eia_crosswalk</span><span class="p">():</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">pd</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="s2">&quot;patio_data/epa_eia_crosswalk.parquet&quot;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">CROSSWALK_COL_MAP</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">lstrip0</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s2">&quot;generator_id&quot;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">replace</span><span class="p">({</span><span class="s2">&quot;prime_mover_code&quot;</span><span class="p">:</span> <span class="n">FOSSIL_PRIME_MOVER_MAP</span><span class="p">})</span>
+            <span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;EIA_RETIRE_YEAR == 0 &amp; plant_id_eia.notnull()&quot;</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s2">&quot;python&quot;</span><span class="p">)[</span>
+                <span class="nb">list</span><span class="p">(</span><span class="n">CROSSWALK_COL_MAP</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+        <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+            <span class="s2">&quot;https://raw.githubusercontent.com/USEPA/camd-eia-crosswalk/master/epa_eia_crosswalk.csv&quot;</span><span class="p">,</span>
+            <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">header</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">CROSSWALK_DTYPES</span><span class="p">,</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">to_parquet</span><span class="p">(</span><span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="s2">&quot;patio_data/epa_eia_crosswalk.parquet&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">epa_eia_crosswalk</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="egrid_crosswalk">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.egrid_crosswalk">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">egrid_crosswalk</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">pd</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="s2">&quot;patio_data/egrid.parquet&quot;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">EGRID_COL_MAP</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">lstrip0</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s2">&quot;unit_id_cems&quot;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">query</span><span class="p">(</span>
+                <span class="s2">&quot;prime_mover_code in @FOSSIL_PRIME_MOVER_MAP &amp; op_status == &#39;OP&#39; &quot;</span>
+                <span class="s2">&quot;&amp; energy_source_code_1 in @UDAY_FOSSIL_FUEL_MAP&quot;</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">replace</span><span class="p">({</span><span class="s2">&quot;prime_mover_code&quot;</span><span class="p">:</span> <span class="n">FOSSIL_PRIME_MOVER_MAP</span><span class="p">})</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+        <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span>
+            <span class="s2">&quot;https://www.epa.gov/system/files/documents/2022-01/egrid2020_data.xlsx&quot;</span><span class="p">,</span>
+            <span class="n">sheet_name</span><span class="o">=</span><span class="s2">&quot;UNT20&quot;</span><span class="p">,</span>
+            <span class="n">header</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">EGRID_DTYPES</span><span class="p">,</span>
+            <span class="n">usecols</span><span class="o">=</span><span class="p">[</span>
+                <span class="s2">&quot;PSTATABB&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;PNAME&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;ORISPL&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;UNITID&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;PRMVR&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;UNTOPST&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;FUELU1&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;HTIANSRC&quot;</span><span class="p">,</span>
+            <span class="p">],</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">to_parquet</span><span class="p">(</span><span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="s2">&quot;patio_data/egrid.parquet&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">egrid_crosswalk</span><span class="p">()</span></div>
+
+
+
+<span class="nd">@lru_cache</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cems_to_eia_plant_id_dict</span><span class="p">():</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">epa_eia_crosswalk</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;plant_id_change == 1&quot;</span><span class="p">)[[</span><span class="s2">&quot;plant_id_eia&quot;</span><span class="p">,</span> <span class="s2">&quot;plant_id_cems&quot;</span><span class="p">]]</span>
+        <span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="s2">&quot;plant_id_cems&quot;</span><span class="p">])</span>
+        <span class="o">.</span><span class="n">to_dict</span><span class="p">()[</span><span class="s2">&quot;plant_id_eia&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+
+
+<div class="viewcode-block" id="compare_crosswalks">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.compare_crosswalks">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">compare_crosswalks</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="n">cw</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">epa_eia_crosswalk</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;state&quot;</span><span class="p">,</span> <span class="s2">&quot;plant_id_cems&quot;</span><span class="p">,</span> <span class="s2">&quot;unit_id_cems&quot;</span><span class="p">])</span>
+        <span class="o">.</span><span class="n">agg</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;prime_mover_code&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;first&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">],</span>
+                <span class="s2">&quot;energy_source_code_1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;first&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">],</span>
+                <span class="s2">&quot;plant_id_eia&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;first&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">],</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">cw</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">two</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">one</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">one</span><span class="p">,</span> <span class="n">two</span> <span class="ow">in</span> <span class="n">cw</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">egrid_crosswalk</span><span class="p">()[</span>
+        <span class="p">[</span>
+            <span class="s2">&quot;plant_id_cems&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;unit_id_cems&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;state&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;prime_mover_code&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;energy_source_code_1&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+    <span class="p">]</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+        <span class="n">cw</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(),</span>
+        <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;state&quot;</span><span class="p">,</span> <span class="s2">&quot;plant_id_cems&quot;</span><span class="p">,</span> <span class="s2">&quot;unit_id_cems&quot;</span><span class="p">],</span>
+        <span class="n">how</span><span class="o">=</span><span class="s2">&quot;outer&quot;</span><span class="p">,</span>
+        <span class="n">validate</span><span class="o">=</span><span class="s2">&quot;1:1&quot;</span><span class="p">,</span>
+        <span class="n">suffixes</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;_eg&quot;</span><span class="p">,</span> <span class="s2">&quot;_cw&quot;</span><span class="p">),</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="nd">@lru_cache</span>
+<div class="viewcode-block" id="combine_crosswalk">
+<a class="viewcode-back" href="../../../autoapi/patio/data/cems/index.html#patio.data.cems.combine_crosswalk">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">combine_crosswalk</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Combine egrid and epa crosswalks&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="s2">&quot;patio_data/crosswalk.parquet&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+        <span class="n">comp</span> <span class="o">=</span> <span class="n">compare_crosswalks</span><span class="p">()</span>
+        <span class="n">comb</span> <span class="o">=</span> <span class="n">comp</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;prime_mover_code&quot;</span><span class="p">:</span> <span class="n">comp</span><span class="o">.</span><span class="n">first_prime_mover_code</span><span class="p">,</span>
+                <span class="s2">&quot;energy_source_code_1&quot;</span><span class="p">:</span> <span class="n">comp</span><span class="o">.</span><span class="n">first_energy_source_code_1</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="s2">&quot;first_prime_mover_code&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;list_prime_mover_code&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;first_energy_source_code_1&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;list_energy_source_code_1&quot;</span><span class="p">,</span>
+            <span class="p">],</span>
+            <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">comb</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;energy_source_code_1 in @UDAY_FOSSIL_FUEL_MAP&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span>
+            <span class="n">fuel_code</span><span class="o">=</span><span class="n">comb</span><span class="o">.</span><span class="n">energy_source_code_1</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">UDAY_FOSSIL_FUEL_MAP</span><span class="p">),</span>
+            <span class="n">plant_id_eia</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">first_plant_id_eia</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">plant_id_cems</span><span class="p">),</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;first_plant_id_eia&quot;</span><span class="p">,</span> <span class="s2">&quot;list_plant_id_eia&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">to_parquet</span><span class="p">(</span>
+            <span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="s2">&quot;patio_data/crosswalk.parquet&quot;</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">combine_crosswalk</span><span class="p">()</span></div>
+
+
+
+<span class="nd">@lru_cache</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">new_crosswalk</span><span class="p">():</span>
+    <span class="n">cw</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">pd</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="s2">&quot;patio_data/camd_eia_crosswalk_by_year.parquet&quot;</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">rename</span><span class="p">(</span>
+            <span class="n">columns</span><span class="o">=</span><span class="n">CROSSWALK_COL_MAP</span>
+            <span class="o">|</span> <span class="p">{</span><span class="s2">&quot;camd_unit_to_eia_gen_allocation_factor&quot;</span><span class="p">:</span> <span class="s2">&quot;allocation_factor&quot;</span><span class="p">}</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">simplify_columns</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">astype</span><span class="p">({</span><span class="s2">&quot;plant_id_cems&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s2">&quot;plant_id_eia&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">})</span>
+        <span class="o">.</span><span class="n">assign</span><span class="p">(</span>
+            <span class="c1"># fuel codes are missing from the year a generator retires so this</span>
+            <span class="c1"># carries the previous fuel code forward to fill in those blanks</span>
+            <span class="n">eia_unit_type_hist</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">eia_unit_type_hist</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span>
+                <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">eia_unit_type_hist</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+            <span class="p">),</span>
+            <span class="n">eia_fuel_type_1_hist</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">eia_fuel_type_1_hist</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span>
+                <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">eia_fuel_type_1_hist</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+            <span class="p">),</span>
+            <span class="n">eia_fuel_type_2_hist</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">eia_fuel_type_2_hist</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span>
+                <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">eia_fuel_type_2_hist</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+            <span class="p">),</span>
+            <span class="n">eia_fuel_type_3_hist</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">eia_fuel_type_3_hist</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span>
+                <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">eia_fuel_type_3_hist</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+            <span class="p">),</span>
+            <span class="n">eia_fuel_type_4_hist</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">eia_fuel_type_4_hist</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span>
+                <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">eia_fuel_type_4_hist</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+            <span class="p">),</span>
+            <span class="n">eia_fuel_type_5_hist</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">eia_fuel_type_5_hist</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span>
+                <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">eia_fuel_type_5_hist</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+            <span class="p">),</span>
+            <span class="n">eia_fuel_type_6_hist</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">eia_fuel_type_6_hist</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span>
+                <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">eia_fuel_type_6_hist</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+            <span class="p">),</span>
+        <span class="p">)[</span>
+            <span class="p">[</span>
+                <span class="s2">&quot;plant_id_cems&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;unit_id_cems&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;capacity_year&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;plant_id_eia&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;generator_id&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;allocation_factor&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;plant_name_cems&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;generator_id_cems&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;capacity_mw_cems&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;fuel_code_cems&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;camd_status&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;state&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;plant_name_eia&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;capacity_mw&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;boiler_id&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;prime_mover_code&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;energy_source_code_1&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;camd_status_year&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;capacity_in_year&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;sum_capacity_in_year&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;normalized_capacity_in_year&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;sum_normalized_capacity_in_year&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;eia_unit_type_hist&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;eia_nameplate_capacity_hist&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;eia_fuel_type_1_hist&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;eia_fuel_type_2_hist&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;eia_fuel_type_3_hist&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;eia_fuel_type_4_hist&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;eia_fuel_type_5_hist&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;eia_fuel_type_6_hist&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;eia_retire_year&quot;</span><span class="p">,</span>
+            <span class="p">]</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+    <span class="c1"># want to make sure that allocation_factors for duplicated CEMS keys sum</span>
+    <span class="c1"># to one but need to acknowledge floating point errors hence 1.00001</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span>
+        <span class="n">cw</span><span class="p">[</span><span class="n">cw</span><span class="p">[[</span><span class="s2">&quot;plant_id_cems&quot;</span><span class="p">,</span> <span class="s2">&quot;unit_id_cems&quot;</span><span class="p">,</span> <span class="s2">&quot;capacity_year&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">duplicated</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="kc">False</span><span class="p">)]</span>
+        <span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;plant_id_cems&quot;</span><span class="p">,</span> <span class="s2">&quot;unit_id_cems&quot;</span><span class="p">,</span> <span class="s2">&quot;capacity_year&quot;</span><span class="p">])</span>
+        <span class="o">.</span><span class="n">allocation_factor</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="o">&lt;=</span> <span class="mf">1.00001</span><span class="p">,</span>
+    <span class="p">),</span> <span class="s2">&quot;allocation_factors for duplicated CEMS keys do not sum to 1&quot;</span>
+    <span class="k">return</span> <span class="n">cw</span>
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2025, RMI, CC-BY-4.0
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/rmi-electricity/patio" aria-label="GitHub">
+        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+        </svg>
+    </a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../_static/documentation_options.js?v=fce13f47"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>

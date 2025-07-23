@@ -1,0 +1,1383 @@
+patio.model.colo_resources
+==========================
+
+.. py:module:: patio.model.colo_resources
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   patio.model.colo_resources.validators
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   patio.model.colo_resources.ParamVarLike
+   patio.model.colo_resources.MultiXCapShim
+   patio.model.colo_resources.DecisionVariable
+   patio.model.colo_resources.Load
+   patio.model.colo_resources.ConstantLoad
+   patio.model.colo_resources.EndogenousLoad
+   patio.model.colo_resources.FlexLoad
+   patio.model.colo_resources.Storage
+   patio.model.colo_resources._StorageCostCapShim
+   patio.model.colo_resources.FixedDurationStorage
+   patio.model.colo_resources.FeStorage
+   patio.model.colo_resources.EndogenousDurationStorage
+   patio.model.colo_resources.ThermalStorageLoad
+   patio.model.colo_resources.DecoupledStorage
+   patio.model.colo_resources.Renewables
+   patio.model.colo_resources.Curtailment
+   patio.model.colo_resources.CleanExport
+   patio.model.colo_resources.ExportIncumbentFixed
+   patio.model.colo_resources.Fossil
+   patio.model.colo_resources.LoadIncumbentFossil
+   patio.model.colo_resources.ExportIncumbentFossil
+   patio.model.colo_resources.LoadNewFossil
+   patio.model.colo_resources.LoadNewFossilWithBackup
+   patio.model.colo_resources.DCBackupFossil
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   patio.model.colo_resources.check_shape
+   patio.model.colo_resources.is_resource_selection
+   patio.model.colo_resources.product
+
+
+Module Contents
+---------------
+
+.. py:class:: ParamVarLike
+
+   Bases: :py:obj:`Protocol`
+
+
+   Base class for protocol classes.
+
+   Protocol classes are defined as::
+
+       class Proto(Protocol):
+           def meth(self) -> int:
+               ...
+
+   Such classes are primarily used with static type checkers that recognize
+   structural subtyping (static duck-typing).
+
+   For example::
+
+       class C:
+           def meth(self) -> int:
+               return 0
+
+       def func(x: Proto) -> int:
+           return x.meth()
+
+       func(C())  # Passes static type check
+
+   See PEP 544 for details. Protocol classes decorated with
+   @typing.runtime_checkable act as simple-minded runtime protocols that check
+   only the presence of given attributes, ignoring their type signatures.
+   Protocol classes can be generic, they are defined as::
+
+       class GenProto[T](Protocol):
+           def meth(self) -> T:
+               ...
+
+
+   .. py:attribute:: size
+      :type:  int
+
+
+   .. py:attribute:: shape
+      :type:  tuple[int, Ellipsis]
+
+
+   .. py:attribute:: name
+      :type:  str
+
+
+   .. py:attribute:: value
+      :type:  numpy.ndarray
+
+
+.. py:data:: validators
+
+.. py:function:: check_shape()
+
+.. py:function:: is_resource_selection(yr)
+
+.. py:function:: product(*cols, ignore_nulls=False)
+
+.. py:class:: MultiXCapShim
+
+   Bases: :py:obj:`tuple`
+
+
+   Work with multiple cvxpy.Variable objects as if they were one.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. py:property:: value
+
+
+.. py:class:: DecisionVariable(m)
+
+   .. py:attribute:: _var_names
+      :value: ()
+
+
+
+   .. py:attribute:: _cat
+      :value: ''
+
+
+
+   .. py:attribute:: _dz
+
+
+   .. py:attribute:: m
+      :type:  patio.model.colo_lp.Model
+
+
+   .. py:attribute:: x
+
+
+   .. py:attribute:: cost
+
+
+   .. py:attribute:: cost_cap
+
+
+   .. py:attribute:: x_cap
+      :value: None
+
+
+
+   .. py:attribute:: sqkm_per_mw
+      :value: None
+
+
+
+   .. py:property:: var_names
+
+
+   .. py:property:: cat
+
+
+   .. py:property:: cap_names
+      :type: tuple
+
+
+
+   .. py:property:: dur
+      :type: ParamVarLike | types.NotImplementedType
+
+
+
+   .. py:property:: fuels
+
+
+   .. py:property:: cap_summary
+      :type: dict
+
+
+
+   .. py:method:: cost_summary(every='1y', cap_grp=None, h_grp=None)
+
+
+   .. py:method:: set_x_cap(cap_summary, re_selected, *args)
+
+
+   .. py:method:: round()
+
+
+   .. py:method:: get_x(yr)
+
+
+   .. py:method:: hourly(*, selection=False, **kwargs)
+
+
+   .. py:method:: c_mw_all()
+
+
+   .. py:method:: c_hourly(selection=False)
+
+
+   .. py:method:: _h_core(rs, in_dict, prefix='', func=lambda x: x)
+
+
+   .. py:method:: annual_gen()
+
+
+   .. py:method:: load(yr, *args)
+
+
+   .. py:method:: critical(yr, *args)
+
+
+   .. py:method:: export_req(yr, *args)
+
+
+   .. py:method:: clean_export(yr, *args)
+
+
+   .. py:method:: fossil_load(yr, *args)
+
+
+   .. py:method:: fossil_load_hrly(yr, *args)
+
+
+   .. py:method:: fossil_hist(yr, *args)
+
+
+   .. py:method:: icx_ops(yr, *args)
+
+
+   .. py:method:: incumbent_ops(yr, *args)
+
+
+   .. py:method:: land(yr, *args)
+
+
+   .. py:method:: gas_window_max(yr, *args)
+
+
+   .. py:method:: stored_fuel(yr, *args)
+
+
+   .. py:method:: backup_annual(yr, *args)
+
+
+   .. py:method:: single_dv(yr, soc_ixs, *args)
+
+
+   .. py:method:: objective(yr, yr_fact_map)
+
+
+   .. py:method:: bounds(yr, *args)
+
+
+   .. py:method:: ptc(yr)
+
+
+   .. py:method:: mk_obj_cost(cost_df, yr, yr_fact_map, *args)
+
+
+   .. py:method:: __eq__(other)
+
+
+   .. py:method:: __repr__()
+
+
+   .. py:method:: _get_prof(attr)
+
+
+   .. py:method:: _set_prof(obj, attr)
+
+
+   .. py:method:: _get_x_cap()
+
+
+   .. py:method:: _set_x_cap(other)
+
+
+   .. py:method:: _get_cost_cap()
+
+
+   .. py:method:: _set_cost_cap(other)
+
+
+   .. py:method:: _dzgetstate_()
+
+
+   .. py:method:: _dzsetstate_(state)
+
+
+.. py:class:: Load(m, sqkm_per_mw, ld_value)
+
+   Bases: :py:obj:`DecisionVariable`
+
+
+   .. py:attribute:: _var_names
+      :value: ('load',)
+
+
+
+   .. py:attribute:: _cat
+      :value: 'load'
+
+
+
+   .. py:attribute:: x_cap
+      :type:  ParamVarLike
+
+
+   .. py:attribute:: sqkm_per_mw
+
+
+   .. py:attribute:: ld_value
+
+
+   .. py:method:: hourly(*, selection=False, **kwargs)
+
+
+   .. py:method:: common_hrly_constraint(yr, *args)
+
+
+   .. py:method:: load(yr, *args)
+
+
+   .. py:method:: critical(yr, *args)
+
+
+   .. py:method:: fossil_load_hrly(yr, *args)
+
+
+   .. py:method:: land(yr, *args)
+
+
+.. py:class:: ConstantLoad(m, sqkm_per_mw, ld_value, x_cap)
+
+   Bases: :py:obj:`Load`
+
+
+   
+   Returns:
+   object:
+
+
+   .. py:attribute:: x_cap
+
+
+   .. py:method:: common_hrly_constraint(yr, *args)
+
+
+   .. py:method:: fossil_load(yr, *args)
+
+
+.. py:class:: EndogenousLoad(m, sqkm_per_mw = 1 / 247, ld_value=1000, x_cap = None)
+
+   Bases: :py:obj:`Load`
+
+
+   
+   Returns:
+   object:
+
+
+   .. py:attribute:: _dz
+
+
+   .. py:attribute:: x_cap
+
+
+   .. py:method:: round()
+
+
+   .. py:method:: set_x_cap(cap_summary, re_selected, *args)
+
+
+   .. py:method:: common_hrly_constraint(yr, *args)
+
+
+   .. py:method:: fossil_load(yr, *args)
+
+
+   .. py:method:: objective(yr, yr_fact_map, *args)
+
+
+   .. py:method:: bounds(yr, *args)
+
+
+.. py:class:: FlexLoad(m, sqkm_per_mw = 1 / 247, ld_value = 1000, ld_value_select = 1000, uptime = 0.5, min_load = 0.5, x_cap = None)
+
+   Bases: :py:obj:`Load`
+
+
+   
+   Returns:
+   object:
+
+
+   .. py:attribute:: _dz
+
+
+   .. py:attribute:: ld_value_select
+      :value: 1000
+
+
+
+   .. py:attribute:: x_cap
+
+
+   .. py:attribute:: uptime
+
+
+   .. py:attribute:: min_load
+
+
+   .. py:method:: round()
+
+
+   .. py:method:: set_x_cap(cap_summary, re_selected, *args)
+
+
+   .. py:method:: hourly(*, selection=False, **kwargs)
+
+
+   .. py:method:: common_hrly_constraint(yr, *args)
+
+
+   .. py:method:: fossil_load(yr, *args)
+
+
+   .. py:method:: single_dv(yr, soc_ixs, *args)
+
+
+   .. py:method:: objective(yr, yr_fact_map, *args)
+
+
+   .. py:method:: bounds(yr, *args)
+
+
+.. py:class:: Storage(m, d_eff, c_eff, l_eff, pre_charge, opex_mult, min_soc_hrs)
+
+   Bases: :py:obj:`DecisionVariable`
+
+
+   .. py:attribute:: sum_cols
+      :value: ('capex_raw', 'opex_raw', 'capex__oc', 'opex__oc', 'total__oc')
+
+
+
+   .. py:attribute:: max_cols
+      :value: ('dur', 'life_adj', 'itc_adj', 'reg_mult', 'tx_capex_raw', 'distance', 'ptc', 'ptc_gen')
+
+
+
+   .. py:attribute:: _var_names
+      :value: ('discharge', 'charge', 'soc')
+
+
+
+   .. py:attribute:: _cat
+      :value: 'storage'
+
+
+
+   .. py:attribute:: _type
+      :value: ''
+
+
+
+   .. py:attribute:: _dz
+
+
+   .. py:attribute:: d_ef
+      :type:  float
+
+
+   .. py:attribute:: c_ef
+      :type:  float
+
+
+   .. py:attribute:: l_ef
+      :type:  float
+
+
+   .. py:attribute:: pre_charge
+
+
+   .. py:attribute:: min_soc_hrs
+
+
+   .. py:attribute:: opex_mult
+      :type:  float
+
+
+   .. py:attribute:: cost_df
+
+
+   .. py:property:: cat
+
+
+   .. py:property:: var_names
+
+
+   .. py:method:: round()
+
+
+   .. py:property:: dur
+      :type: ParamVarLike
+
+
+
+   .. py:method:: load(yr, *args)
+
+
+   .. py:method:: critical(yr, *args)
+
+
+   .. py:method:: clean_export(yr, *args)
+
+
+   .. py:method:: opex_oc(yr, *args)
+
+
+.. py:class:: _StorageCostCapShim(dv)
+
+   This allows storage duration to be a parameter while preserving the
+   general interface for DecisionVariable.cap_cost
+
+
+   .. py:attribute:: dv
+
+
+   .. py:method:: __getitem__(yr)
+
+
+   .. py:method:: items()
+
+
+   .. py:method:: pop(key, default=None)
+
+
+.. py:class:: FixedDurationStorage(m, d_eff = COSTS['eff']['d'], c_eff = COSTS['eff']['c'], l_eff = COSTS['eff']['l'], pre_charge = 0.5, opex_mult = 0.8 / 30, duration = 8, x_cap = None, min_soc_hrs = 0)
+
+   Bases: :py:obj:`Storage`
+
+
+   x_s, x_dt, x_ct, x_st
+
+
+   .. py:attribute:: _type
+      :value: 'li'
+
+
+
+   .. py:attribute:: _dz
+
+
+   .. py:attribute:: _dur
+
+
+   .. py:attribute:: yr_fact_map
+
+
+   .. py:attribute:: x_cap
+
+
+   .. py:attribute:: cost_cap
+
+
+   .. py:property:: cap_summary
+
+
+   .. py:method:: set_x_cap(cap_summary, re_selected, *args)
+
+
+   .. py:method:: single_dv(yr, soc_ixs, *args)
+
+
+   .. py:method:: objective(yr, yr_fact_map, *args)
+
+
+   .. py:method:: bounds(yr, *args)
+
+
+   .. py:method:: __repr__()
+
+
+.. py:class:: FeStorage(m, pre_charge = 0.5, x_cap = None, min_soc_hrs = 0)
+
+   Bases: :py:obj:`Storage`
+
+
+   x_s, x_dt, x_ct, x_st
+
+
+   .. py:attribute:: _dz
+
+
+   .. py:attribute:: _type
+      :value: 'fe'
+
+
+
+   .. py:attribute:: cost_df
+
+
+   .. py:attribute:: _dur
+
+
+   .. py:attribute:: x_cap
+
+
+   .. py:attribute:: cost_cap
+
+
+   .. py:property:: cap_summary
+
+
+   .. py:method:: set_x_cap(cap_summary, re_selected, *args)
+
+
+   .. py:method:: for_econ()
+
+
+   .. py:method:: single_dv(yr, soc_ixs, *args)
+
+
+   .. py:method:: objective(yr, yr_fact_map, *args)
+
+
+   .. py:method:: bounds(yr, *args)
+
+
+.. py:class:: EndogenousDurationStorage(m, d_eff = COSTS['eff']['d'], c_eff = COSTS['eff']['c'], l_eff = COSTS['eff']['l'], pre_charge = 0.5, opex_mult = 0.8 / 30, x_cap = None, min_soc_hrs = 0)
+
+   Bases: :py:obj:`Storage`
+
+
+   x_d, x_s, x_dt, x_ct, x_st
+
+
+   .. py:attribute:: _type
+      :value: 'li'
+
+
+
+   .. py:attribute:: _dz
+
+
+   .. py:attribute:: x_cap
+
+
+   .. py:property:: cap_names
+      :type: tuple
+
+
+
+   .. py:property:: cap_summary
+      :type: dict[str, float]
+
+
+
+   .. py:method:: set_x_cap(cap_summary, re_selected, *args)
+
+
+   .. py:method:: for_econ()
+
+
+   .. py:method:: round()
+
+
+   .. py:property:: dur
+      :type: ParamVarLike
+
+
+
+   .. py:method:: single_dv(yr, soc_ixs, *args)
+
+
+   .. py:method:: objective(yr, yr_fact_map, *args)
+
+
+   .. py:method:: bounds(yr, *args)
+
+
+   .. py:method:: __repr__()
+
+
+.. py:class:: ThermalStorageLoad(m, d_eff = 0.5, c_eff = 1.0, l_eff = 0.01, pre_charge = 0.5, opex_mult = 0.025, x_cap = None, const_load = 10.0, min_soc_hrs = 0)
+
+   Bases: :py:obj:`Storage`
+
+
+   Charges thermal storage to meet a constant (thermal) load.
+
+   x_d, x_c, x_s, x_ct, x_st
+
+
+
+   .. py:attribute:: _type
+      :value: 'thermal'
+
+
+
+   .. py:attribute:: _dz
+
+
+   .. py:attribute:: cost_df
+
+
+   .. py:attribute:: const_load
+      :value: 10.0
+
+
+
+   .. py:attribute:: x_cap
+
+
+   .. py:property:: cap_names
+      :type: tuple
+
+
+
+   .. py:property:: cap_summary
+
+
+   .. py:method:: set_x_cap(cap_summary, re_selected, *args)
+
+
+   .. py:property:: dur
+      :type: ParamVarLike
+
+
+
+   .. py:method:: hourly(*, selection=False, **kwargs)
+
+
+   .. py:method:: load(yr, *args)
+
+
+   .. py:method:: critical(yr, *args)
+
+
+   .. py:method:: clean_export(yr, *args)
+
+
+   .. py:method:: single_dv(yr, soc_ixs, *args)
+
+
+   .. py:method:: objective(yr, yr_fact_map, *args)
+
+
+   .. py:method:: bounds(yr, *args)
+
+
+   .. py:method:: __repr__()
+
+
+.. py:class:: DecoupledStorage(m, d_eff = 0.5, c_eff = 1.0, l_eff = 0.01, pre_charge = 0.5, opex_mult = 0.025, x_cap = None, min_soc_hrs = 0)
+
+   Bases: :py:obj:`Storage`
+
+
+   x_d, x_c, x_s, x_dt, x_ct, x_st
+
+
+   .. py:attribute:: _type
+      :value: 'long'
+
+
+
+   .. py:attribute:: _dz
+
+
+   .. py:attribute:: cost_df
+
+
+   .. py:attribute:: x_cap
+
+
+   .. py:property:: cap_names
+      :type: tuple
+
+
+
+   .. py:property:: cap_summary
+
+
+   .. py:property:: dur
+      :type: ParamVarLike
+
+
+
+   .. py:method:: single_dv(yr, soc_ixs, *args)
+
+
+   .. py:method:: objective(yr, yr_fact_map, *args)
+
+
+   .. py:method:: bounds(yr, *args)
+
+
+   .. py:method:: __repr__()
+
+
+.. py:class:: Renewables(m, x_cap = None)
+
+   Bases: :py:obj:`DecisionVariable`
+
+
+   x_j
+
+
+   .. py:attribute:: _cat
+      :value: 'renewables'
+
+
+
+   .. py:attribute:: _dz
+
+
+   .. py:attribute:: x_cap
+
+
+   .. py:attribute:: cost_df
+
+
+   .. py:method:: round()
+
+
+   .. py:property:: cap_summary
+      :type: dict
+
+
+
+   .. py:method:: set_x_cap(cap_summary, re_selected, *args)
+
+
+   .. py:property:: cap_names
+      :type: tuple
+
+
+
+   .. py:method:: get_x(yr)
+
+
+   .. py:method:: hourly(*, selection=False, by_type=True)
+
+
+   .. py:method:: annual_gen()
+
+
+   .. py:method:: common_hrly_constraint(yr)
+
+
+   .. py:method:: load(yr, *args)
+
+
+   .. py:method:: critical(yr, *args)
+
+
+   .. py:method:: clean_export(yr, *args)
+
+
+   .. py:method:: land(yr, *args)
+
+
+   .. py:method:: objective(yr, yr_fact_map, *args)
+
+
+   .. py:method:: bounds(yr, *args)
+
+
+   .. py:method:: __repr__()
+
+
+.. py:class:: Curtailment(m, min_cost=0.0)
+
+   Bases: :py:obj:`DecisionVariable`
+
+
+   .. py:attribute:: _var_names
+      :value: ('curtailment',)
+
+
+
+   .. py:attribute:: _cat
+      :value: 'curtailment'
+
+
+
+   .. py:attribute:: _dz
+
+
+   .. py:attribute:: min_cost
+      :value: 0.0
+
+
+
+   .. py:method:: c_hourly(selection=False)
+
+
+   .. py:method:: load(yr, *args)
+
+
+   .. py:method:: objective(yr, yr_fact_map, *args)
+
+
+   .. py:method:: bounds(yr, *args)
+
+
+.. py:class:: CleanExport(m)
+
+   Bases: :py:obj:`DecisionVariable`
+
+
+   .. py:attribute:: _var_names
+      :value: ('export_clean',)
+
+
+
+   .. py:attribute:: _cat
+      :value: 'export'
+
+
+
+   .. py:attribute:: _dz
+
+
+   .. py:attribute:: cost_
+      :value: []
+
+
+
+   .. py:method:: load(yr, *args)
+
+
+   .. py:method:: export_req(yr, *args)
+
+
+   .. py:method:: clean_export(yr, *args)
+
+
+   .. py:method:: icx_ops(yr, *args)
+
+
+   .. py:method:: objective(yr, yr_fact_map, *args)
+
+
+   .. py:method:: bounds(yr, *args)
+
+
+.. py:class:: ExportIncumbentFixed(m, mcoe = None)
+
+   Bases: :py:obj:`DecisionVariable`
+
+
+   x_ft
+
+
+   .. py:attribute:: _var_names
+      :value: ('export_fixed',)
+
+
+
+   .. py:attribute:: _cat
+      :value: 'export_fixed'
+
+
+
+   .. py:attribute:: _dz
+
+
+   .. py:method:: common_hrly_constraint(yr)
+
+
+   .. py:method:: export_req(yr, *args)
+
+
+   .. py:method:: icx_ops(yr, *args)
+
+
+   .. py:method:: incumbent_ops(yr, *args)
+
+
+.. py:class:: Fossil(m, mcoe = None)
+
+   Bases: :py:obj:`DecisionVariable`
+
+
+   .. py:attribute:: mcoe
+      :value: None
+
+
+
+   .. py:attribute:: for_co2
+
+
+   .. py:attribute:: cost_w_penalty
+
+
+   .. py:property:: tech
+
+
+   .. py:method:: hourly(*, selection=False, **kwargs)
+
+
+.. py:class:: LoadIncumbentFossil(m, mcoe = None)
+
+   Bases: :py:obj:`Fossil`
+
+
+   x_lt x_ft
+
+
+   .. py:attribute:: _var_names
+      :value: ('load_fossil',)
+
+
+
+   .. py:attribute:: _cat
+      :value: 'fossil'
+
+
+
+   .. py:attribute:: _dz
+
+
+   .. py:property:: fuels
+
+
+   .. py:property:: cap_summary
+      :type: dict
+
+
+
+   .. py:method:: load(yr, *args)
+
+
+   .. py:method:: fossil_load(yr, *args)
+
+
+   .. py:method:: fossil_load_hrly(yr, *args)
+
+
+   .. py:method:: fossil_hist(yr, *args)
+
+
+   .. py:method:: incumbent_ops(yr, *args)
+
+
+   .. py:method:: gas_window_max(yr, *args)
+
+
+   .. py:method:: objective(yr, yr_fact_map, *args)
+
+
+   .. py:method:: bounds(yr, *args)
+
+
+   .. py:method:: __repr__()
+
+
+.. py:class:: ExportIncumbentFossil(m, mcoe = None)
+
+   Bases: :py:obj:`Fossil`
+
+
+   x_ft
+
+
+   .. py:attribute:: _var_names
+      :value: ('export_fossil',)
+
+
+
+   .. py:attribute:: _cat
+      :value: 'export_fossil'
+
+
+
+   .. py:attribute:: _dz
+
+
+   .. py:property:: fuels
+
+
+   .. py:property:: cap_summary
+      :type: dict
+
+
+
+   .. py:method:: export_req(yr, *args)
+
+
+   .. py:method:: fossil_hist(yr, *args)
+
+
+   .. py:method:: icx_ops(yr, *args)
+
+
+   .. py:method:: incumbent_ops(yr, *args)
+
+
+   .. py:method:: gas_window_max(yr, *args)
+
+
+   .. py:method:: objective(yr, yr_fact_map, *args)
+
+
+   .. py:method:: bounds(yr, *args)
+
+
+.. py:class:: LoadNewFossil(m, mcoe = None, tech='nggt', primary_fuel = 'natural_gas', x_cap = None)
+
+   Bases: :py:obj:`Fossil`
+
+
+   x_f x_lt
+
+
+   .. py:attribute:: _var_names
+      :value: ('load_fossil',)
+
+
+
+   .. py:attribute:: _cat
+      :value: 'fossil'
+
+
+
+   .. py:attribute:: _dz
+
+
+   .. py:attribute:: _tech
+      :value: 'nggt'
+
+
+
+   .. py:attribute:: primary_fuel
+      :value: 'natural_gas'
+
+
+
+   .. py:attribute:: cost_df
+
+
+   .. py:attribute:: x_cap
+
+
+   .. py:property:: fuels
+
+
+   .. py:property:: tech
+
+
+   .. py:method:: hourly(*, selection=False, **kwargs)
+
+
+   .. py:property:: cap_summary
+      :type: dict
+
+
+
+   .. py:method:: set_x_cap(cap_summary, re_selected, *args)
+
+
+   .. py:method:: round()
+
+
+   .. py:method:: load(yr, *args)
+
+
+   .. py:method:: critical(yr, *args)
+
+
+   .. py:method:: fossil_load(yr, *args)
+
+
+   .. py:method:: fossil_load_hrly(yr, *args)
+
+
+   .. py:method:: fossil_hist(yr, *args)
+
+
+   .. py:method:: gas_window_max(yr, *args)
+
+
+   .. py:method:: single_dv(yr, soc_ixs, *args)
+
+
+   .. py:method:: objective(yr, yr_fact_map, *args)
+
+
+   .. py:method:: bounds(yr, *args)
+
+
+.. py:class:: LoadNewFossilWithBackup(m, mcoe = None, tech='nggt', primary_fuel = 'natural_gas', backup_fuel = 'distillate_fuel_oil', x_cap = None)
+
+   Bases: :py:obj:`Fossil`
+
+
+   x_f x_lt
+
+
+   .. py:attribute:: _var_names
+      :value: ('load_fossil', 'load_stored_fuel')
+
+
+
+   .. py:attribute:: _cat
+      :value: 'fossil'
+
+
+
+   .. py:attribute:: _dz
+
+
+   .. py:attribute:: _tech
+      :value: 'nggt'
+
+
+
+   .. py:attribute:: primary_fuel
+      :value: 'natural_gas'
+
+
+
+   .. py:attribute:: backup_fuel
+      :value: 'distillate_fuel_oil'
+
+
+
+   .. py:attribute:: backup_mcoe
+
+
+   .. py:attribute:: cost_df
+
+
+   .. py:attribute:: x_cap
+
+
+   .. py:property:: fuels
+
+
+   .. py:property:: tech
+
+
+   .. py:method:: hourly(*, selection=False, **kwargs)
+
+
+   .. py:property:: cap_summary
+      :type: dict
+
+
+
+   .. py:method:: set_x_cap(cap_summary, re_selected, *args)
+
+
+   .. py:method:: round()
+
+
+   .. py:method:: common_hrly_constraint(yr)
+
+
+   .. py:method:: load(yr, *args)
+
+
+   .. py:method:: critical(yr, *args)
+
+
+   .. py:method:: fossil_load(yr, *args)
+
+
+   .. py:method:: fossil_load_hrly(yr, *args)
+
+
+   .. py:method:: fossil_hist(yr, *args)
+
+
+   .. py:method:: gas_window_max(yr, *args)
+
+
+   .. py:method:: stored_fuel(yr, *args)
+
+
+   .. py:method:: single_dv(yr, soc_ixs, *args)
+
+
+   .. py:method:: objective(yr, yr_fact_map, *args)
+
+
+   .. py:method:: bounds(yr, *args)
+
+
+.. py:class:: DCBackupFossil(m, mcoe = None, tech='rice', primary_fuel='distillate_fuel_oil')
+
+   Bases: :py:obj:`Fossil`
+
+
+   x_f x_lt
+
+
+   .. py:attribute:: _var_names
+      :value: ('backup',)
+
+
+
+   .. py:attribute:: _cat
+      :value: 'backup'
+
+
+
+   .. py:attribute:: _dz
+
+
+   .. py:attribute:: _tech
+      :value: 'rice'
+
+
+
+   .. py:attribute:: primary_fuel
+      :value: 'distillate_fuel_oil'
+
+
+
+   .. py:property:: fuels
+
+
+   .. py:property:: tech
+
+
+   .. py:method:: hourly(*, selection=False, **kwargs)
+
+
+   .. py:property:: cap_summary
+      :type: dict
+
+
+
+   .. py:method:: common_hrly_constraint(yr)
+
+
+   .. py:method:: load(yr, *args)
+
+
+   .. py:method:: critical(yr, *args)
+
+
+   .. py:method:: fossil_load(yr, *args)
+
+
+   .. py:method:: fossil_load_hrly(yr, *args)
+
+
+   .. py:method:: fossil_hist(yr, *args)
+
+
+   .. py:method:: stored_fuel(yr, *args)
+
+
+   .. py:method:: backup_annual(yr, *args)
+
+
+   .. py:method:: objective(yr, yr_fact_map, *args)
+
+
+   .. py:method:: bounds(yr, *args)
+
+

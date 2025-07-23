@@ -1,0 +1,170 @@
+patio.re_ninja
+==============
+
+.. py:module:: patio.re_ninja
+
+.. autoapi-nested-parse::
+
+   Interface to download wind and solar profiles from renewables.ninja
+
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   patio.re_ninja.RenewablesNinja
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   patio.re_ninja.rename_re
+   patio.re_ninja.zip_re
+
+
+Module Contents
+---------------
+
+.. py:function:: rename_re(re)
+
+.. py:function:: zip_re()
+
+   Create new DataZip that includes old DataZip and new profiles.
+
+
+.. py:class:: RenewablesNinja
+
+   .. py:attribute:: tokena
+      :value: 'd16413d91e073711a10808cd2bc883e7257e9ddd'
+
+
+
+   .. py:attribute:: token0
+      :value: '92ed13382e2844a5b8f8bf24cc9bf46a582e48b9'
+
+
+
+   .. py:attribute:: token1
+      :value: '75a451c1bbf90638af436f8fbad63bf18636ebf3'
+
+
+
+   .. py:attribute:: token2
+      :value: '5393ce87b475ce4702f04d2ad5aa39fcbf0b5381'
+
+
+
+   .. py:attribute:: token3
+      :value: 'e22dec42a92ba14dd1cd31c025ad5fc40f16b972'
+
+
+
+   .. py:attribute:: token4
+      :value: '58ca33f994e0e8346144cf65da8307ed1205c505'
+
+
+
+   .. py:attribute:: api_base
+      :value: 'https://www.renewables.ninja/api/'
+
+
+
+   .. py:attribute:: token
+      :value: 'd16413d91e073711a10808cd2bc883e7257e9ddd'
+
+
+
+   .. py:attribute:: _re_type_fixer
+
+
+   .. py:attribute:: _re_file_fixer
+
+
+   .. py:attribute:: _token_names
+
+
+   .. py:attribute:: tokens
+
+
+   .. py:property:: best_token
+
+
+   .. py:property:: wait_times
+
+
+   .. py:property:: str_wait_times
+
+
+   .. py:method:: get_re_profile(re_type, name, lat, lon, date_from, date_to, **kwargs)
+
+      Download hourly renewables data from renewables.ninja
+
+      :param re_type: type of renewable data to download, pv or wind
+      :type re_type: str
+      :param name: name for the solar data series
+      :type name: Hashable
+      :param lat: latitude to pull solar data for
+      :type lat: float
+      :param lon: longitude to pull solar data for
+      :type lon: float
+      :param date_from: start date in the form YYYY-MM-DD
+      :type date_from: str
+      :param date_to: end date in the form YYYY-MM-DD
+      :type date_to: str
+      :param kwargs:
+
+      :return: timeseries of one year's renewable capacity factors for (lat, lon)
+      :rtype: DataFrame
+
+
+
+   .. py:method:: _get_prof(api_suffix, args)
+
+
+   .. py:method:: _wait_time(r)
+      :staticmethod:
+
+
+
+   .. py:method:: get_re_set(data, lat = 'latitude', lon = 'longitude', name = 'plant_id_eia', years = 'years', re_type_col = 'technology_description', redownload = ())
+
+
+   .. py:method:: ptype_fixer(item)
+      :classmethod:
+
+
+
+   .. py:method:: optimal_tilt(lat)
+      :staticmethod:
+
+
+      Method lifted from gsee [1]
+
+      Returns an optimal tilt angle for the given ``lat``, assuming that
+      the panel is facing towards the equator, using a simple method from [2].
+      This method only works for latitudes between 0 and 50. For higher
+      latitudes, a static 40 degree angle is returned.
+      These results should be used with caution, but there is some
+      evidence that tilt angle may not be that important [3].
+
+      :param lat: Latitude in degrees.
+      :type lat: float
+      :return: Optimal tilt angle in degrees.
+
+      [1] https://github.com/renewables-ninja/gsee/blob/master/gsee/pv.py
+      [2] http://www.solarpaneltilt.com/#fixed
+      [3] http://dx.doi.org/10.1016/j.solener.2010.12.014
+
+
+
+
+
+   .. py:method:: agg_8760s(df, groupby_level=0)
+      :staticmethod:
+
+
+

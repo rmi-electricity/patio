@@ -1,0 +1,83 @@
+patio.cli
+=========
+
+.. py:module:: patio.cli
+
+.. autoapi-nested-parse::
+
+   Functional entry point for PATIO.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   patio.cli.RELATIVE_ROOT
+   patio.cli.CONF_KWARGS
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   patio.cli.logging_process
+   patio.cli.setup_logger
+   patio.cli.main
+   patio.cli.clean_repower
+   patio.cli.profiles
+   patio.cli.specs
+   patio.cli.colo
+   patio.cli.colo_data
+   patio.cli.colo_run
+   patio.cli.patio_econ
+
+
+Module Contents
+---------------
+
+.. py:data:: RELATIVE_ROOT
+
+.. py:data:: CONF_KWARGS
+
+.. py:function:: logging_process(queue, configurer, now)
+
+.. py:function:: setup_logger()
+
+.. py:function:: main()
+
+.. py:function:: clean_repower(bas, config, warnings, local)
+
+   Run clean repowering model.
+
+
+.. py:function:: profiles(config, warnings)
+
+   Setup profiles.
+
+
+.. py:function:: specs(config, warnings)
+
+   Just export fossil specs.
+
+
+.. py:function:: colo()
+
+.. py:function:: colo_data(bas, config, warnings)
+
+.. py:function:: colo_run(run_dir, config, source_data, resume, plants, workers, keep, local, saved, assemble)
+
+   Run colo.
+
+
+.. py:function:: patio_econ(datestr)
+
+   Run the patio economic model.
+
+   DATESTR: The name of the resource model run to apply the economic model to, e.g. 202504270143
+
+   Note: actual implementation is in R and interface is defined using pixi tasks.
+
+

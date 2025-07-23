@@ -1,0 +1,194 @@
+patio.data.profile_data
+=======================
+
+.. py:module:: patio.data.profile_data
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   patio.data.profile_data.LOGGER
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   patio.data.profile_data.ProfileData
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   patio.data.profile_data.choose_years_for_map
+   patio.data.profile_data.patio_clean_op_date
+   patio.data.profile_data.select_re_profiles
+   patio.data.profile_data.get_714profile
+
+
+Module Contents
+---------------
+
+.. py:data:: LOGGER
+
+.. py:function:: choose_years_for_map(h_range=(2008, 2021), f_range0=(2021, 2036), f_range1=(2036, 2040))
+
+   Determine historical year to use for each future year, preserving year length.
+
+   :param h_range: years of historical data to sample from
+   :param f_range0: first block of future years
+   :param f_range1: second block of future years (to be repeated)
+
+   Returns:
+
+
+
+.. py:function:: patio_clean_op_date()
+
+.. py:function:: select_re_profiles(specs, profiles, id_cols=('plant_id_prof_site', 'generator_id'))
+
+.. py:function:: get_714profile(id_ferc714, pudl_release)
+
+.. py:class:: ProfileData
+
+   .. py:attribute:: ad
+      :type:  patio.data.asset_data.AssetData
+
+
+   .. py:attribute:: solar_ilr
+      :type:  float
+      :value: 1.34
+
+
+
+   .. py:attribute:: _cems
+      :type:  pandas.DataFrame | None
+      :value: None
+
+
+
+   .. py:attribute:: _dfs
+      :type:  dict[str, pandas.DataFrame]
+
+
+   .. py:attribute:: year_mapper
+      :type:  dict
+
+
+   .. py:attribute:: regime
+      :type:  Literal['reference', 'limited']
+      :value: 'reference'
+
+
+
+   .. py:method:: __post_init__()
+
+
+   .. py:method:: get_ba_data(ba_code, cost_type='counterfactual', kind='adj', extend_cems=True, re_by_plant=True, max_wind_distance=45.0, max_solar_distance=10.0, min_re_site_mw=25.0, cr_eligible_techs = None, colo_techs=(), **kwargs)
+
+
+   .. py:method:: get_ba_profiles(ba_code, plant_data, extend_cems)
+
+
+   .. py:method:: make_proposed_profile(tech, re_profiles)
+      :staticmethod:
+
+
+
+   .. py:method:: align_common_cems_plant_data(ba_code, cems, plant_data, cost_data=None)
+      :staticmethod:
+
+
+
+   .. py:method:: _adjust_re_for_fossil_data(re_specs, plant_data)
+      :staticmethod:
+
+
+      Need to remove RE associated with plants not in plant_data and re-weight
+      the remaining sites.
+
+
+
+   .. py:method:: load_cems(ba_code, extend_cems)
+
+
+   .. py:method:: hourly_re_by_plant(ba_code)
+
+
+   .. py:method:: all_re_for_cost_calcs()
+
+
+   .. py:method:: setup_all(keep=True)
+
+
+   .. py:method:: ba_cems_maker(compression=ZIP_STORED, extend_cems=False, test=False)
+
+
+   .. py:method:: subplant_cems()
+
+
+   .. py:method:: cems_extender(ba_code, plant_data, *args)
+
+      Extend CEMS data backwards using normalized aggregations of plants in the BA with a similar role
+
+
+
+   .. py:method:: norm_cems_roles_by_ba()
+
+      Normalized profiles for each plant role in each BA, profiles are
+      normalized annually
+
+
+
+   .. py:method:: cems_summary()
+
+
+   .. py:method:: ba_re_maker(compression=ZIP_STORED, test=False, max_distance=50)
+
+      Create re_data.zip for all BAs.
+
+
+
+   .. py:method:: _hourly_re_by_plant(ba_code, re_meta, all_profs)
+
+      Create RE data for re_data.zip from raw RE profiles for ``ba_code``.
+
+
+
+   .. py:method:: existing_re_helper(missing, re_profiles)
+
+
+   .. py:method:: _fill_missing_w_pre_op_re(combined_mly, missing)
+      :staticmethod:
+
+
+
+   .. py:method:: _fill_pre_op_mly_gen(existing_re, mean_profiles)
+
+
+   .. py:method:: re_to_parquet()
+      :staticmethod:
+
+
+
+   .. py:method:: re_to_parquet_old()
+      :staticmethod:
+
+
+
+   .. py:property:: dt_range_m
+      :type: pandas.DatetimeIndex
+
+
+
+   .. py:method:: really_modelable_plants()
+
+
+   .. py:method:: get_re_for_dl2(final_year=2022)
+
+

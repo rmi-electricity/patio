@@ -1,0 +1,23 @@
+patio.model
+===========
+
+.. py:module:: patio.model
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/patio/model/ba_level/index
+   /autoapi/patio/model/ba_scenario/index
+   /autoapi/patio/model/base/index
+   /autoapi/patio/model/colo_common/index
+   /autoapi/patio/model/colo_core/index
+   /autoapi/patio/model/colo_data/index
+   /autoapi/patio/model/colo_lp/index
+   /autoapi/patio/model/colo_resources/index
+   /autoapi/patio/model/colo_results/index
+
+

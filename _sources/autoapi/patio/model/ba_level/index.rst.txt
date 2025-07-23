@@ -1,0 +1,679 @@
+patio.model.ba_level
+====================
+
+.. py:module:: patio.model.ba_level
+
+.. autoapi-nested-parse::
+
+   a model I first heard of while on a patio
+
+   This module contains the core logic of the model.
+
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   patio.model.ba_level.BA
+   patio.model.ba_level.BAs
+
+
+Module Contents
+---------------
+
+.. py:class:: BA(ba_code, profiles, re_profiles, re_plant_specs, plant_data, cost_data, baseload_replace, missing, fuel_curve, queue, regime, ccs_convert = None, scenario_configs = None, existing_re_prof = None, include_figs = True, exclude_or_mothball = None, exclude = None, max_re = None, year_mapper = None, re_limits_dispatch = 'both', max_wind_distance = 100.0, max_solar_distance = 100.0, min_re_site_mw = None, cr_eligible_techs = None, colo_techs = None, colo_method = None, old_clean_adj_net_load=True, colo_dir = None, pudl_release = None, **kwargs)
+
+   Bases: :py:obj:`etoolbox.datazip.IOMixin`
+
+
+   Mixin for adding :class:`.DataZip` IO.
+
+   .. rubric:: Examples
+
+   >>> from io import BytesIO
+   >>> import numpy as np
+   >>> import pandas as pd
+
+   Create a class that inherits from :class:`IOMixin`.
+
+   >>> class MyClass(IOMixin):
+   ...     pass
+
+   Create an instance of the class with many kinds of things in it.
+   As nested as you like.
+
+   >>> inst = MyClass()
+   >>> inst.foo = {"a": 1, "b": (1, 2, 3), "c": np.array([1, 2, 4])}
+   >>> inst.bar = pd.Series([1, 2, 3])
+
+   The object can now be saved to a file, or buffer for this example.
+
+   >>> buffer = BytesIO()
+   >>> inst.to_file(buffer)
+   >>> del inst
+
+   And we can bring it back, as if it was pickled. Usually.
+
+   >>> inst = MyClass.from_file(buffer)
+   >>> type(inst.bar)
+   <class 'pandas.core.series.Series'>
+
+   >>> inst.foo
+   {'a': 1, 'b': (1, 2, 3), 'c': array([1, 2, 4])}
+
+   If your class has funny things in it like lambdas or unserializable objects,
+   you will need to define ``__getstate__`` and ``__setstate__``. If you don't use
+   ``__slots__`` they can be very simple.
+
+   >>> from collections import defaultdict
+   >>> class MyFunnyClass(IOMixin):
+   ...     def __init__(self):
+   ...         self.stuff = defaultdict(lambda: None)
+   ...
+   ...     def __getstate__(self):
+   ...         return self.__dict__ | {"stuff": dict(self.__dict__["stuff"])}
+   ...
+   ...     def __setstate__(self, state):
+   ...         self.__dict__ = state | {
+   ...             "stuff": defaultdict(lambda: None, state["stuff"])
+   ...         }
+
+   Instantiate the class and use the :class:`defaultdict`.
+
+   >>> inst = MyFunnyClass()
+   >>> inst.stuff["bar"] = 3
+   >>> print(inst.stuff["foo"])
+   None
+
+   Dump the object into the buffer and delete the original instance.
+
+   >>> buffer = BytesIO()
+   >>> inst.to_file(buffer)
+   >>> del inst
+
+   Recreate the object from the buffer and confirm it is as it should be.
+
+   >>> inst = MyFunnyClass.from_file(buffer)
+   >>> type(inst.stuff)
+   <class 'collections.defaultdict'>
+
+   >>> print(inst.stuff["foobar"])
+   None
+
+   >>> dict(inst.stuff)
+   {'bar': 3, 'foo': None, 'foobar': None}
+
+
+   .. py:attribute:: _parquet_out
+      :value: ('plant_data', 'load', 'profiles', '_re_profiles', 're_plant_specs', 'cost_data', 'adj_load',...
+
+
+
+   .. py:attribute:: re_spec_cols
+      :value: ['capacity_mw', 're_type', 'technology_description', 'operating_date', 'retirement_date', 'ilr',...
+
+
+
+   .. py:attribute:: _metadata
+
+
+   .. py:attribute:: pudl_release
+      :value: None
+
+
+
+   .. py:attribute:: queue
+
+
+   .. py:attribute:: colo_dir
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: re_limits_dispatch
+      :value: 'both'
+
+
+
+   .. py:attribute:: plant_data
+
+
+   .. py:attribute:: load
+
+
+   .. py:attribute:: profiles
+
+
+   .. py:attribute:: _re_plant_specs
+
+
+   .. py:attribute:: ccs_convert
+      :value: None
+
+
+
+   .. py:attribute:: include_figs
+      :value: True
+
+
+
+   .. py:attribute:: no_limit_prime
+      :value: ('CC',)
+
+
+
+   .. py:attribute:: cost_data
+
+
+   .. py:attribute:: fuel_curve
+
+
+   .. py:attribute:: baseload_replace
+
+
+   .. py:attribute:: max_re
+      :value: None
+
+
+
+   .. py:attribute:: _scenarios
+      :type:  list[patio.model.ba_scenario.BAScenario]
+      :value: []
+
+
+
+   .. py:attribute:: augmented_load
+
+
+   .. py:attribute:: existing_re_prof
+
+
+   .. py:attribute:: adj_load
+
+
+   .. py:attribute:: net_load_prof
+
+
+   .. py:attribute:: re_plant_specs
+
+
+   .. py:attribute:: Ab
+
+
+   .. py:attribute:: re_plant_specs_pre_downselect
+
+
+   .. py:attribute:: msg
+      :value: []
+
+
+
+   .. py:attribute:: counterfactual
+      :type:  patio.model.ba_scenario.BAScenario
+
+
+   .. py:attribute:: missing
+
+
+   .. py:method:: setup_re_profiles(re_specs)
+
+
+   .. py:method:: make_mini_re_profiles()
+
+      Create aggregated RE profiles to use in ``equal_energy``.
+
+
+
+   .. py:method:: lp(Ab_eq = None, Ab_ub = None, c = None, lb = None, time_limit=120)
+
+
+   .. py:method:: milp(c = None, Ab_eq = None, Ab_ub = None, lb = None, wind_lb = 80.0, time_limit = 60, mip_rel_gap=0.00015, desc = '', **kwargs)
+
+
+   .. py:method:: milp_scipy(c = None, Ab_eq = None, Ab_ub = None, lb = None, wind_lb = 80.0, time_limit = 300, desc = '', mip_rel_gap=0.00015, disp=False, presolve=True)
+
+
+   .. py:method:: make_cfl()
+
+
+   .. py:property:: fossil_list
+
+
+   .. py:property:: clean_list
+
+
+   .. py:property:: storage_list
+
+
+   .. py:method:: _dzsetstate_(state)
+
+
+   .. py:method:: _dzgetstate_()
+
+
+   .. py:property:: scenarios
+      :type: list[patio.model.ba_scenario.BAScenario]
+
+
+
+   .. py:property:: bad_scenarios
+      :type: dict[patio.model.base.ScenarioConfig, patio.model.ba_scenario.BAScenario]
+
+
+
+   .. py:property:: ba_code
+
+
+   .. py:property:: name
+
+
+   .. py:method:: messages()
+
+
+   .. py:property:: ba_name
+
+
+   .. py:method:: align_profiles(profiles, re_profiles)
+
+      Sometimes CEMS and RE profiles have different begin/end dates or are missing hours
+      this method selects the common interval for each profile and fills missing hours
+
+
+
+   .. py:property:: co2_profile
+      :type: pandas.DataFrame
+
+
+
+   .. py:method:: run_all_scens()
+
+
+   .. py:method:: parent_re_scenario(scen)
+
+
+   .. py:method:: parent_li_scenario(scen)
+
+
+   .. py:method:: same_energy_scenario(scen)
+
+
+   .. py:method:: hourly_adjustment()
+
+      Hourly adjustment to ~normalize plant roles across years
+
+
+
+   .. py:method:: profile_check(df = None, mapper = None, multiindex=False, norm=False)
+
+      Aggregate profiles using ``mapper_for_col_group`` and to annual frequency
+
+      :param df: profiles to check, if None, use self.profiles
+      :param mapper: map (plant_id_eia, generator_id) -> "x" | ("x", "y", ...)
+      :param multiindex: if you want to groupby multiple levels, set to True and make sure
+                         (plant_id_eia, generator_id) map to equal length tuples
+      :param norm: normalize the result
+
+      Returns:
+
+
+
+
+   .. py:method:: full_output()
+
+
+   .. py:method:: _is_ccs_ix(ix)
+
+      Is the index a row for a CCS plant in a CCS scenario
+
+
+
+   .. py:method:: system_output()
+
+
+   .. py:method:: allocated_output()
+
+
+   .. py:method:: get_figs()
+
+
+   .. py:method:: __len__()
+
+
+   .. py:method:: __iter__()
+
+
+   .. py:method:: __getitem__(item)
+
+
+   .. py:method:: __repr__()
+
+
+   .. py:method:: make_dm_mini(path, years=(2025, 2030))
+
+
+.. py:class:: BAs(name = None, bas = None, profile_data = None, scenario_configs = None, regime = 'reference', solar_ilr = 1.34, data_kwargs = None, data_source = None, pudl_release = PATIO_PUDL_RELEASE, queue=None, alt_path = None, econ_scen_dir = '', econ_suffix = '')
+
+   scalene patio/model/ba_level.py --profile-only 'ba_level,model' --profile-all
+
+
+   .. py:attribute:: def_scen_configs
+
+
+   .. py:attribute:: bad_bas
+      :value: ('Alaska', 'HECO', 'NBSO')
+
+
+
+   .. py:attribute:: pudl_release
+      :value: 'v2024.11.0'
+
+
+
+   .. py:attribute:: datetime
+
+
+   .. py:attribute:: alt_path
+      :value: None
+
+
+
+   .. py:attribute:: econ_suffix
+      :value: ''
+
+
+
+   .. py:attribute:: econ_scen_dir
+      :value: ''
+
+
+
+   .. py:attribute:: data_source
+      :value: None
+
+
+
+   .. py:attribute:: errors
+      :type:  dict[str, collections.defaultdict[str, list[traceback.TracebackException]]]
+
+
+   .. py:attribute:: _dfs
+
+
+   .. py:attribute:: bad_scenarios
+
+
+   .. py:attribute:: good_objs
+      :value: []
+
+
+
+   .. py:attribute:: colo_dir
+      :type:  str
+      :value: ''
+
+
+
+   .. py:property:: dir_path
+
+
+   .. py:property:: path
+
+
+   .. py:method:: from_cloud(name, data_source = None, econ_suffix = '')
+      :classmethod:
+
+
+
+   .. py:method:: from_file(name, data_source = None, econ_suffix = '')
+      :classmethod:
+
+
+
+   .. py:property:: pd
+
+
+   .. py:property:: ad
+
+
+   .. py:method:: _attrs_to_z(z)
+
+
+   .. py:method:: prep_all_data()
+
+
+   .. py:method:: run_all()
+
+
+   .. py:method:: get_fossils_specs()
+
+
+   .. py:method:: _setup_and_run_helper(ba_code, data, dz)
+
+
+   .. py:method:: log_error_counts(*types)
+
+
+   .. py:method:: make_profile_figs(path, bas=None, extend_cems=True)
+
+
+   .. py:method:: __getitem__(item)
+
+
+   .. py:method:: __repr__()
+
+
+   .. py:method:: output()
+
+
+   .. py:method:: fuel_curve_comparison()
+
+
+   .. py:method:: _add_missing_cols(df)
+
+
+   .. py:method:: _add_missing_output_cols(df)
+
+
+   .. py:method:: update_trace(trc)
+      :staticmethod:
+
+
+
+   .. py:method:: make_all_maps(econ_select=True, re_energy=0.6, storage_li_pct=0.25, year=2035)
+
+
+   .. py:method:: make_potential_selected_maps(ba = None, owners = None, year = 2031, selected = True, potential = True, fossil = True, sensitivity = None, size_max = 6, subunitwidth = 1)
+
+      :param ba: a patio BA code, a sequence of BA codes, or None to get all BAs
+      :param owners: generation owners, if provided, ba is ignored
+      :param year: year of econ selected to show
+      :param selected: include selected sites
+      :param potential: include all potential sites
+      :param fossil: include fossil sites
+      :param sensitivity: one or more sensitivities to display, by default all are displayed
+      :param size_max: (default=6) max marker size, adjust for visual consistency
+      :param subunitwidth: (default=1) control the width of state boundaries, can need
+                           to be increased to ~4 if vector versions will be resized
+
+      Returns:
+
+
+
+
+   .. py:method:: compile_figs(path=None, startswith='')
+
+
+   .. py:method:: upload_output()
+
+
+   .. py:method:: write_output()
+
+
+   .. py:method:: deficits()
+
+
+   .. py:method:: pivot_column(column)
+
+
+   .. py:method:: summary(frs=None)
+
+
+   .. py:method:: for_toy()
+
+
+   .. py:method:: profile_check(mapper=None, norm=False, all=False, cutoff=0.75)
+
+
+   .. py:method:: top_parents_fig(n=20, by='parent_name', *, include_proposed=False, df_only=False, query=None)
+
+
+   .. py:method:: fig_summary(ba=None, region=None, parent=None, df_only=False)
+
+
+   .. py:method:: econ_results()
+
+
+   .. py:method:: add_sensitivity_col(df)
+
+
+   .. py:method:: econ_comparison(by='region', column='Costs_Disc', query=None)
+
+
+   .. py:method:: selected_re_for_fig(by='ba_code', *, include_proposed=False, pivot=True, combine_wind=True, df_only=False)
+
+
+   .. py:method:: energy_comparison_fig(by='region', year=2035, df_only=False)
+
+
+   .. py:method:: _econ_selected_all_old()
+
+
+   .. py:property:: econ_dir_path
+
+
+   .. py:method:: _econ_selected_all()
+
+
+   .. py:method:: by_owner(df)
+
+
+   .. py:method:: econ_selected_allocated()
+
+
+   .. py:method:: compare_hist_cfl(values='redispatch_mwh', index=('plant_id_eia', 'plant_name_eia', 'technology_description', 'datetime'))
+
+
+   .. py:method:: mcoe_compare(suffix='')
+
+
+   .. py:method:: sales861()
+
+
+   .. py:method:: cast_2022_ba_relationships()
+
+
+   .. py:method:: compare_rmodel_to_sales()
+
+
+   .. py:method:: backup_utility_name_entity()
+
+
+   .. py:method:: get_util_ids(name_pattern)
+
+      Get a list of utility_id_eia based on name_pattern.
+
+      :param name_pattern: pattern to match against utility_name_eia
+                           in core_eia861__yearly_sales
+
+      Returns: tuple of utility_id_eia
+
+
+
+
+   .. py:method:: by_lse(*, least_cost = True)
+
+      Get results by LSE.
+
+      Get results by LSE by calculating transactions based on EIA 861
+
+      :param least_cost: if True get results for least cost scenario,
+                         otherwise max earnings
+
+      Returns:
+
+
+
+
+   .. py:method:: utility_type()
+
+
+   .. py:method:: by_lse_fig(util_ids = None)
+
+      Bar chart showing MW, MWh, and discounted cost for selected and BAU
+      portfolios for selected utilities
+
+      :param util_ids: can be a single utility_id_eia, a sequence of utility_id_eia,
+                       a pattern matched on utility_name_eia from core_eia861__yearly_sales,
+                       the default is None and results in a figure that aggregates all
+                       utilities together, including gen-only ones
+
+
+
+   .. py:method:: cr_site_list(least_cost=True)
+
+
+   .. py:method:: gen_list(cr_only=True, sort_cols=False, include_tx=False)
+
+      Create a list of plant-techs and the CR opportunity at them.
+
+      :param cr_only: defualt is True, if False include all plants, not just the ones with CR
+      :param sort_cols: clean up the column names and order, only tested with cr_only=False
+
+
+
+   .. py:method:: plant_list(cr_only=True, sort_cols=False, include_tx=False)
+
+      Create a list of plant-techs and the CR opportunity at them.
+
+      :param cr_only: defualt is True, if False include all plants, not just the ones with CR
+      :param sort_cols: clean up the column names and order, only tested with cr_only=False
+
+
+
+   .. py:method:: cost_waterfall(source_data, least_cost, by='region')
+
+      :param source_data: econ_results or by_lse
+      :param least_cost: only required for econ_results
+      :param by: column to group by e.g. region, utility_id_eia
+
+      Returns:
+
+
+
+
+   .. py:method:: transactions_drive_cr_cost_increase()
+
+      Cases where the change in transaction revenue > clean repowering cost increase.
+
+
+
+   .. py:method:: brownfields(radius=10)
+
+
+   .. py:method:: unused_clean_repowering(detail=True)
+
+      Identify additional capacity / area at selected CR sites.
+
+      Calculates how much additional RE could be installed at each fossil generator
+      selected for clean repowering. Provides both installable capacity and area
+       assuming that all selected clean repowering is actually built.
+
+
+
+
+   .. py:method:: clean_repowering_by_generator(utility = None, ba = None)
+
+

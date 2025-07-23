@@ -1,0 +1,1321 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
+        <link rel="prefetch" href="../../_static/Small_PNG-RMI_logo_PrimaryUse.PNG" as="image" />
+        <link rel="prefetch" href="../../_static/Small_PNG-RMI_logo_PrimaryUse_White_Horizontal.PNG" as="image" />
+
+    <!-- Generated with Sphinx 8.2.3 and Furo 2025.07.19 -->
+        <title>patio.constants - Patio 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=25af2a20" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #2b2b2b;
+  --color-code-foreground: #f8f8f2;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #2b2b2b;
+  --color-code-foreground: #f8f8f2;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">Patio 0.1 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../../_static/Small_PNG-RMI_logo_PrimaryUse.PNG" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../../_static/Small_PNG-RMI_logo_PrimaryUse_White_Horizontal.PNG" alt="Dark Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">Patio 0.1 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../LICENSE.html">Licensing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cli.html">CLI</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../autoapi/index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../autoapi/patio/index.html">patio</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of patio</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/patio/_version/index.html">patio._version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/patio/cli/index.html">patio.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/patio/constants/index.html">patio.constants</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../autoapi/patio/data/index.html">patio.data</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of patio.data</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/patio/data/asset_data/index.html">patio.data.asset_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/patio/data/cems/index.html">patio.data.cems</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/patio/data/entity_ids/index.html">patio.data.entity_ids</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/patio/data/profile_data/index.html">patio.data.profile_data</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/patio/exceptions/index.html">patio.exceptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/patio/helpers/index.html">patio.helpers</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../autoapi/patio/model/index.html">patio.model</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of patio.model</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/patio/model/ba_level/index.html">patio.model.ba_level</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/patio/model/ba_scenario/index.html">patio.model.ba_scenario</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/patio/model/base/index.html">patio.model.base</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/patio/model/colo_common/index.html">patio.model.colo_common</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/patio/model/colo_core/index.html">patio.model.colo_core</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/patio/model/colo_data/index.html">patio.model.colo_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/patio/model/colo_lp/index.html">patio.model.colo_lp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/patio/model/colo_resources/index.html">patio.model.colo_resources</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/patio/model/colo_results/index.html">patio.model.colo_results</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/patio/re_ninja/index.html">patio.re_ninja</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <h1>Source code for patio.constants</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;CEMS_CARB_INTENSITY&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CEMS_COL_MAP&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;COLORS&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CROSSWALK_COL_MAP&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CROSSWALK_DTYPES&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;EGRID_COL_MAP&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;EGRID_DTYPES&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;FOSSIL_INTENSITY&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;FOSSIL_PRIME_MOVER_MAP&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;FOSSIL_TECH&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;GEN_COLS&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;GEN_COLS_OLD&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;GEN_TO_X_AGG&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MTDF&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PERMUTATIONS&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;RAMP_CODES_TO_HRS&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;RE_TECH&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ROOT_PATH&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SCALE_FACTOR_OVERRIDES&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;STATE_BOUNDS&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="ROOT_PATH">
+<a class="viewcode-back" href="../../autoapi/patio/constants/index.html#patio.constants.ROOT_PATH">[docs]</a>
+<span class="n">ROOT_PATH</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span></div>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">https://rockmtnins-my.sharepoint.com/:x:/g/personal/cfong_rmi_org/ES-9u5euInVFuO7KnpmjNiIByXnSx7gmAtBuNtET7-w6kQ</span>
+<span class="sd">https://rockmtnins-my.sharepoint.com/:x:/g/personal/cfong_rmi_org/EcmLETNDwIlHjTk_YSEGiLYBz02VgHR1RG69rsKEAIFlkw</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="MTDF">
+<a class="viewcode-back" href="../../autoapi/patio/constants/index.html#patio.constants.MTDF">[docs]</a>
+<span class="n">MTDF</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="FOSSIL_PRIME_MOVER_MAP">
+<a class="viewcode-back" href="../../autoapi/patio/constants/index.html#patio.constants.FOSSIL_PRIME_MOVER_MAP">[docs]</a>
+<span class="n">FOSSIL_PRIME_MOVER_MAP</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;ST&quot;</span><span class="p">:</span> <span class="s2">&quot;ST&quot;</span><span class="p">,</span>  <span class="c1"># steam turbine</span>
+    <span class="s2">&quot;GT&quot;</span><span class="p">:</span> <span class="s2">&quot;GT&quot;</span><span class="p">,</span>  <span class="c1"># gas turbine xCC</span>
+    <span class="s2">&quot;IC&quot;</span><span class="p">:</span> <span class="s2">&quot;IC&quot;</span><span class="p">,</span>  <span class="c1"># internal combustion</span>
+    <span class="s2">&quot;CA&quot;</span><span class="p">:</span> <span class="s2">&quot;CC&quot;</span><span class="p">,</span>  <span class="c1"># steam part of CC</span>
+    <span class="s2">&quot;CT&quot;</span><span class="p">:</span> <span class="s2">&quot;CC&quot;</span><span class="p">,</span>  <span class="c1"># gas turbine part of CC</span>
+    <span class="s2">&quot;CS&quot;</span><span class="p">:</span> <span class="s2">&quot;CC&quot;</span><span class="p">,</span>  <span class="c1"># single shaft CC</span>
+    <span class="s2">&quot;CC&quot;</span><span class="p">:</span> <span class="s2">&quot;CC&quot;</span><span class="p">,</span>  <span class="c1"># CC in planning</span>
+<span class="p">}</span></div>
+
+<span class="n">FOSSIL_FUEL_CODES</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;ANT&quot;</span><span class="p">,</span>  <span class="c1"># Anthracite Coal</span>
+    <span class="s2">&quot;BIT&quot;</span><span class="p">,</span>  <span class="c1"># Bituminous Coal</span>
+    <span class="s2">&quot;LIG&quot;</span><span class="p">,</span>  <span class="c1"># Lignite Coal</span>
+    <span class="s2">&quot;SGC&quot;</span><span class="p">,</span>  <span class="c1"># Coal-Derived Synthesis Gas</span>
+    <span class="s2">&quot;SUB&quot;</span><span class="p">,</span>  <span class="c1"># Subbituminous Coal</span>
+    <span class="s2">&quot;WC&quot;</span><span class="p">,</span>  <span class="c1"># Waste/Other Coal (incl. anthracite culm, bituminous gob, fine coal, lignite waste, waste coal)</span>
+    <span class="s2">&quot;RC&quot;</span><span class="p">,</span>  <span class="c1"># Refined Coal</span>
+    <span class="s2">&quot;DFO&quot;</span><span class="p">,</span>  <span class="c1"># Distillate Fuel Oil (including diesel, No. 1, No. 2, and No. 4 fuel oils)</span>
+    <span class="s2">&quot;JF&quot;</span><span class="p">,</span>  <span class="c1"># Jet Fuel</span>
+    <span class="s2">&quot;KER&quot;</span><span class="p">,</span>  <span class="c1"># Kerosene</span>
+    <span class="s2">&quot;PC&quot;</span><span class="p">,</span>  <span class="c1"># Petroleum Coke</span>
+    <span class="s2">&quot;PG&quot;</span><span class="p">,</span>  <span class="c1"># Gaseous Propane</span>
+    <span class="s2">&quot;RFO&quot;</span><span class="p">,</span>  <span class="c1"># Residual Fuel Oil (incl. Nos. 5 &amp; 6 fuel oils, and bunker C fuel oil)</span>
+    <span class="s2">&quot;SGP&quot;</span><span class="p">,</span>  <span class="c1"># Synthesis Gas from Petroleum Coke</span>
+    <span class="s2">&quot;WO&quot;</span><span class="p">,</span>  <span class="c1"># Waste/Other Oil (including crude oil, liquid butane, liquid propane, naphtha, oil waste, re-refined motor oil, sludge oil, tar oil, or other petroleum-based liquid wastes)</span>
+    <span class="s2">&quot;BFG&quot;</span><span class="p">,</span>  <span class="c1"># Blast Furnace Gas</span>
+    <span class="s2">&quot;NG&quot;</span><span class="p">,</span>  <span class="c1"># Natural Gas</span>
+    <span class="s2">&quot;OG&quot;</span><span class="p">,</span>  <span class="c1"># Other Gas (specify in SCHEDULE 7)</span>
+<span class="p">]</span>
+<div class="viewcode-block" id="RAMP_CODES_TO_HRS">
+<a class="viewcode-back" href="../../autoapi/patio/constants/index.html#patio.constants.RAMP_CODES_TO_HRS">[docs]</a>
+<span class="n">RAMP_CODES_TO_HRS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;10M&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># = 0 - 10 minutes</span>
+    <span class="s2">&quot;1H&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># = 10 minutes - 1 hour</span>
+    <span class="s2">&quot;12H&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>  <span class="c1"># = 1 hour - 12 hours</span>
+    <span class="s2">&quot;OVER&quot;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>  <span class="c1"># = More than 12 hours</span>
+<span class="p">}</span></div>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">&#39;Time from Cold Shutdown to Full Load&#39; from EIA 860 3B</span>
+<span class="sd">The minimum amount of time required to bring the unit to full load from shutdown</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="CEMS_CARB_INTENSITY">
+<a class="viewcode-back" href="../../autoapi/patio/constants/index.html#patio.constants.CEMS_CARB_INTENSITY">[docs]</a>
+<span class="n">CEMS_CARB_INTENSITY</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;BIT&quot;</span><span class="p">:</span> <span class="mf">0.1027</span><span class="p">,</span>
+    <span class="s2">&quot;LIG&quot;</span><span class="p">:</span> <span class="mf">0.10812</span><span class="p">,</span>
+    <span class="c1"># &quot;SGC&quot;: &quot;coal&quot;,</span>
+    <span class="s2">&quot;SUB&quot;</span><span class="p">:</span> <span class="mf">0.107065</span><span class="p">,</span>
+    <span class="c1"># &quot;WC&quot;: &quot;coal&quot;,</span>
+    <span class="s2">&quot;RC&quot;</span><span class="p">:</span> <span class="mf">0.125295</span><span class="p">,</span>  <span class="c1"># coke</span>
+    <span class="s2">&quot;DFO&quot;</span><span class="p">:</span> <span class="mf">0.0817249</span><span class="p">,</span>
+    <span class="s2">&quot;JF&quot;</span><span class="p">:</span> <span class="mf">0.079625</span><span class="p">,</span>
+    <span class="s2">&quot;KER&quot;</span><span class="p">:</span> <span class="mf">0.080675</span><span class="p">,</span>
+    <span class="s2">&quot;PC&quot;</span><span class="p">:</span> <span class="mf">0.112565</span><span class="p">,</span>
+    <span class="s2">&quot;PG&quot;</span><span class="p">:</span> <span class="mf">0.069315</span><span class="p">,</span>
+    <span class="s2">&quot;RFO&quot;</span><span class="p">:</span> <span class="mf">0.082775</span><span class="p">,</span>
+    <span class="c1"># &quot;SGP&quot;: &quot;other_gas&quot;,</span>
+    <span class="c1"># &quot;WO&quot;: &quot;petroleum&quot;,</span>
+    <span class="c1"># &quot;BFG&quot;: &quot;other_gas&quot;,</span>
+    <span class="s2">&quot;NG&quot;</span><span class="p">:</span> <span class="mf">0.058325</span><span class="p">,</span>
+    <span class="c1"># &quot;OG&quot;: &quot;other_gas&quot;,</span>
+<span class="p">}</span></div>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">https://www.eia.gov/environment/emissions/co2_vol_mass.php</span>
+
+<span class="sd">in short_tons/mmbtu</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">MIN_HEAT_RATE</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;Petroleum Liquids&quot;</span><span class="p">:</span> <span class="mf">8.5</span><span class="p">,</span>
+    <span class="s2">&quot;Natural Gas Steam Turbine&quot;</span><span class="p">:</span> <span class="mf">8.5</span><span class="p">,</span>
+    <span class="s2">&quot;Conventional Steam Coal&quot;</span><span class="p">:</span> <span class="mf">8.5</span><span class="p">,</span>
+    <span class="s2">&quot;Natural Gas Fired Combined Cycle&quot;</span><span class="p">:</span> <span class="mf">6.0</span><span class="p">,</span>
+    <span class="s2">&quot;Natural Gas Fired Combustion Turbine&quot;</span><span class="p">:</span> <span class="mf">8.0</span><span class="p">,</span>
+    <span class="s2">&quot;Natural Gas Internal Combustion Engine&quot;</span><span class="p">:</span> <span class="mf">7.0</span><span class="p">,</span>
+    <span class="s2">&quot;Coal Integrated Gasification Combined Cycle&quot;</span><span class="p">:</span> <span class="mf">9.0</span><span class="p">,</span>
+    <span class="s2">&quot;Other Natural Gas&quot;</span><span class="p">:</span> <span class="mf">8.5</span><span class="p">,</span>
+    <span class="s2">&quot;Petroleum Coke&quot;</span><span class="p">:</span> <span class="mf">8.5</span><span class="p">,</span>
+    <span class="s2">&quot;Natural Gas with Compressed Air Storage&quot;</span><span class="p">:</span> <span class="mf">8.5</span><span class="p">,</span>
+    <span class="s2">&quot;Other Gases&quot;</span><span class="p">:</span> <span class="mf">8.5</span><span class="p">,</span>
+    <span class="s2">&quot;Wood/Wood Waste Biomass&quot;</span><span class="p">:</span> <span class="mf">9.0</span><span class="p">,</span>  <span class="c1"># same as MSW</span>
+    <span class="s2">&quot;Municipal Solid Waste&quot;</span><span class="p">:</span> <span class="mf">9.0</span><span class="p">,</span>  <span class="c1"># same as MSW</span>
+    <span class="s2">&quot;Landfill Gas&quot;</span><span class="p">:</span> <span class="mf">9.0</span><span class="p">,</span>  <span class="c1"># same as MSW</span>
+    <span class="s2">&quot;All Other&quot;</span><span class="p">:</span> <span class="mf">9.0</span><span class="p">,</span>  <span class="c1"># same as propane / other gases</span>
+    <span class="s2">&quot;Other Waste Biomass&quot;</span><span class="p">:</span> <span class="mf">9.0</span><span class="p">,</span>  <span class="c1"># same as MSW</span>
+<span class="p">}</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">in mmbtu/MWh</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="FOSSIL_INTENSITY">
+<a class="viewcode-back" href="../../autoapi/patio/constants/index.html#patio.constants.FOSSIL_INTENSITY">[docs]</a>
+<span class="n">FOSSIL_INTENSITY</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;coal&quot;</span><span class="p">:</span> <span class="mf">9.61825e-08</span><span class="p">,</span>
+    <span class="s2">&quot;natural_gas&quot;</span><span class="p">:</span> <span class="mf">5.306e-08</span><span class="p">,</span>
+    <span class="s2">&quot;gas&quot;</span><span class="p">:</span> <span class="mf">5.306e-08</span><span class="p">,</span>
+    <span class="s2">&quot;other_gas&quot;</span><span class="p">:</span> <span class="mf">1.46972e-07</span><span class="p">,</span>
+    <span class="s2">&quot;petroleum_coke&quot;</span><span class="p">:</span> <span class="mf">1.0241e-07</span><span class="p">,</span>
+    <span class="s2">&quot;petroleum&quot;</span><span class="p">:</span> <span class="mf">7.18297e-08</span><span class="p">,</span>
+    <span class="s2">&quot;oil&quot;</span><span class="p">:</span> <span class="mf">7.18297e-08</span><span class="p">,</span>
+<span class="p">}</span></div>
+
+<span class="sd">&quot;&quot;&quot;Unknown units&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="CEMS_COL_MAP">
+<a class="viewcode-back" href="../../autoapi/patio/constants/index.html#patio.constants.CEMS_COL_MAP">[docs]</a>
+<span class="n">CEMS_COL_MAP</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;ORISPL_CODE&quot;</span><span class="p">:</span> <span class="s2">&quot;plant_id_cems&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;UNITID&quot;</span><span class="p">:</span> <span class="s2">&quot;unit_id_cems&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;GLOAD..MW.&quot;</span><span class="p">:</span> <span class="s2">&quot;gross_gen&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;HEAT_INPUT..mmBtu.&quot;</span><span class="p">:</span> <span class="s2">&quot;heat_in_mmbtu&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CO2_MASS..tons.&quot;</span><span class="p">:</span> <span class="s2">&quot;co2_tons&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;OP_TIME&quot;</span><span class="p">:</span> <span class="s2">&quot;op_time&quot;</span><span class="p">,</span>
+<span class="p">}</span></div>
+
+<div class="viewcode-block" id="CROSSWALK_DTYPES">
+<a class="viewcode-back" href="../../autoapi/patio/constants/index.html#patio.constants.CROSSWALK_DTYPES">[docs]</a>
+<span class="n">CROSSWALK_DTYPES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;CAMD_PLANT_ID&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CAMD_UNIT_ID&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="s2">&quot;CAMD_GENERATOR_ID&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="s2">&quot;EIA_PLANT_ID&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;EIA_GENERATOR_ID&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="s2">&quot;EIA_BOILER_ID&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="s2">&quot;MOD_EIA_PLANT_ID&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+<span class="p">}</span></div>
+
+<div class="viewcode-block" id="CROSSWALK_COL_MAP">
+<a class="viewcode-back" href="../../autoapi/patio/constants/index.html#patio.constants.CROSSWALK_COL_MAP">[docs]</a>
+<span class="n">CROSSWALK_COL_MAP</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;EIA_PLANT_ID&quot;</span><span class="p">:</span> <span class="s2">&quot;plant_id_eia&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;EIA_GENERATOR_ID&quot;</span><span class="p">:</span> <span class="s2">&quot;generator_id&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;EIA_BOILER_ID&quot;</span><span class="p">:</span> <span class="s2">&quot;boiler_id&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;EIA_STATE&quot;</span><span class="p">:</span> <span class="s2">&quot;state&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;EIA_UNIT_TYPE&quot;</span><span class="p">:</span> <span class="s2">&quot;prime_mover_code&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;EIA_FUEL_TYPE&quot;</span><span class="p">:</span> <span class="s2">&quot;energy_source_code_1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;EIA_NAMEPLATE_CAPACITY&quot;</span><span class="p">:</span> <span class="s2">&quot;capacity_mw&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;EIA_PLANT_NAME&quot;</span><span class="p">:</span> <span class="s2">&quot;plant_name_eia&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CAMD_PLANT_ID&quot;</span><span class="p">:</span> <span class="s2">&quot;plant_id_cems&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CAMD_UNIT_ID&quot;</span><span class="p">:</span> <span class="s2">&quot;unit_id_cems&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CAMD_GENERATOR_ID&quot;</span><span class="p">:</span> <span class="s2">&quot;generator_id_cems&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CAMD_FUEL_TYPE&quot;</span><span class="p">:</span> <span class="s2">&quot;fuel_code_cems&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CAMD_NAMEPLATE_CAPACITY&quot;</span><span class="p">:</span> <span class="s2">&quot;capacity_mw_cems&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CAMD_FACILITY_NAME&quot;</span><span class="p">:</span> <span class="s2">&quot;plant_name_cems&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MOD_EIA_PLANT_ID&quot;</span><span class="p">:</span> <span class="s2">&quot;plant_id_eia_mod&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MOD_EIA_BOILER_ID&quot;</span><span class="p">:</span> <span class="s2">&quot;boiler_id_eia_mod&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MOD_EIA_GENERATOR_ID_BOILER&quot;</span><span class="p">:</span> <span class="s2">&quot;generator_id_boiler_eia_mod&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MOD_EIA_GENERATOR_ID_GEN&quot;</span><span class="p">:</span> <span class="s2">&quot;generator_id_gen_eia_mod&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MATCH_TYPE_GEN&quot;</span><span class="p">:</span> <span class="s2">&quot;match_type_gen&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MATCH_TYPE_BOILER&quot;</span><span class="p">:</span> <span class="s2">&quot;match_type_boiler&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PLANT_ID_CHANGE_FLAG&quot;</span><span class="p">:</span> <span class="s2">&quot;plant_id_change&quot;</span><span class="p">,</span>
+<span class="p">}</span></div>
+
+<div class="viewcode-block" id="EGRID_DTYPES">
+<a class="viewcode-back" href="../../autoapi/patio/constants/index.html#patio.constants.EGRID_DTYPES">[docs]</a>
+<span class="n">EGRID_DTYPES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;ORISPL&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;UNITID&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="s2">&quot;PRMVR&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="s2">&quot;UNTOPST&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="s2">&quot;FUELU1&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="s2">&quot;HTIANSRC&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="p">}</span></div>
+
+<div class="viewcode-block" id="EGRID_COL_MAP">
+<a class="viewcode-back" href="../../autoapi/patio/constants/index.html#patio.constants.EGRID_COL_MAP">[docs]</a>
+<span class="n">EGRID_COL_MAP</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;PSTATABB&quot;</span><span class="p">:</span> <span class="s2">&quot;state&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PNAME&quot;</span><span class="p">:</span> <span class="s2">&quot;plant_name_cems&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ORISPL&quot;</span><span class="p">:</span> <span class="s2">&quot;plant_id_cems&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;UNITID&quot;</span><span class="p">:</span> <span class="s2">&quot;unit_id_cems&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PRMVR&quot;</span><span class="p">:</span> <span class="s2">&quot;prime_mover_code&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;UNTOPST&quot;</span><span class="p">:</span> <span class="s2">&quot;op_status&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;FUELU1&quot;</span><span class="p">:</span> <span class="s2">&quot;energy_source_code_1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;HTIANSRC&quot;</span><span class="p">:</span> <span class="s2">&quot;heat_input_source&quot;</span><span class="p">,</span>
+<span class="p">}</span></div>
+
+<div class="viewcode-block" id="GEN_TO_X_AGG">
+<a class="viewcode-back" href="../../autoapi/patio/constants/index.html#patio.constants.GEN_TO_X_AGG">[docs]</a>
+<span class="n">GEN_TO_X_AGG</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;generator_id&quot;</span><span class="p">:</span> <span class="nb">set</span><span class="p">,</span>
+    <span class="s2">&quot;state&quot;</span><span class="p">:</span> <span class="s2">&quot;first&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;report_date&quot;</span><span class="p">:</span> <span class="s2">&quot;first&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;plant_name_eia&quot;</span><span class="p">:</span> <span class="s2">&quot;first&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;utility_id_eia&quot;</span><span class="p">:</span> <span class="s2">&quot;first&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;utility_name_eia&quot;</span><span class="p">:</span> <span class="s2">&quot;first&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;technology_description&quot;</span><span class="p">:</span> <span class="nb">set</span><span class="p">,</span>
+    <span class="s2">&quot;capacity_mw&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">,</span>
+    <span class="s2">&quot;latitude&quot;</span><span class="p">:</span> <span class="s2">&quot;first&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;longitude&quot;</span><span class="p">:</span> <span class="s2">&quot;first&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;operating_date&quot;</span><span class="p">:</span> <span class="s2">&quot;first&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;operational_status&quot;</span><span class="p">:</span> <span class="nb">set</span><span class="p">,</span>
+    <span class="c1"># &#39;original_planned_operating_date&#39;,</span>
+    <span class="s2">&quot;timezone&quot;</span><span class="p">:</span> <span class="s2">&quot;first&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;balancing_authority_code_eia&quot;</span><span class="p">:</span> <span class="s2">&quot;first&quot;</span><span class="p">,</span>
+    <span class="c1"># &#39;balancing_authority_name_eia&#39;,</span>
+    <span class="c1"># &#39;cofire_fuels&#39;,</span>
+    <span class="s2">&quot;fuel_type_code_pudl&quot;</span><span class="p">:</span> <span class="nb">set</span><span class="p">,</span>
+    <span class="s2">&quot;energy_source_code_1&quot;</span><span class="p">:</span> <span class="nb">set</span><span class="p">,</span>
+    <span class="s2">&quot;plant_id_pudl&quot;</span><span class="p">:</span> <span class="s2">&quot;first&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;utility_id_pudl&quot;</span><span class="p">:</span> <span class="s2">&quot;first&quot;</span><span class="p">,</span>
+<span class="p">}</span></div>
+
+<span class="c1"># TODO reordering to (off, on, solar) would probably solve most order driven weirdness</span>
+<div class="viewcode-block" id="PERMUTATIONS">
+<a class="viewcode-back" href="../../autoapi/patio/constants/index.html#patio.constants.PERMUTATIONS">[docs]</a>
+<span class="n">PERMUTATIONS</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+    <span class="p">]</span>
+<span class="p">)</span></div>
+
+<div class="viewcode-block" id="STATE_BOUNDS">
+<a class="viewcode-back" href="../../autoapi/patio/constants/index.html#patio.constants.STATE_BOUNDS">[docs]</a>
+<span class="n">STATE_BOUNDS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;xmin&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;AL&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">88.473227</span><span class="p">,</span>
+        <span class="s2">&quot;AK&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">179.148909</span><span class="p">,</span>
+        <span class="s2">&quot;AS&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">171.089874</span><span class="p">,</span>
+        <span class="s2">&quot;AZ&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">114.81651</span><span class="p">,</span>
+        <span class="s2">&quot;AR&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">94.617919</span><span class="p">,</span>
+        <span class="s2">&quot;CA&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">124.409591</span><span class="p">,</span>
+        <span class="s2">&quot;CO&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">109.060253</span><span class="p">,</span>
+        <span class="s2">&quot;MP&quot;</span><span class="p">:</span> <span class="mf">144.886331</span><span class="p">,</span>
+        <span class="s2">&quot;CT&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">73.727775</span><span class="p">,</span>
+        <span class="s2">&quot;DE&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">75.788658</span><span class="p">,</span>
+        <span class="s2">&quot;DC&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">77.119759</span><span class="p">,</span>
+        <span class="s2">&quot;FL&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">87.634938</span><span class="p">,</span>
+        <span class="s2">&quot;GA&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">85.605165</span><span class="p">,</span>
+        <span class="s2">&quot;GU&quot;</span><span class="p">:</span> <span class="mf">144.618068</span><span class="p">,</span>
+        <span class="s2">&quot;HI&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">178.334698</span><span class="p">,</span>
+        <span class="s2">&quot;ID&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">117.243027</span><span class="p">,</span>
+        <span class="s2">&quot;IL&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">91.513079</span><span class="p">,</span>
+        <span class="s2">&quot;IN&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">88.09776</span><span class="p">,</span>
+        <span class="s2">&quot;IA&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">96.639704</span><span class="p">,</span>
+        <span class="s2">&quot;KS&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">102.051744</span><span class="p">,</span>
+        <span class="s2">&quot;KY&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">89.571509</span><span class="p">,</span>
+        <span class="s2">&quot;LA&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">94.043147</span><span class="p">,</span>
+        <span class="s2">&quot;ME&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">71.083924</span><span class="p">,</span>
+        <span class="s2">&quot;MD&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">79.487651</span><span class="p">,</span>
+        <span class="s2">&quot;MA&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">73.508142</span><span class="p">,</span>
+        <span class="s2">&quot;MI&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">90.418136</span><span class="p">,</span>
+        <span class="s2">&quot;MN&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">97.239209</span><span class="p">,</span>
+        <span class="s2">&quot;MS&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">91.655009</span><span class="p">,</span>
+        <span class="s2">&quot;MO&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">95.774704</span><span class="p">,</span>
+        <span class="s2">&quot;MT&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">116.050003</span><span class="p">,</span>
+        <span class="s2">&quot;NE&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">104.053514</span><span class="p">,</span>
+        <span class="s2">&quot;NV&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">120.005746</span><span class="p">,</span>
+        <span class="s2">&quot;NH&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">72.557247</span><span class="p">,</span>
+        <span class="s2">&quot;NJ&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">75.559614</span><span class="p">,</span>
+        <span class="s2">&quot;NM&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">109.050173</span><span class="p">,</span>
+        <span class="s2">&quot;NY&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">79.762152</span><span class="p">,</span>
+        <span class="s2">&quot;NC&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">84.321869</span><span class="p">,</span>
+        <span class="s2">&quot;ND&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">104.0489</span><span class="p">,</span>
+        <span class="s2">&quot;OH&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">84.820159</span><span class="p">,</span>
+        <span class="s2">&quot;OK&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">103.002565</span><span class="p">,</span>
+        <span class="s2">&quot;OR&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">124.566244</span><span class="p">,</span>
+        <span class="s2">&quot;PA&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">80.519891</span><span class="p">,</span>
+        <span class="s2">&quot;PR&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">67.945404</span><span class="p">,</span>
+        <span class="s2">&quot;RI&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">71.862772</span><span class="p">,</span>
+        <span class="s2">&quot;SC&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">83.35391</span><span class="p">,</span>
+        <span class="s2">&quot;SD&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">104.057698</span><span class="p">,</span>
+        <span class="s2">&quot;TN&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">90.310298</span><span class="p">,</span>
+        <span class="s2">&quot;TX&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">106.645646</span><span class="p">,</span>
+        <span class="s2">&quot;VI&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">65.085452</span><span class="p">,</span>
+        <span class="s2">&quot;UT&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">114.052962</span><span class="p">,</span>
+        <span class="s2">&quot;VT&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">73.43774</span><span class="p">,</span>
+        <span class="s2">&quot;VA&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">83.675395</span><span class="p">,</span>
+        <span class="s2">&quot;WA&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">124.763068</span><span class="p">,</span>
+        <span class="s2">&quot;WV&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">82.644739</span><span class="p">,</span>
+        <span class="s2">&quot;WI&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">92.888114</span><span class="p">,</span>
+        <span class="s2">&quot;WY&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">111.056888</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;xmax&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;AL&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">84.88908</span><span class="p">,</span>
+        <span class="s2">&quot;AK&quot;</span><span class="p">:</span> <span class="mf">179.77847</span><span class="p">,</span>
+        <span class="s2">&quot;AS&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">168.1433</span><span class="p">,</span>
+        <span class="s2">&quot;AZ&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">109.045223</span><span class="p">,</span>
+        <span class="s2">&quot;AR&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">89.644395</span><span class="p">,</span>
+        <span class="s2">&quot;CA&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">114.131211</span><span class="p">,</span>
+        <span class="s2">&quot;CO&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">102.041524</span><span class="p">,</span>
+        <span class="s2">&quot;MP&quot;</span><span class="p">:</span> <span class="mf">146.064818</span><span class="p">,</span>
+        <span class="s2">&quot;CT&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">71.786994</span><span class="p">,</span>
+        <span class="s2">&quot;DE&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">75.048939</span><span class="p">,</span>
+        <span class="s2">&quot;DC&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">76.909395</span><span class="p">,</span>
+        <span class="s2">&quot;FL&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">80.031362</span><span class="p">,</span>
+        <span class="s2">&quot;GA&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">80.839729</span><span class="p">,</span>
+        <span class="s2">&quot;GU&quot;</span><span class="p">:</span> <span class="mf">144.956712</span><span class="p">,</span>
+        <span class="s2">&quot;HI&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">154.806773</span><span class="p">,</span>
+        <span class="s2">&quot;ID&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">111.043564</span><span class="p">,</span>
+        <span class="s2">&quot;IL&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">87.494756</span><span class="p">,</span>
+        <span class="s2">&quot;IN&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">84.784579</span><span class="p">,</span>
+        <span class="s2">&quot;IA&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">90.140061</span><span class="p">,</span>
+        <span class="s2">&quot;KS&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">94.588413</span><span class="p">,</span>
+        <span class="s2">&quot;KY&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">81.964971</span><span class="p">,</span>
+        <span class="s2">&quot;LA&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">88.817017</span><span class="p">,</span>
+        <span class="s2">&quot;ME&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">66.949895</span><span class="p">,</span>
+        <span class="s2">&quot;MD&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">75.048939</span><span class="p">,</span>
+        <span class="s2">&quot;MA&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">69.928393</span><span class="p">,</span>
+        <span class="s2">&quot;MI&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">82.413474</span><span class="p">,</span>
+        <span class="s2">&quot;MN&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">89.491739</span><span class="p">,</span>
+        <span class="s2">&quot;MS&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">88.097888</span><span class="p">,</span>
+        <span class="s2">&quot;MO&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">89.098843</span><span class="p">,</span>
+        <span class="s2">&quot;MT&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">104.039138</span><span class="p">,</span>
+        <span class="s2">&quot;NE&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">95.30829</span><span class="p">,</span>
+        <span class="s2">&quot;NV&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">114.039648</span><span class="p">,</span>
+        <span class="s2">&quot;NH&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">70.610621</span><span class="p">,</span>
+        <span class="s2">&quot;NJ&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">73.893979</span><span class="p">,</span>
+        <span class="s2">&quot;NM&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">103.001964</span><span class="p">,</span>
+        <span class="s2">&quot;NY&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">71.856214</span><span class="p">,</span>
+        <span class="s2">&quot;NC&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">75.460621</span><span class="p">,</span>
+        <span class="s2">&quot;ND&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">96.554507</span><span class="p">,</span>
+        <span class="s2">&quot;OH&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">80.518693</span><span class="p">,</span>
+        <span class="s2">&quot;OK&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">94.430662</span><span class="p">,</span>
+        <span class="s2">&quot;OR&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">116.463504</span><span class="p">,</span>
+        <span class="s2">&quot;PA&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">74.689516</span><span class="p">,</span>
+        <span class="s2">&quot;PR&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">65.220703</span><span class="p">,</span>
+        <span class="s2">&quot;RI&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">71.12057</span><span class="p">,</span>
+        <span class="s2">&quot;SC&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">78.54203</span><span class="p">,</span>
+        <span class="s2">&quot;SD&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">96.436589</span><span class="p">,</span>
+        <span class="s2">&quot;TN&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">81.6469</span><span class="p">,</span>
+        <span class="s2">&quot;TX&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">93.508292</span><span class="p">,</span>
+        <span class="s2">&quot;VI&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">64.564907</span><span class="p">,</span>
+        <span class="s2">&quot;UT&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">109.041058</span><span class="p">,</span>
+        <span class="s2">&quot;VT&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">71.464555</span><span class="p">,</span>
+        <span class="s2">&quot;VA&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">75.242266</span><span class="p">,</span>
+        <span class="s2">&quot;WA&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">116.915989</span><span class="p">,</span>
+        <span class="s2">&quot;WV&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">77.719519</span><span class="p">,</span>
+        <span class="s2">&quot;WI&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">86.805415</span><span class="p">,</span>
+        <span class="s2">&quot;WY&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">104.05216</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;ymin&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;AL&quot;</span><span class="p">:</span> <span class="mf">30.223334</span><span class="p">,</span>
+        <span class="s2">&quot;AK&quot;</span><span class="p">:</span> <span class="mf">51.214183</span><span class="p">,</span>
+        <span class="s2">&quot;AS&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">14.548699</span><span class="p">,</span>
+        <span class="s2">&quot;AZ&quot;</span><span class="p">:</span> <span class="mf">31.332177</span><span class="p">,</span>
+        <span class="s2">&quot;AR&quot;</span><span class="p">:</span> <span class="mf">33.004106</span><span class="p">,</span>
+        <span class="s2">&quot;CA&quot;</span><span class="p">:</span> <span class="mf">32.534156</span><span class="p">,</span>
+        <span class="s2">&quot;CO&quot;</span><span class="p">:</span> <span class="mf">36.992426</span><span class="p">,</span>
+        <span class="s2">&quot;MP&quot;</span><span class="p">:</span> <span class="mf">14.110472</span><span class="p">,</span>
+        <span class="s2">&quot;CT&quot;</span><span class="p">:</span> <span class="mf">40.980144</span><span class="p">,</span>
+        <span class="s2">&quot;DE&quot;</span><span class="p">:</span> <span class="mf">38.451013</span><span class="p">,</span>
+        <span class="s2">&quot;DC&quot;</span><span class="p">:</span> <span class="mf">38.791645</span><span class="p">,</span>
+        <span class="s2">&quot;FL&quot;</span><span class="p">:</span> <span class="mf">24.523096</span><span class="p">,</span>
+        <span class="s2">&quot;GA&quot;</span><span class="p">:</span> <span class="mf">30.357851</span><span class="p">,</span>
+        <span class="s2">&quot;GU&quot;</span><span class="p">:</span> <span class="mf">13.234189</span><span class="p">,</span>
+        <span class="s2">&quot;HI&quot;</span><span class="p">:</span> <span class="mf">18.910361</span><span class="p">,</span>
+        <span class="s2">&quot;ID&quot;</span><span class="p">:</span> <span class="mf">41.988057</span><span class="p">,</span>
+        <span class="s2">&quot;IL&quot;</span><span class="p">:</span> <span class="mf">36.970298</span><span class="p">,</span>
+        <span class="s2">&quot;IN&quot;</span><span class="p">:</span> <span class="mf">37.771742</span><span class="p">,</span>
+        <span class="s2">&quot;IA&quot;</span><span class="p">:</span> <span class="mf">40.375501</span><span class="p">,</span>
+        <span class="s2">&quot;KS&quot;</span><span class="p">:</span> <span class="mf">36.993016</span><span class="p">,</span>
+        <span class="s2">&quot;KY&quot;</span><span class="p">:</span> <span class="mf">36.497129</span><span class="p">,</span>
+        <span class="s2">&quot;LA&quot;</span><span class="p">:</span> <span class="mf">28.928609</span><span class="p">,</span>
+        <span class="s2">&quot;ME&quot;</span><span class="p">:</span> <span class="mf">42.977764</span><span class="p">,</span>
+        <span class="s2">&quot;MD&quot;</span><span class="p">:</span> <span class="mf">37.911717</span><span class="p">,</span>
+        <span class="s2">&quot;MA&quot;</span><span class="p">:</span> <span class="mf">41.237964</span><span class="p">,</span>
+        <span class="s2">&quot;MI&quot;</span><span class="p">:</span> <span class="mf">41.696118</span><span class="p">,</span>
+        <span class="s2">&quot;MN&quot;</span><span class="p">:</span> <span class="mf">43.499356</span><span class="p">,</span>
+        <span class="s2">&quot;MS&quot;</span><span class="p">:</span> <span class="mf">30.173943</span><span class="p">,</span>
+        <span class="s2">&quot;MO&quot;</span><span class="p">:</span> <span class="mf">35.995683</span><span class="p">,</span>
+        <span class="s2">&quot;MT&quot;</span><span class="p">:</span> <span class="mf">44.358221</span><span class="p">,</span>
+        <span class="s2">&quot;NE&quot;</span><span class="p">:</span> <span class="mf">39.999998</span><span class="p">,</span>
+        <span class="s2">&quot;NV&quot;</span><span class="p">:</span> <span class="mf">35.001857</span><span class="p">,</span>
+        <span class="s2">&quot;NH&quot;</span><span class="p">:</span> <span class="mf">42.69699</span><span class="p">,</span>
+        <span class="s2">&quot;NJ&quot;</span><span class="p">:</span> <span class="mf">38.928519</span><span class="p">,</span>
+        <span class="s2">&quot;NM&quot;</span><span class="p">:</span> <span class="mf">31.332301</span><span class="p">,</span>
+        <span class="s2">&quot;NY&quot;</span><span class="p">:</span> <span class="mf">40.496103</span><span class="p">,</span>
+        <span class="s2">&quot;NC&quot;</span><span class="p">:</span> <span class="mf">33.842316</span><span class="p">,</span>
+        <span class="s2">&quot;ND&quot;</span><span class="p">:</span> <span class="mf">45.935054</span><span class="p">,</span>
+        <span class="s2">&quot;OH&quot;</span><span class="p">:</span> <span class="mf">38.403202</span><span class="p">,</span>
+        <span class="s2">&quot;OK&quot;</span><span class="p">:</span> <span class="mf">33.615833</span><span class="p">,</span>
+        <span class="s2">&quot;OR&quot;</span><span class="p">:</span> <span class="mf">41.991794</span><span class="p">,</span>
+        <span class="s2">&quot;PA&quot;</span><span class="p">:</span> <span class="mf">39.7198</span><span class="p">,</span>
+        <span class="s2">&quot;PR&quot;</span><span class="p">:</span> <span class="mf">17.88328</span><span class="p">,</span>
+        <span class="s2">&quot;RI&quot;</span><span class="p">:</span> <span class="mf">41.146339</span><span class="p">,</span>
+        <span class="s2">&quot;SC&quot;</span><span class="p">:</span> <span class="mf">32.0346</span><span class="p">,</span>
+        <span class="s2">&quot;SD&quot;</span><span class="p">:</span> <span class="mf">42.479635</span><span class="p">,</span>
+        <span class="s2">&quot;TN&quot;</span><span class="p">:</span> <span class="mf">34.982972</span><span class="p">,</span>
+        <span class="s2">&quot;TX&quot;</span><span class="p">:</span> <span class="mf">25.837377</span><span class="p">,</span>
+        <span class="s2">&quot;VI&quot;</span><span class="p">:</span> <span class="mf">17.673976</span><span class="p">,</span>
+        <span class="s2">&quot;UT&quot;</span><span class="p">:</span> <span class="mf">36.997968</span><span class="p">,</span>
+        <span class="s2">&quot;VT&quot;</span><span class="p">:</span> <span class="mf">42.726853</span><span class="p">,</span>
+        <span class="s2">&quot;VA&quot;</span><span class="p">:</span> <span class="mf">36.540738</span><span class="p">,</span>
+        <span class="s2">&quot;WA&quot;</span><span class="p">:</span> <span class="mf">45.543541</span><span class="p">,</span>
+        <span class="s2">&quot;WV&quot;</span><span class="p">:</span> <span class="mf">37.201483</span><span class="p">,</span>
+        <span class="s2">&quot;WI&quot;</span><span class="p">:</span> <span class="mf">42.491983</span><span class="p">,</span>
+        <span class="s2">&quot;WY&quot;</span><span class="p">:</span> <span class="mf">40.994746</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;ymax&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;AL&quot;</span><span class="p">:</span> <span class="mf">35.008028</span><span class="p">,</span>
+        <span class="s2">&quot;AK&quot;</span><span class="p">:</span> <span class="mf">71.365162</span><span class="p">,</span>
+        <span class="s2">&quot;AS&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">11.046934</span><span class="p">,</span>
+        <span class="s2">&quot;AZ&quot;</span><span class="p">:</span> <span class="mf">37.00426</span><span class="p">,</span>
+        <span class="s2">&quot;AR&quot;</span><span class="p">:</span> <span class="mf">36.4996</span><span class="p">,</span>
+        <span class="s2">&quot;CA&quot;</span><span class="p">:</span> <span class="mf">42.009518</span><span class="p">,</span>
+        <span class="s2">&quot;CO&quot;</span><span class="p">:</span> <span class="mf">41.003444</span><span class="p">,</span>
+        <span class="s2">&quot;MP&quot;</span><span class="p">:</span> <span class="mf">20.553802</span><span class="p">,</span>
+        <span class="s2">&quot;CT&quot;</span><span class="p">:</span> <span class="mf">42.050587</span><span class="p">,</span>
+        <span class="s2">&quot;DE&quot;</span><span class="p">:</span> <span class="mf">39.839007</span><span class="p">,</span>
+        <span class="s2">&quot;DC&quot;</span><span class="p">:</span> <span class="mf">38.99511</span><span class="p">,</span>
+        <span class="s2">&quot;FL&quot;</span><span class="p">:</span> <span class="mf">31.000888</span><span class="p">,</span>
+        <span class="s2">&quot;GA&quot;</span><span class="p">:</span> <span class="mf">35.000659</span><span class="p">,</span>
+        <span class="s2">&quot;GU&quot;</span><span class="p">:</span> <span class="mf">13.654383</span><span class="p">,</span>
+        <span class="s2">&quot;HI&quot;</span><span class="p">:</span> <span class="mf">28.402123</span><span class="p">,</span>
+        <span class="s2">&quot;ID&quot;</span><span class="p">:</span> <span class="mf">49.001146</span><span class="p">,</span>
+        <span class="s2">&quot;IL&quot;</span><span class="p">:</span> <span class="mf">42.508481</span><span class="p">,</span>
+        <span class="s2">&quot;IN&quot;</span><span class="p">:</span> <span class="mf">41.760592</span><span class="p">,</span>
+        <span class="s2">&quot;IA&quot;</span><span class="p">:</span> <span class="mf">43.501196</span><span class="p">,</span>
+        <span class="s2">&quot;KS&quot;</span><span class="p">:</span> <span class="mf">40.003162</span><span class="p">,</span>
+        <span class="s2">&quot;KY&quot;</span><span class="p">:</span> <span class="mf">39.147458</span><span class="p">,</span>
+        <span class="s2">&quot;LA&quot;</span><span class="p">:</span> <span class="mf">33.019457</span><span class="p">,</span>
+        <span class="s2">&quot;ME&quot;</span><span class="p">:</span> <span class="mf">47.459686</span><span class="p">,</span>
+        <span class="s2">&quot;MD&quot;</span><span class="p">:</span> <span class="mf">39.723043</span><span class="p">,</span>
+        <span class="s2">&quot;MA&quot;</span><span class="p">:</span> <span class="mf">42.886589</span><span class="p">,</span>
+        <span class="s2">&quot;MI&quot;</span><span class="p">:</span> <span class="mf">48.2388</span><span class="p">,</span>
+        <span class="s2">&quot;MN&quot;</span><span class="p">:</span> <span class="mf">49.384358</span><span class="p">,</span>
+        <span class="s2">&quot;MS&quot;</span><span class="p">:</span> <span class="mf">34.996052</span><span class="p">,</span>
+        <span class="s2">&quot;MO&quot;</span><span class="p">:</span> <span class="mf">40.61364</span><span class="p">,</span>
+        <span class="s2">&quot;MT&quot;</span><span class="p">:</span> <span class="mf">49.00139</span><span class="p">,</span>
+        <span class="s2">&quot;NE&quot;</span><span class="p">:</span> <span class="mf">43.001708</span><span class="p">,</span>
+        <span class="s2">&quot;NV&quot;</span><span class="p">:</span> <span class="mf">42.002207</span><span class="p">,</span>
+        <span class="s2">&quot;NH&quot;</span><span class="p">:</span> <span class="mf">45.305476</span><span class="p">,</span>
+        <span class="s2">&quot;NJ&quot;</span><span class="p">:</span> <span class="mf">41.357423</span><span class="p">,</span>
+        <span class="s2">&quot;NM&quot;</span><span class="p">:</span> <span class="mf">37.000232</span><span class="p">,</span>
+        <span class="s2">&quot;NY&quot;</span><span class="p">:</span> <span class="mf">45.01585</span><span class="p">,</span>
+        <span class="s2">&quot;NC&quot;</span><span class="p">:</span> <span class="mf">36.588117</span><span class="p">,</span>
+        <span class="s2">&quot;ND&quot;</span><span class="p">:</span> <span class="mf">49.000574</span><span class="p">,</span>
+        <span class="s2">&quot;OH&quot;</span><span class="p">:</span> <span class="mf">41.977523</span><span class="p">,</span>
+        <span class="s2">&quot;OK&quot;</span><span class="p">:</span> <span class="mf">37.002206</span><span class="p">,</span>
+        <span class="s2">&quot;OR&quot;</span><span class="p">:</span> <span class="mf">46.292035</span><span class="p">,</span>
+        <span class="s2">&quot;PA&quot;</span><span class="p">:</span> <span class="mf">42.26986</span><span class="p">,</span>
+        <span class="s2">&quot;PR&quot;</span><span class="p">:</span> <span class="mf">18.515683</span><span class="p">,</span>
+        <span class="s2">&quot;RI&quot;</span><span class="p">:</span> <span class="mf">42.018798</span><span class="p">,</span>
+        <span class="s2">&quot;SC&quot;</span><span class="p">:</span> <span class="mf">35.215402</span><span class="p">,</span>
+        <span class="s2">&quot;SD&quot;</span><span class="p">:</span> <span class="mf">45.94545</span><span class="p">,</span>
+        <span class="s2">&quot;TN&quot;</span><span class="p">:</span> <span class="mf">36.678118</span><span class="p">,</span>
+        <span class="s2">&quot;TX&quot;</span><span class="p">:</span> <span class="mf">36.500704</span><span class="p">,</span>
+        <span class="s2">&quot;VI&quot;</span><span class="p">:</span> <span class="mf">18.412655</span><span class="p">,</span>
+        <span class="s2">&quot;UT&quot;</span><span class="p">:</span> <span class="mf">42.001567</span><span class="p">,</span>
+        <span class="s2">&quot;VT&quot;</span><span class="p">:</span> <span class="mf">45.016659</span><span class="p">,</span>
+        <span class="s2">&quot;VA&quot;</span><span class="p">:</span> <span class="mf">39.466012</span><span class="p">,</span>
+        <span class="s2">&quot;WA&quot;</span><span class="p">:</span> <span class="mf">49.002494</span><span class="p">,</span>
+        <span class="s2">&quot;WV&quot;</span><span class="p">:</span> <span class="mf">40.638801</span><span class="p">,</span>
+        <span class="s2">&quot;WI&quot;</span><span class="p">:</span> <span class="mf">47.080621</span><span class="p">,</span>
+        <span class="s2">&quot;WY&quot;</span><span class="p">:</span> <span class="mf">45.005904</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">}</span></div>
+
+<div class="viewcode-block" id="FOSSIL_TECH">
+<a class="viewcode-back" href="../../autoapi/patio/constants/index.html#patio.constants.FOSSIL_TECH">[docs]</a>
+<span class="n">FOSSIL_TECH</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;Petroleum Liquids&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Natural Gas Steam Turbine&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Conventional Steam Coal&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Natural Gas Fired Combined Cycle&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Natural Gas Fired Combustion Turbine&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Natural Gas Internal Combustion Engine&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Coal Integrated Gasification Combined Cycle&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Other Natural Gas&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Petroleum Coke&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Natural Gas with Compressed Air Storage&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Other Gases&quot;</span><span class="p">,</span>
+<span class="p">]</span></div>
+
+<div class="viewcode-block" id="RE_TECH">
+<a class="viewcode-back" href="../../autoapi/patio/constants/index.html#patio.constants.RE_TECH">[docs]</a>
+<span class="n">RE_TECH</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;Solar Photovoltaic&quot;</span><span class="p">:</span> <span class="s2">&quot;solar&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Onshore Wind Turbine&quot;</span><span class="p">:</span> <span class="s2">&quot;onshore_wind&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Offshore Wind Turbine&quot;</span><span class="p">:</span> <span class="s2">&quot;offshore_wind&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Solar&quot;</span><span class="p">:</span> <span class="s2">&quot;solar&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Wind&quot;</span><span class="p">:</span> <span class="s2">&quot;onshore_wind&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Offshore_Wind&quot;</span><span class="p">:</span> <span class="s2">&quot;offshore_wind&quot;</span><span class="p">,</span>
+<span class="p">}</span></div>
+
+<span class="n">RE_TECH_R</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;solar&quot;</span><span class="p">:</span> <span class="s2">&quot;Solar Photovoltaic&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;onshore_wind&quot;</span><span class="p">:</span> <span class="s2">&quot;Onshore Wind Turbine&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;offshore_wind&quot;</span><span class="p">:</span> <span class="s2">&quot;Offshore Wind Turbine&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+<div class="viewcode-block" id="GEN_COLS">
+<a class="viewcode-back" href="../../autoapi/patio/constants/index.html#patio.constants.GEN_COLS">[docs]</a>
+<span class="n">GEN_COLS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;plant_id_eia&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;plant_name_eia&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;utility_id_eia&quot;</span><span class="p">,</span>
+    <span class="c1"># &quot;utility_name_eia&quot;,</span>
+    <span class="s2">&quot;generator_id&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;state&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;final_ba_code&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;final_respondent_id&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;respondent_name&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;balancing_authority_code_eia&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;capacity_mw&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;prime_mover_code&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;prime_mover&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;technology_description&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;energy_source_code_860m&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fuel_group_energy_source_code_860m&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;rmi_energy_source_code_1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;rmi_energy_source_code_2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;rmi_energy_source_code_3&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fuel_group_rmi_energy_source_code_1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fuel_group_rmi_energy_source_code_2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fuel_group_rmi_energy_source_code_3&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cofire_fuels&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;multiple_fuels&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;status_860m&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;operational_status&quot;</span><span class="p">,</span>
+    <span class="c1"># &quot;original_planned_operating_date&quot;,</span>
+    <span class="c1"># &quot;timezone&quot;,</span>
+    <span class="c1"># &quot;ramp_up_rate&quot;,</span>
+    <span class="s2">&quot;ramp_hrs&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;latitude&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;longitude&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;operating_date&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;retirement_date&quot;</span><span class="p">,</span>
+    <span class="c1"># &quot;operating_month&quot;,</span>
+    <span class="c1"># &quot;operating_year&quot;,</span>
+    <span class="c1"># &quot;retirement_month&quot;,</span>
+    <span class="c1"># &quot;retirement_year&quot;,</span>
+    <span class="c1"># &quot;co2_factor&quot;,</span>
+<span class="p">]</span></div>
+
+<div class="viewcode-block" id="GEN_COLS_OLD">
+<a class="viewcode-back" href="../../autoapi/patio/constants/index.html#patio.constants.GEN_COLS_OLD">[docs]</a>
+<span class="n">GEN_COLS_OLD</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;report_date&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;plant_id_eia&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;plant_name_eia&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;utility_id_eia&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;utility_name_eia&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;generator_id&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;technology_description&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;capacity_mw&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;latitude&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;longitude&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;operating_date&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;operational_status&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;original_planned_operating_date&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;prime_mover_code&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;timezone&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;balancing_authority_code_eia&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;balancing_authority_name_eia&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cofire_fuels&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fuel_type_code_pudl&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;energy_source_code_1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;energy_source_code_2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;energy_source_code_3&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;plant_id_pudl&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;utility_id_pudl&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;state&quot;</span><span class="p">,</span>
+<span class="p">]</span></div>
+
+<div class="viewcode-block" id="COLORS">
+<a class="viewcode-back" href="../../autoapi/patio/constants/index.html#patio.constants.COLORS">[docs]</a>
+<span class="n">COLORS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;solar&quot;</span><span class="p">:</span> <span class="s2">&quot;#FFCB00&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;onshore_wind&quot;</span><span class="p">:</span> <span class="s2">&quot;#3DADF2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;offshore_wind&quot;</span><span class="p">:</span> <span class="s2">&quot;#0066B3&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fossil&quot;</span><span class="p">:</span> <span class="s2">&quot;#E04D39&quot;</span><span class="p">,</span>
+<span class="p">}</span></div>
+
+<div class="viewcode-block" id="SCALE_FACTOR_OVERRIDES">
+<a class="viewcode-back" href="../../autoapi/patio/constants/index.html#patio.constants.SCALE_FACTOR_OVERRIDES">[docs]</a>
+<span class="n">SCALE_FACTOR_OVERRIDES</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="n">columns</span><span class="o">=</span><span class="p">[</span>
+        <span class="s2">&quot;plant_id_eia&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;prime_mover_code&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;fuel_code&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;report_date&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;capacity&quot;</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="n">data</span><span class="o">=</span><span class="p">[</span>
+        <span class="c1"># these started producing energy before 860 online date</span>
+        <span class="p">(</span><span class="mi">1378</span><span class="p">,</span> <span class="s2">&quot;CC&quot;</span><span class="p">,</span> <span class="s2">&quot;natural_gas&quot;</span><span class="p">,</span> <span class="mi">2016</span><span class="p">,</span> <span class="mf">1160.0</span><span class="p">),</span>  <span class="c1"># Paradise</span>
+        <span class="p">(</span><span class="mi">6190</span><span class="p">,</span> <span class="s2">&quot;ST&quot;</span><span class="p">,</span> <span class="s2">&quot;petroleum_coke&quot;</span><span class="p">,</span> <span class="mi">2009</span><span class="p">,</span> <span class="mf">703.8</span><span class="p">),</span>  <span class="c1"># Brame Energy Center</span>
+        <span class="p">(</span><span class="mi">56846</span><span class="p">,</span> <span class="s2">&quot;CC&quot;</span><span class="p">,</span> <span class="s2">&quot;natural_gas&quot;</span><span class="p">,</span> <span class="mi">2016</span><span class="p">,</span> <span class="mf">775.3</span><span class="p">),</span>  <span class="c1"># CPV St Charles Energy Center</span>
+        <span class="p">(</span><span class="mi">57794</span><span class="p">,</span> <span class="s2">&quot;CC&quot;</span><span class="p">,</span> <span class="s2">&quot;natural_gas&quot;</span><span class="p">,</span> <span class="mi">2017</span><span class="p">,</span> <span class="mf">780.0</span><span class="p">),</span>  <span class="c1"># St Joseph Energy Center</span>
+        <span class="p">(</span><span class="mi">59220</span><span class="p">,</span> <span class="s2">&quot;CC&quot;</span><span class="p">,</span> <span class="s2">&quot;natural_gas&quot;</span><span class="p">,</span> <span class="mi">2017</span><span class="p">,</span> <span class="mf">1113.6</span><span class="p">),</span>  <span class="c1"># Wildcat Point Generation Facility</span>
+        <span class="p">(</span><span class="mi">60264</span><span class="p">,</span> <span class="s2">&quot;GT&quot;</span><span class="p">,</span> <span class="s2">&quot;natural_gas&quot;</span><span class="p">,</span> <span class="mi">2017</span><span class="p">,</span> <span class="mf">427.2</span><span class="p">),</span>  <span class="c1"># Bacliff</span>
+        <span class="p">(</span><span class="mi">61241</span><span class="p">,</span> <span class="s2">&quot;GT&quot;</span><span class="p">,</span> <span class="s2">&quot;natural_gas&quot;</span><span class="p">,</span> <span class="mi">2019</span><span class="p">,</span> <span class="mf">100.0</span><span class="p">),</span>  <span class="c1"># Victoria City Power LLC</span>
+        <span class="c1"># Deerhaven</span>
+        <span class="p">(</span><span class="mi">663</span><span class="p">,</span> <span class="s2">&quot;ST&quot;</span><span class="p">,</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span> <span class="mi">2008</span><span class="p">,</span> <span class="mf">250.7</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">663</span><span class="p">,</span> <span class="s2">&quot;ST&quot;</span><span class="p">,</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span> <span class="mi">2009</span><span class="p">,</span> <span class="mf">250.7</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">663</span><span class="p">,</span> <span class="s2">&quot;ST&quot;</span><span class="p">,</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span> <span class="mi">2010</span><span class="p">,</span> <span class="mf">250.7</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">663</span><span class="p">,</span> <span class="s2">&quot;ST&quot;</span><span class="p">,</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span> <span class="mi">2011</span><span class="p">,</span> <span class="mf">250.7</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">663</span><span class="p">,</span> <span class="s2">&quot;ST&quot;</span><span class="p">,</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span> <span class="mi">2012</span><span class="p">,</span> <span class="mf">250.7</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">663</span><span class="p">,</span> <span class="s2">&quot;ST&quot;</span><span class="p">,</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span> <span class="mi">2013</span><span class="p">,</span> <span class="mf">250.7</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">663</span><span class="p">,</span> <span class="s2">&quot;ST&quot;</span><span class="p">,</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span> <span class="mi">2014</span><span class="p">,</span> <span class="mf">250.7</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">663</span><span class="p">,</span> <span class="s2">&quot;ST&quot;</span><span class="p">,</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span> <span class="mi">2015</span><span class="p">,</span> <span class="mf">250.7</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">663</span><span class="p">,</span> <span class="s2">&quot;ST&quot;</span><span class="p">,</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span> <span class="mi">2016</span><span class="p">,</span> <span class="mf">250.7</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">663</span><span class="p">,</span> <span class="s2">&quot;ST&quot;</span><span class="p">,</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span> <span class="mi">2017</span><span class="p">,</span> <span class="mf">250.7</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">663</span><span class="p">,</span> <span class="s2">&quot;ST&quot;</span><span class="p">,</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span> <span class="mi">2018</span><span class="p">,</span> <span class="mf">250.7</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">663</span><span class="p">,</span> <span class="s2">&quot;ST&quot;</span><span class="p">,</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span> <span class="mi">2019</span><span class="p">,</span> <span class="mf">250.7</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">663</span><span class="p">,</span> <span class="s2">&quot;ST&quot;</span><span class="p">,</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span> <span class="mi">2020</span><span class="p">,</span> <span class="mf">250.7</span><span class="p">),</span>
+        <span class="c1"># (663, &#39;ST&#39;, &#39;coal&#39;, 2021, 250.7),</span>
+        <span class="c1"># Chalk Point (retired 2021)</span>
+        <span class="p">(</span><span class="mi">1571</span><span class="p">,</span> <span class="s2">&quot;ST&quot;</span><span class="p">,</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span> <span class="mi">2008</span><span class="p">,</span> <span class="mf">728.0</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">1571</span><span class="p">,</span> <span class="s2">&quot;ST&quot;</span><span class="p">,</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span> <span class="mi">2009</span><span class="p">,</span> <span class="mf">728.0</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">1571</span><span class="p">,</span> <span class="s2">&quot;ST&quot;</span><span class="p">,</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span> <span class="mi">2010</span><span class="p">,</span> <span class="mf">728.0</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">1571</span><span class="p">,</span> <span class="s2">&quot;ST&quot;</span><span class="p">,</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span> <span class="mi">2011</span><span class="p">,</span> <span class="mf">728.0</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">1571</span><span class="p">,</span> <span class="s2">&quot;ST&quot;</span><span class="p">,</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span> <span class="mi">2012</span><span class="p">,</span> <span class="mf">728.0</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">1571</span><span class="p">,</span> <span class="s2">&quot;ST&quot;</span><span class="p">,</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span> <span class="mi">2013</span><span class="p">,</span> <span class="mf">728.0</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">1571</span><span class="p">,</span> <span class="s2">&quot;ST&quot;</span><span class="p">,</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span> <span class="mi">2014</span><span class="p">,</span> <span class="mf">728.0</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">1571</span><span class="p">,</span> <span class="s2">&quot;ST&quot;</span><span class="p">,</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span> <span class="mi">2015</span><span class="p">,</span> <span class="mf">728.0</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">1571</span><span class="p">,</span> <span class="s2">&quot;ST&quot;</span><span class="p">,</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span> <span class="mi">2016</span><span class="p">,</span> <span class="mf">728.0</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">1571</span><span class="p">,</span> <span class="s2">&quot;ST&quot;</span><span class="p">,</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span> <span class="mi">2017</span><span class="p">,</span> <span class="mf">728.0</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">1571</span><span class="p">,</span> <span class="s2">&quot;ST&quot;</span><span class="p">,</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span> <span class="mi">2018</span><span class="p">,</span> <span class="mf">728.0</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">1571</span><span class="p">,</span> <span class="s2">&quot;ST&quot;</span><span class="p">,</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span> <span class="mi">2019</span><span class="p">,</span> <span class="mf">728.0</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">1571</span><span class="p">,</span> <span class="s2">&quot;ST&quot;</span><span class="p">,</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span> <span class="mi">2020</span><span class="p">,</span> <span class="mf">728.0</span><span class="p">),</span>
+        <span class="c1"># (1571, &#39;ST&#39;, &#39;coal&#39;, 2021, 0),</span>
+    <span class="p">],</span>
+    <span class="n">index</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">33</span><span class="p">),</span>
+<span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;plant_id_eia&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="s2">&quot;prime_mover_code&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="s2">&quot;fuel_code&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="s2">&quot;report_date&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="s2">&quot;capacity&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">)</span></div>
+
+
+<span class="n">BAD_RE</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="c1">#     &quot;56540_solar&quot;,</span>
+    <span class="c1">#     &quot;62071_solar&quot;,</span>
+    <span class="c1">#     &quot;6304_solar&quot;,</span>
+    <span class="c1">#     &quot;63169_solar&quot;,</span>
+    <span class="c1">#     &quot;63951_solar&quot;,</span>
+    <span class="c1">#     &quot;64122_solar&quot;,</span>
+    <span class="c1">#     &quot;64159_solar&quot;,</span>
+    <span class="c1">#     &quot;64462_solar&quot;,</span>
+    <span class="c1">#     &quot;64827_solar&quot;,</span>
+    <span class="c1">#     &quot;64905_solar&quot;,</span>
+    <span class="c1">#     &quot;64971_solar&quot;,</span>
+    <span class="c1">#     &quot;65013_solar&quot;,</span>
+    <span class="c1">#     &quot;65349_solar&quot;,</span>
+    <span class="c1">#     &quot;65417_solar&quot;,</span>
+    <span class="c1">#     &quot;65508_solar&quot;,</span>
+    <span class="c1">#     &quot;65726_solar&quot;,</span>
+    <span class="c1">#     &quot;65770_solar&quot;,</span>
+    <span class="c1">#     &quot;65777_solar&quot;,</span>
+    <span class="c1">#     &quot;9990400_onshore_wind&quot;,</span>
+    <span class="c1">#     &quot;9990402_onshore_wind&quot;,</span>
+    <span class="c1">#     &quot;9990448_onshore_wind&quot;,</span>
+    <span class="c1">#     &quot;9990482_onshore_wind&quot;,</span>
+    <span class="c1">#     &quot;9990493_onshore_wind&quot;,</span>
+    <span class="c1">#     &quot;9990585_onshore_wind&quot;,</span>
+    <span class="c1">#     &quot;9990972_onshore_wind&quot;,</span>
+<span class="p">)</span>
+<span class="n">PATIO_DOC_PATH</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;patio_data&quot;</span>
+<span class="n">ES_TECHS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Batteries&quot;</span><span class="p">,</span> <span class="s2">&quot;Hydroelectric Pumped Storage&quot;</span><span class="p">,</span> <span class="s2">&quot;H2 Storage&quot;</span><span class="p">)</span>
+<span class="n">REGION_MAP</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;WALC&quot;</span><span class="p">:</span> <span class="s2">&quot;West&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;AECI&quot;</span><span class="p">:</span> <span class="s2">&quot;Southeast&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;EPE&quot;</span><span class="p">:</span> <span class="s2">&quot;West&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;LDWP&quot;</span><span class="p">:</span> <span class="s2">&quot;West&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PJM&quot;</span><span class="p">:</span> <span class="s2">&quot;PJM&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;LGEE&quot;</span><span class="p">:</span> <span class="s2">&quot;Southeast&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;22&quot;</span><span class="p">:</span> <span class="s2">&quot;MISO&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PAC&quot;</span><span class="p">:</span> <span class="s2">&quot;West&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PNM&quot;</span><span class="p">:</span> <span class="s2">&quot;West&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SWPP&quot;</span><span class="p">:</span> <span class="s2">&quot;SPP&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CAISO&quot;</span><span class="p">:</span> <span class="s2">&quot;CAISO&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;195&quot;</span><span class="p">:</span> <span class="s2">&quot;MISO&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;EVRG&quot;</span><span class="p">:</span> <span class="s2">&quot;SPP&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;658&quot;</span><span class="p">:</span> <span class="s2">&quot;SPP&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;AEC&quot;</span><span class="p">:</span> <span class="s2">&quot;Southeast&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;569&quot;</span><span class="p">:</span> <span class="s2">&quot;Southeast&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SCEG&quot;</span><span class="p">:</span> <span class="s2">&quot;Southeast&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;TEC&quot;</span><span class="p">:</span> <span class="s2">&quot;Southeast&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;58&quot;</span><span class="p">:</span> <span class="s2">&quot;SPP&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;FPC&quot;</span><span class="p">:</span> <span class="s2">&quot;Southeast&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;NYIS&quot;</span><span class="p">:</span> <span class="s2">&quot;NYISO&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;NEVP&quot;</span><span class="p">:</span> <span class="s2">&quot;West&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;WACM&quot;</span><span class="p">:</span> <span class="s2">&quot;West&quot;</span><span class="p">,</span>
+    <span class="c1">#  &#39;NBSO&#39;: &#39;NBSO&#39;,</span>
+    <span class="c1">#  &#39;HECO&#39;: &#39;HECO&#39;,</span>
+    <span class="s2">&quot;SC&quot;</span><span class="p">:</span> <span class="s2">&quot;Southeast&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;552&quot;</span><span class="p">:</span> <span class="s2">&quot;MISO&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PSCO&quot;</span><span class="p">:</span> <span class="s2">&quot;West&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;TEPC&quot;</span><span class="p">:</span> <span class="s2">&quot;West&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;TVA&quot;</span><span class="p">:</span> <span class="s2">&quot;Southeast&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Alaska&quot;</span><span class="p">:</span> <span class="s2">&quot;West&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;DUKE&quot;</span><span class="p">:</span> <span class="s2">&quot;Southeast&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MISO&quot;</span><span class="p">:</span> <span class="s2">&quot;MISO&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ETR&quot;</span><span class="p">:</span> <span class="s2">&quot;MISO&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;210&quot;</span><span class="p">:</span> <span class="s2">&quot;MISO&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SOCO&quot;</span><span class="p">:</span> <span class="s2">&quot;Southeast&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;JEA&quot;</span><span class="p">:</span> <span class="s2">&quot;Southeast&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SRP&quot;</span><span class="p">:</span> <span class="s2">&quot;West&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ISNE&quot;</span><span class="p">:</span> <span class="s2">&quot;ISONE&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;WAUW&quot;</span><span class="p">:</span> <span class="s2">&quot;West&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;177&quot;</span><span class="p">:</span> <span class="s2">&quot;MISO&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;556&quot;</span><span class="p">:</span> <span class="s2">&quot;PJM&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;656&quot;</span><span class="p">:</span> <span class="s2">&quot;SPP&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;2&quot;</span><span class="p">:</span> <span class="s2">&quot;Southeast&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;FPL&quot;</span><span class="p">:</span> <span class="s2">&quot;Southeast&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;FMPP&quot;</span><span class="p">:</span> <span class="s2">&quot;Southeast&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;531&quot;</span><span class="p">:</span> <span class="s2">&quot;SPP&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;186&quot;</span><span class="p">:</span> <span class="s2">&quot;PJM&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;130&quot;</span><span class="p">:</span> <span class="s2">&quot;SPP&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;APS&quot;</span><span class="p">:</span> <span class="s2">&quot;West&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SEC&quot;</span><span class="p">:</span> <span class="s2">&quot;Southeast&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;57&quot;</span><span class="p">:</span> <span class="s2">&quot;Southeast&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ERCO&quot;</span><span class="p">:</span> <span class="s2">&quot;ERCOT&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PNW&quot;</span><span class="p">:</span> <span class="s2">&quot;West&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">CCS_FACTORS</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;vom_per_mwh&quot;</span><span class="p">:</span> <span class="mf">14.75</span><span class="p">,</span>  <span class="c1"># CCS VOM</span>
+        <span class="s2">&quot;fom_per_kw&quot;</span><span class="p">:</span> <span class="mf">130.0</span><span class="p">,</span>  <span class="c1"># CC FOM</span>
+        <span class="c1"># heat rate factor but named this way so pandas does the multiplication right</span>
+        <span class="s2">&quot;fuel_per_mwh&quot;</span><span class="p">:</span> <span class="mf">1.27</span><span class="p">,</span>  <span class="c1"># Heat Rate Penalty (Δ% from pre-retrofit)</span>
+        <span class="s2">&quot;heat_rate&quot;</span><span class="p">:</span> <span class="mf">1.27</span><span class="p">,</span>  <span class="c1"># Heat Rate Penalty (Δ% from pre-retrofit)</span>
+        <span class="s2">&quot;co2_factor&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>  <span class="c1"># 90% capture</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;CCS adders/factors.</span>
+<span class="sd">NREL ATB 2023, Coal-new vs Coal integrated retrofit 90%-CCS, 2035 moderate case.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">CARB_INTENSITY</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;Petroleum Liquids&quot;</span><span class="p">:</span> <span class="mf">0.07509</span><span class="p">,</span>
+    <span class="s2">&quot;Natural Gas Steam Turbine&quot;</span><span class="p">:</span> <span class="mf">0.05291</span><span class="p">,</span>
+    <span class="s2">&quot;Conventional Steam Coal&quot;</span><span class="p">:</span> <span class="mf">0.09610</span><span class="p">,</span>
+    <span class="s2">&quot;Natural Gas Fired Combined Cycle&quot;</span><span class="p">:</span> <span class="mf">0.05291</span><span class="p">,</span>
+    <span class="s2">&quot;Natural Gas Fired Combustion Turbine&quot;</span><span class="p">:</span> <span class="mf">0.05291</span><span class="p">,</span>
+    <span class="s2">&quot;Natural Gas Internal Combustion Engine&quot;</span><span class="p">:</span> <span class="mf">0.05291</span><span class="p">,</span>
+    <span class="s2">&quot;Coal Integrated Gasification Combined Cycle&quot;</span><span class="p">:</span> <span class="mf">0.09610</span><span class="p">,</span>
+    <span class="s2">&quot;Other Natural Gas&quot;</span><span class="p">:</span> <span class="mf">0.05291</span><span class="p">,</span>
+    <span class="s2">&quot;Petroleum Coke&quot;</span><span class="p">:</span> <span class="mf">0.10212</span><span class="p">,</span>
+    <span class="s2">&quot;Natural Gas with Compressed Air Storage&quot;</span><span class="p">:</span> <span class="mf">0.05291</span><span class="p">,</span>
+    <span class="s2">&quot;Other Gases&quot;</span><span class="p">:</span> <span class="mf">0.06288</span><span class="p">,</span>
+    <span class="s2">&quot;Solar Photovoltaic&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="s2">&quot;Onshore Wind Turbine&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="s2">&quot;Offshore Wind Turbine&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="s2">&quot;Solar&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="s2">&quot;Wind&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="s2">&quot;Offshore_Wind&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="s2">&quot;Wood/Wood Waste Biomass&quot;</span><span class="p">:</span> <span class="mf">0.04989</span><span class="p">,</span>  <span class="c1"># same as MSW</span>
+    <span class="s2">&quot;Municipal Solid Waste&quot;</span><span class="p">:</span> <span class="mf">0.04989</span><span class="p">,</span>  <span class="c1"># same as MSW</span>
+    <span class="s2">&quot;Landfill Gas&quot;</span><span class="p">:</span> <span class="mf">0.04989</span><span class="p">,</span>  <span class="c1"># same as MSW</span>
+    <span class="s2">&quot;All Other&quot;</span><span class="p">:</span> <span class="mf">0.06288</span><span class="p">,</span>  <span class="c1"># same as propane / other gases</span>
+    <span class="s2">&quot;Other Waste Biomass&quot;</span><span class="p">:</span> <span class="mf">0.04989</span><span class="p">,</span>  <span class="c1"># same as MSW</span>
+    <span class="s2">&quot;Nuclear&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="s2">&quot;Geothermal&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">COST_FLOOR</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="p">(</span><span class="s2">&quot;Coal Integrated Gasification Combined Cycle&quot;</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">35.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;Conventional Steam Coal&quot;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">25.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;Landfill Gas&quot;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">15.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;Municipal Solid Waste&quot;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">15.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;Natural Gas Fired Combined Cycle&quot;</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">20.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">15.0</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;Natural Gas Fired Combustion Turbine&quot;</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">15.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">20.0</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;Natural Gas Internal Combustion Engine&quot;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">15.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">15.0</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;Natural Gas Steam Turbine&quot;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">20.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">20.0</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;Other Gases&quot;</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">15.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;Other Waste Biomass&quot;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">15.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;Petroleum Coke&quot;</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">15.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">30.0</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;Petroleum Liquids&quot;</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">15.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">40.0</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;Wood/Wood Waste Biomass&quot;</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">15.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">),</span>
+        <span class="c1"># actual floor not needed because these costs come from ATB</span>
+        <span class="p">(</span><span class="s2">&quot;Solar Photovoltaic&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;Onshore Wind Turbine&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;Offshore Wind Turbine&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;Geothermal&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;Nuclear&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+    <span class="p">],</span>
+    <span class="n">columns</span><span class="o">=</span><span class="p">[</span>
+        <span class="s2">&quot;technology_description&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;vom_floor&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;fom_floor&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;som_floor&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;fuel_floor&quot;</span><span class="p">,</span>
+    <span class="p">],</span>
+<span class="p">)</span>
+<span class="n">UDAY_FOSSIL_FUEL_MAP</span> <span class="o">=</span> <span class="p">{</span>  <span class="c1"># the better map from Uday</span>
+    <span class="s2">&quot;ANT&quot;</span><span class="p">:</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;BIT&quot;</span><span class="p">:</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;LIG&quot;</span><span class="p">:</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SGC&quot;</span><span class="p">:</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SUB&quot;</span><span class="p">:</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;WC&quot;</span><span class="p">:</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;RC&quot;</span><span class="p">:</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;DFO&quot;</span><span class="p">:</span> <span class="s2">&quot;petroleum&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;JF&quot;</span><span class="p">:</span> <span class="s2">&quot;petroleum&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;KER&quot;</span><span class="p">:</span> <span class="s2">&quot;petroleum&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PC&quot;</span><span class="p">:</span> <span class="s2">&quot;petroleum_coke&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PG&quot;</span><span class="p">:</span> <span class="s2">&quot;petroleum&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;RFO&quot;</span><span class="p">:</span> <span class="s2">&quot;petroleum&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SGP&quot;</span><span class="p">:</span> <span class="s2">&quot;other_gas&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;WO&quot;</span><span class="p">:</span> <span class="s2">&quot;petroleum&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;BFG&quot;</span><span class="p">:</span> <span class="s2">&quot;other_gas&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;NG&quot;</span><span class="p">:</span> <span class="s2">&quot;natural_gas&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;OG&quot;</span><span class="p">:</span> <span class="s2">&quot;other_gas&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SC&quot;</span><span class="p">:</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;TDF&quot;</span><span class="p">:</span> <span class="s2">&quot;petroleum&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">FUEL_GROUP_MAP</span> <span class="o">=</span> <span class="n">UDAY_FOSSIL_FUEL_MAP</span> <span class="o">|</span> <span class="p">{</span>
+    <span class="s2">&quot;AB&quot;</span><span class="p">:</span> <span class="s2">&quot;biofuel&quot;</span><span class="p">,</span>  <span class="c1"># other in fuel_group_emissions_map</span>
+    <span class="s2">&quot;MSW&quot;</span><span class="p">:</span> <span class="s2">&quot;other&quot;</span><span class="p">,</span>  <span class="c1"># other in fuel_group_emissions_map</span>
+    <span class="s2">&quot;OBS&quot;</span><span class="p">:</span> <span class="s2">&quot;biofuel&quot;</span><span class="p">,</span>  <span class="c1"># other in fuel_group_emissions_map</span>
+    <span class="s2">&quot;WDS&quot;</span><span class="p">:</span> <span class="s2">&quot;biofuel&quot;</span><span class="p">,</span>  <span class="c1"># other in fuel_group_emissions_map</span>
+    <span class="s2">&quot;OBL&quot;</span><span class="p">:</span> <span class="s2">&quot;biofuel&quot;</span><span class="p">,</span>  <span class="c1"># other in fuel_group_emissions_map</span>
+    <span class="s2">&quot;SLW&quot;</span><span class="p">:</span> <span class="s2">&quot;other&quot;</span><span class="p">,</span>  <span class="c1"># other in fuel_group_emissions_map</span>
+    <span class="s2">&quot;BLQ&quot;</span><span class="p">:</span> <span class="s2">&quot;biofuel&quot;</span><span class="p">,</span>  <span class="c1"># other in fuel_group_emissions_map</span>
+    <span class="s2">&quot;WDL&quot;</span><span class="p">:</span> <span class="s2">&quot;biofuel&quot;</span><span class="p">,</span>  <span class="c1"># other in fuel_group_emissions_map</span>
+    <span class="s2">&quot;LFG&quot;</span><span class="p">:</span> <span class="s2">&quot;biofuel&quot;</span><span class="p">,</span>  <span class="c1"># other in fuel_group_emissions_map</span>
+    <span class="s2">&quot;OBG&quot;</span><span class="p">:</span> <span class="s2">&quot;biofuel&quot;</span><span class="p">,</span>  <span class="c1"># other in fuel_group_emissions_map</span>
+    <span class="s2">&quot;MSB&quot;</span><span class="p">:</span> <span class="s2">&quot;biofuel&quot;</span><span class="p">,</span>  <span class="c1"># other in fuel_group_emissions_map</span>
+    <span class="s2">&quot;SUN&quot;</span><span class="p">:</span> <span class="s2">&quot;renew&quot;</span><span class="p">,</span>  <span class="c1"># other in fuel_group_emissions_map</span>
+    <span class="s2">&quot;WND&quot;</span><span class="p">:</span> <span class="s2">&quot;renew&quot;</span><span class="p">,</span>  <span class="c1"># other in fuel_group_emissions_map</span>
+    <span class="s2">&quot;GEO&quot;</span><span class="p">:</span> <span class="s2">&quot;renew&quot;</span><span class="p">,</span>  <span class="c1"># other in fuel_group_emissions_map</span>
+    <span class="s2">&quot;WAT&quot;</span><span class="p">:</span> <span class="s2">&quot;renew&quot;</span><span class="p">,</span>  <span class="c1"># other in fuel_group_emissions_map</span>
+    <span class="s2">&quot;NUC&quot;</span><span class="p">:</span> <span class="s2">&quot;nuclear&quot;</span><span class="p">,</span>  <span class="c1"># other in fuel_group_emissions_map</span>
+    <span class="s2">&quot;WH&quot;</span><span class="p">:</span> <span class="s2">&quot;other&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MWH&quot;</span><span class="p">:</span> <span class="s2">&quot;other&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;OTH&quot;</span><span class="p">:</span> <span class="s2">&quot;other&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MSN&quot;</span><span class="p">:</span> <span class="s2">&quot;other&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PUR&quot;</span><span class="p">:</span> <span class="s2">&quot;other&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">CLEAN_TD_MAP</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;Solar Photovoltaic&quot;</span><span class="p">:</span> <span class="s2">&quot;solar&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Onshore Wind Turbine&quot;</span><span class="p">:</span> <span class="s2">&quot;onshore_wind&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Offshore Wind Turbine&quot;</span><span class="p">:</span> <span class="s2">&quot;offshore_wind&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Nuclear&quot;</span><span class="p">:</span> <span class="s2">&quot;nuclear&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">OTHER_TD_MAP</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;Conventional Steam Coal&quot;</span><span class="p">:</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Coal Integrated Gasification Combined Cycle&quot;</span><span class="p">:</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Natural Gas Fired Combined Cycle&quot;</span><span class="p">:</span> <span class="s2">&quot;natural_gas_cc&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Natural Gas Fired Combustion Turbine&quot;</span><span class="p">:</span> <span class="s2">&quot;natural_gas_gt&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Natural Gas Internal Combustion Engine&quot;</span><span class="p">:</span> <span class="s2">&quot;natural_gas_ic&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Natural Gas Steam Turbine&quot;</span><span class="p">:</span> <span class="s2">&quot;natural_gas_st&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Other Natural Gas&quot;</span><span class="p">:</span> <span class="s2">&quot;natural_gas_ot&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Petroleum Liquids&quot;</span><span class="p">:</span> <span class="s2">&quot;petroleum&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Other Gases&quot;</span><span class="p">:</span> <span class="s2">&quot;other&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Petroleum Coke&quot;</span><span class="p">:</span> <span class="s2">&quot;petroleum&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Wood/Wood Waste Biomass&quot;</span><span class="p">:</span> <span class="s2">&quot;biomass&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Municipal Solid Waste&quot;</span><span class="p">:</span> <span class="s2">&quot;biomass&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Landfill Gas&quot;</span><span class="p">:</span> <span class="s2">&quot;biomass&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Other Waste Biomass&quot;</span><span class="p">:</span> <span class="s2">&quot;biomass&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;All Other&quot;</span><span class="p">:</span> <span class="s2">&quot;other&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">TD_MAP</span> <span class="o">=</span> <span class="n">CLEAN_TD_MAP</span> <span class="o">|</span> <span class="n">OTHER_TD_MAP</span>
+<span class="n">SIMPLE_TD_MAP</span> <span class="o">=</span> <span class="n">CLEAN_TD_MAP</span> <span class="o">|</span> <span class="p">{</span>
+    <span class="s2">&quot;Conventional Steam Coal&quot;</span><span class="p">:</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Coal Integrated Gasification Combined Cycle&quot;</span><span class="p">:</span> <span class="s2">&quot;coal&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Natural Gas Fired Combined Cycle&quot;</span><span class="p">:</span> <span class="s2">&quot;natural_gas_cc&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Natural Gas Fired Combustion Turbine&quot;</span><span class="p">:</span> <span class="s2">&quot;natural_gas_gt&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Natural Gas Internal Combustion Engine&quot;</span><span class="p">:</span> <span class="s2">&quot;natural_gas_ot&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Natural Gas Steam Turbine&quot;</span><span class="p">:</span> <span class="s2">&quot;natural_gas_ot&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Other Natural Gas&quot;</span><span class="p">:</span> <span class="s2">&quot;natural_gas_ot&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Petroleum Liquids&quot;</span><span class="p">:</span> <span class="s2">&quot;other&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Other Gases&quot;</span><span class="p">:</span> <span class="s2">&quot;other&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Petroleum Coke&quot;</span><span class="p">:</span> <span class="s2">&quot;other&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Wood/Wood Waste Biomass&quot;</span><span class="p">:</span> <span class="s2">&quot;biomass&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Municipal Solid Waste&quot;</span><span class="p">:</span> <span class="s2">&quot;biomass&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Landfill Gas&quot;</span><span class="p">:</span> <span class="s2">&quot;biomass&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Other Waste Biomass&quot;</span><span class="p">:</span> <span class="s2">&quot;biomass&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;All Other&quot;</span><span class="p">:</span> <span class="s2">&quot;other&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">PATIO_PUDL_RELEASE</span> <span class="o">=</span> <span class="s2">&quot;v2024.11.0&quot;</span>
+<span class="n">PATIO_DATA_RELEASE</span> <span class="o">=</span> <span class="s2">&quot;20241031&quot;</span>
+<span class="n">PATIO_DATA_AZURE_URLS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;ba_cems&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;patio-data/</span><span class="si">{</span><span class="n">PATIO_DATA_RELEASE</span><span class="si">}</span><span class="s2">/ba_cems.zip&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ba_cems_extended&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;patio-data/</span><span class="si">{</span><span class="n">PATIO_DATA_RELEASE</span><span class="si">}</span><span class="s2">/ba_cems_extended.zip&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;camd_starts_ms&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;patio-data/</span><span class="si">{</span><span class="n">PATIO_DATA_RELEASE</span><span class="si">}</span><span class="s2">/camd_starts_ms.parquet&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Coal_Closure_Energy_Communities_SHP_2023v2&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;patio-data/</span><span class="si">{</span><span class="n">PATIO_DATA_RELEASE</span><span class="si">}</span><span class="s2">/Coal_Closure_Energy_Communities_SHP_2023v2.zip&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;irp&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;patio-data/</span><span class="si">{</span><span class="n">PATIO_DATA_RELEASE</span><span class="si">}</span><span class="s2">/irp.parquet&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MSA_NMSA_FEE_EC_Status_SHP_2023v2&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;patio-data/</span><span class="si">{</span><span class="n">PATIO_DATA_RELEASE</span><span class="si">}</span><span class="s2">/MSA_NMSA_FEE_EC_Status_SHP_2023v2.zip&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;re_data&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;patio-data/</span><span class="si">{</span><span class="n">PATIO_DATA_RELEASE</span><span class="si">}</span><span class="s2">/re_data.zip&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;lse&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;patio-data/</span><span class="si">{</span><span class="n">PATIO_DATA_RELEASE</span><span class="si">}</span><span class="s2">/Electric_Retail_Service_Territories.kml.zip&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">TECH_CODES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;coal&quot;</span><span class="p">:</span> <span class="s2">&quot;Conventional Steam Coal&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;coal_combi&quot;</span><span class="p">:</span> <span class="s2">&quot;Coal Integrated Gasification Combined Cycle&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ngcc&quot;</span><span class="p">:</span> <span class="s2">&quot;Natural Gas Fired Combined Cycle&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ngct&quot;</span><span class="p">:</span> <span class="s2">&quot;Natural Gas Fired Combustion Turbine&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;nggt&quot;</span><span class="p">:</span> <span class="s2">&quot;Natural Gas Fired Combustion Turbine&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ngic&quot;</span><span class="p">:</span> <span class="s2">&quot;Natural Gas Internal Combustion Engine&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ngst&quot;</span><span class="p">:</span> <span class="s2">&quot;Natural Gas Steam Turbine&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ngot&quot;</span><span class="p">:</span> <span class="s2">&quot;Other Natural Gas&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ngcas&quot;</span><span class="p">:</span> <span class="s2">&quot;Natural Gas with Compressed Air Storage&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;other_gas&quot;</span><span class="p">:</span> <span class="s2">&quot;Other Gases&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;petroleum_coke&quot;</span><span class="p">:</span> <span class="s2">&quot;Petroleum Coke&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;petroleum_liq&quot;</span><span class="p">:</span> <span class="s2">&quot;Petroleum Liquids&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;land_gas&quot;</span><span class="p">:</span> <span class="s2">&quot;Landfill Gas&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;wood_bio&quot;</span><span class="p">:</span> <span class="s2">&quot;Wood/Wood Waste Biomass&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;other_bio&quot;</span><span class="p">:</span> <span class="s2">&quot;Other Waste Biomass&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;other&quot;</span><span class="p">:</span> <span class="s2">&quot;All Other&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;nuke&quot;</span><span class="p">:</span> <span class="s2">&quot;Nuclear&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;nuclear&quot;</span><span class="p">:</span> <span class="s2">&quot;Nuclear&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;solar&quot;</span><span class="p">:</span> <span class="s2">&quot;Solar Photovoltaic&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;wind&quot;</span><span class="p">:</span> <span class="s2">&quot;Onshore Wind Turbine&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;onshore_wind&quot;</span><span class="p">:</span> <span class="s2">&quot;Onshore Wind Turbine&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;offshore_wind&quot;</span><span class="p">:</span> <span class="s2">&quot;Offshore Wind Turbine&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">BAD_COLO_BAS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;130&quot;</span><span class="p">,)</span>
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2025, RMI, CC-BY-4.0
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/rmi-electricity/patio" aria-label="GitHub">
+        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+        </svg>
+    </a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../_static/documentation_options.js?v=fce13f47"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>

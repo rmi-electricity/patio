@@ -1,0 +1,42 @@
+patio
+=====
+
+.. py:module:: patio
+
+.. autoapi-nested-parse::
+
+   A template repository for a Python package.
+
+   Created by Catalyst Cooperative, modified by RMI.
+
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/patio/_version/index
+   /autoapi/patio/cli/index
+   /autoapi/patio/constants/index
+   /autoapi/patio/data/index
+   /autoapi/patio/exceptions/index
+   /autoapi/patio/helpers/index
+   /autoapi/patio/model/index
+   /autoapi/patio/re_ninja/index
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   patio.__version__
+
+
+Package Contents
+----------------
+
+.. py:data:: __version__
+

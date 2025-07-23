@@ -1,0 +1,743 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" /><link rel="next" title="patio.data.entity_ids" href="../entity_ids/index.html" /><link rel="prev" title="patio.data.asset_data" href="../asset_data/index.html" />
+        <link rel="prefetch" href="../../../../_static/Small_PNG-RMI_logo_PrimaryUse.PNG" as="image" />
+        <link rel="prefetch" href="../../../../_static/Small_PNG-RMI_logo_PrimaryUse_White_Horizontal.PNG" as="image" />
+
+    <!-- Generated with Sphinx 8.2.3 and Furo 2025.07.19 -->
+        <title>patio.data.cems - Patio 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=25af2a20" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #2b2b2b;
+  --color-code-foreground: #f8f8f2;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #2b2b2b;
+  --color-code-foreground: #f8f8f2;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../../index.html"><div class="brand">Patio 0.1 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../../../../_static/Small_PNG-RMI_logo_PrimaryUse.PNG" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../../../../_static/Small_PNG-RMI_logo_PrimaryUse_White_Horizontal.PNG" alt="Dark Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">Patio 0.1 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../LICENSE.html">Licensing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cli.html">CLI</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../../../index.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current has-children"><a class="reference internal" href="../../index.html">patio</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of patio</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../_version/index.html">patio._version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli/index.html">patio.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../constants/index.html">patio.constants</a></li>
+<li class="toctree-l3 current has-children"><a class="reference internal" href="../index.html">patio.data</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of patio.data</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../asset_data/index.html">patio.data.asset_data</a></li>
+<li class="toctree-l4 current current-page"><a class="current reference internal" href="#">patio.data.cems</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../entity_ids/index.html">patio.data.entity_ids</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile_data/index.html">patio.data.profile_data</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../exceptions/index.html">patio.exceptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../helpers/index.html">patio.helpers</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../model/index.html">patio.model</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of patio.model</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../model/ba_level/index.html">patio.model.ba_level</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../model/ba_scenario/index.html">patio.model.ba_scenario</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../model/base/index.html">patio.model.base</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../model/colo_common/index.html">patio.model.colo_common</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../model/colo_core/index.html">patio.model.colo_core</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../model/colo_data/index.html">patio.model.colo_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../model/colo_lp/index.html">patio.model.colo_lp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../model/colo_resources/index.html">patio.model.colo_resources</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../model/colo_results/index.html">patio.model.colo_results</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../re_ninja/index.html">patio.re_ninja</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="https://github.com/rmi-electricity/patio/blob/main/docs/autoapi/patio/data/cems/index.rst?plain=true" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div><div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/rmi-electricity/patio/edit/main/docs/autoapi/patio/data/cems/index.rst" rel="edit" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="module-patio.data.cems">
+<span id="patio-data-cems"></span><h1>patio.data.cems<a class="headerlink" href="#module-patio.data.cems" title="Link to this heading">¶</a></h1>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#patio.data.cems.CEMS" title="patio.data.cems.CEMS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CEMS</span></code></a></p></td>
+<td><p>object to contain, process, clean and transform CEMS data for a state</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#patio.data.cems.make_eia_cems" title="patio.data.cems.make_eia_cems"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_eia_cems</span></code></a>([mp])</p></td>
+<td><p>Combine CEMS data from all relevant states into parquets</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#patio.data.cems.make_ba_cems" title="patio.data.cems.make_ba_cems"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_ba_cems</span></code></a>(ba_dict[, mp])</p></td>
+<td><p>Combine CEMS data from all relevant states into parquets</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#patio.data.cems.clean_all_cems" title="patio.data.cems.clean_all_cems"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clean_all_cems</span></code></a>([mp])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#patio.data.cems.all_cems_starts" title="patio.data.cems.all_cems_starts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">all_cems_starts</span></code></a>([by, freq, raw])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#patio.data.cems.all_cems_normalized_daily" title="patio.data.cems.all_cems_normalized_daily"><code class="xref py py-obj docutils literal notranslate"><span class="pre">all_cems_normalized_daily</span></code></a>()</p></td>
+<td><p>Create daily normlized cems data for patio model</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#patio.data.cems.all_state_cems_normalized_daily" title="patio.data.cems.all_state_cems_normalized_daily"><code class="xref py py-obj docutils literal notranslate"><span class="pre">all_state_cems_normalized_daily</span></code></a>()</p></td>
+<td><p>Create daily normlized cems data by state for patio model</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#patio.data.cems.all_cems_daily" title="patio.data.cems.all_cems_daily"><code class="xref py py-obj docutils literal notranslate"><span class="pre">all_cems_daily</span></code></a>()</p></td>
+<td><p>Create non-normalized daily CEMS for utility-level analysis</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#patio.data.cems.epa_eia_crosswalk" title="patio.data.cems.epa_eia_crosswalk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">epa_eia_crosswalk</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#patio.data.cems.egrid_crosswalk" title="patio.data.cems.egrid_crosswalk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">egrid_crosswalk</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#patio.data.cems.compare_crosswalks" title="patio.data.cems.compare_crosswalks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compare_crosswalks</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#patio.data.cems.combine_crosswalk" title="patio.data.cems.combine_crosswalk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">combine_crosswalk</span></code></a>()</p></td>
+<td><p>Combine egrid and epa crosswalks</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="patio.data.cems.CEMS">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">patio.data.cems.</span></span><span class="sig-name descname"><span class="pre">CEMS</span></span><a class="reference internal" href="../../../../_modules/patio/data/cems.html#CEMS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.CEMS" title="Link to this definition">¶</a></dt>
+<dd><p>object to contain, process, clean and transform CEMS data for a state</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="patio.data.cems.CEMS.state">
+<span class="sig-name descname"><span class="pre">state</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></em><a class="reference internal" href="../../../../_modules/patio/data/cems.html#CEMS.state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.CEMS.state" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="patio.data.cems.CEMS.years">
+<span class="sig-name descname"><span class="pre">years</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(2006,</span> <span class="pre">2020)</span></em><a class="reference internal" href="../../../../_modules/patio/data/cems.html#CEMS.years"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.CEMS.years" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="patio.data.cems.CEMS._cems">
+<span class="sig-name descname"><span class="pre">_cems</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)"><span class="pre">pandas.DataFrame</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="reference internal" href="../../../../_modules/patio/data/cems.html#CEMS._cems"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.CEMS._cems" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="patio.data.cems.CEMS._crosswalk">
+<span class="sig-name descname"><span class="pre">_crosswalk</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)"><span class="pre">pandas.DataFrame</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="reference internal" href="../../../../_modules/patio/data/cems.html#CEMS._crosswalk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.CEMS._crosswalk" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="patio.data.cems.CEMS._eia_cems">
+<span class="sig-name descname"><span class="pre">_eia_cems</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="reference internal" href="../../../../_modules/patio/data/cems.html#CEMS._eia_cems"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.CEMS._eia_cems" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.data.cems.CEMS.__post_init__">
+<span class="sig-name descname"><span class="pre">__post_init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/data/cems.html#CEMS.__post_init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.CEMS.__post_init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.data.cems.CEMS.from_p">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_p</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/data/cems.html#CEMS.from_p"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.CEMS.from_p" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.data.cems.CEMS.eia_from_p">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">eia_from_p</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/data/cems.html#CEMS.eia_from_p"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.CEMS.eia_from_p" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.data.cems.CEMS.to_p">
+<span class="sig-name descname"><span class="pre">to_p</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/data/cems.html#CEMS.to_p"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.CEMS.to_p" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.data.cems.CEMS.cross_test">
+<span class="sig-name descname"><span class="pre">cross_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cross</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/data/cems.html#CEMS.cross_test"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.CEMS.cross_test" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.data.cems.CEMS.monthly_unit_fuel_by_type">
+<span class="sig-name descname"><span class="pre">monthly_unit_fuel_by_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plant_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fuels</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/data/cems.html#CEMS.monthly_unit_fuel_by_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.CEMS.monthly_unit_fuel_by_type" title="Link to this definition">¶</a></dt>
+<dd><p>Use emission factors to split a unit’s generation between a
+primary and secondary fuel</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>plant_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>)</p></li>
+<li><p><strong>unit_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>)</p></li>
+<li><p><strong>fuels</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>]</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.data.cems.CEMS.fuel_by_type">
+<span class="sig-name descname"><span class="pre">fuel_by_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">freq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'MS'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/data/cems.html#CEMS.fuel_by_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.CEMS.fuel_by_type" title="Link to this definition">¶</a></dt>
+<dd><p>WIP do the primary/secondary fuel split for all plants/units
+works because all energy is allocated to the first fuel if
+secondary intensity is 0</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.data.cems.CEMS.count_unit_starts">
+<span class="sig-name descname"><span class="pre">count_unit_starts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">freq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'YS'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/data/cems.html#CEMS.count_unit_starts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.CEMS.count_unit_starts" title="Link to this definition">¶</a></dt>
+<dd><p>Identify each time that a unit starts generating electricity
+and count the number of starts for each increment of time specified
+in <code class="docutils literal notranslate"><span class="pre">freq</span></code></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.data.cems.CEMS.fuel_by_type_and_starts">
+<span class="sig-name descname"><span class="pre">fuel_by_type_and_starts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">freq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'MS'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/data/cems.html#CEMS.fuel_by_type_and_starts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.CEMS.fuel_by_type_and_starts" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.data.cems.CEMS.annual_summary">
+<span class="sig-name descname"><span class="pre">annual_summary</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/data/cems.html#CEMS.annual_summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.CEMS.annual_summary" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.data.cems.CEMS.daily_cems">
+<span class="sig-name descname"><span class="pre">daily_cems</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/data/cems.html#CEMS.daily_cems"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.CEMS.daily_cems" title="Link to this definition">¶</a></dt>
+<dd><p>Aggregates cems by prime_mover and fuel then converts to daily
+for utility-level analysis, does not normalize</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.data.cems.CEMS.normalized_daily_state_cems">
+<span class="sig-name descname"><span class="pre">normalized_daily_state_cems</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/data/cems.html#CEMS.normalized_daily_state_cems"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.CEMS.normalized_daily_state_cems" title="Link to this definition">¶</a></dt>
+<dd><p>Normalize cems monthly then convert aggregate to days</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.data.cems.CEMS.normalized_daily_cems">
+<span class="sig-name descname"><span class="pre">normalized_daily_cems</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/data/cems.html#CEMS.normalized_daily_cems"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.CEMS.normalized_daily_cems" title="Link to this definition">¶</a></dt>
+<dd><p>Normalize cems monthly then convert aggregate to days</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.data.cems.CEMS.agg_to_plant_prime_fuel">
+<span class="sig-name descname"><span class="pre">agg_to_plant_prime_fuel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">agg_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/data/cems.html#CEMS.agg_to_plant_prime_fuel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.CEMS.agg_to_plant_prime_fuel" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.data.cems.CEMS.write_daily">
+<span class="sig-name descname"><span class="pre">write_daily</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/data/cems.html#CEMS.write_daily"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.CEMS.write_daily" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.data.cems.CEMS.write_normalized_daily">
+<span class="sig-name descname"><span class="pre">write_normalized_daily</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/data/cems.html#CEMS.write_normalized_daily"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.CEMS.write_normalized_daily" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.data.cems.CEMS.write_normalized_daily_state">
+<span class="sig-name descname"><span class="pre">write_normalized_daily_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/data/cems.html#CEMS.write_normalized_daily_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.CEMS.write_normalized_daily_state" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.data.cems.CEMS.apply_crosswalk">
+<span class="sig-name descname"><span class="pre">apply_crosswalk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">validate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/data/cems.html#CEMS.apply_crosswalk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.CEMS.apply_crosswalk" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.data.cems.CEMS.write_eia_matched_cems">
+<span class="sig-name descname"><span class="pre">write_eia_matched_cems</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/data/cems.html#CEMS.write_eia_matched_cems"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.CEMS.write_eia_matched_cems" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.data.cems.CEMS._clean_cems">
+<span class="sig-name descname"><span class="pre">_clean_cems</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/data/cems.html#CEMS._clean_cems"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.CEMS._clean_cems" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="patio.data.cems.CEMS.raw_cems">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">raw_cems</span></span><a class="reference internal" href="../../../../_modules/patio/data/cems.html#CEMS.raw_cems"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.CEMS.raw_cems" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="patio.data.cems.CEMS.cems_eia_plant_ids">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cems_eia_plant_ids</span></span><a class="reference internal" href="../../../../_modules/patio/data/cems.html#CEMS.cems_eia_plant_ids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.CEMS.cems_eia_plant_ids" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.data.cems.CEMS.count_plant_prime_fuel_starts">
+<span class="sig-name descname"><span class="pre">count_plant_prime_fuel_starts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">freq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'YS'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/data/cems.html#CEMS.count_plant_prime_fuel_starts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.CEMS.count_plant_prime_fuel_starts" title="Link to this definition">¶</a></dt>
+<dd><p>Identify each time that a plant/prime/fuel starts generating electricity
+and count the number of starts for each increment of time specified
+in <code class="docutils literal notranslate"><span class="pre">freq</span></code></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="patio.data.cems.CEMS.units_with_missing_rows">
+<span class="sig-name descname"><span class="pre">units_with_missing_rows</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/data/cems.html#CEMS.units_with_missing_rows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.CEMS.units_with_missing_rows" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.data.cems.make_eia_cems">
+<span class="sig-prename descclassname"><span class="pre">patio.data.cems.</span></span><span class="sig-name descname"><span class="pre">make_eia_cems</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/data/cems.html#make_eia_cems"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.make_eia_cems" title="Link to this definition">¶</a></dt>
+<dd><p>Combine CEMS data from all relevant states into parquets
+of hourly CEMS data for each BA</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mp</strong> – bool use multiprocessing</p>
+</dd>
+</dl>
+<p>Returns: None, produces BA CEMS parquets</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.data.cems.make_ba_cems">
+<span class="sig-prename descclassname"><span class="pre">patio.data.cems.</span></span><span class="sig-name descname"><span class="pre">make_ba_cems</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ba_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/data/cems.html#make_ba_cems"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.make_ba_cems" title="Link to this definition">¶</a></dt>
+<dd><p>Combine CEMS data from all relevant states into parquets
+of hourly CEMS data for each BA</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ba_dict</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)"><em>pandas.DataFrame</em></a><em>]</em>) – dict of ba plant_data</p></li>
+<li><p><strong>mp</strong> – bool use multiprocessing</p></li>
+</ul>
+</dd>
+</dl>
+<p>Returns: None, produces BA CEMS parquets</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.data.cems.clean_all_cems">
+<span class="sig-prename descclassname"><span class="pre">patio.data.cems.</span></span><span class="sig-name descname"><span class="pre">clean_all_cems</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/data/cems.html#clean_all_cems"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.clean_all_cems" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.data.cems.all_cems_starts">
+<span class="sig-prename descclassname"><span class="pre">patio.data.cems.</span></span><span class="sig-name descname"><span class="pre">all_cems_starts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'prime_fuel'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'YS'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/data/cems.html#all_cems_starts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.all_cems_starts" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.data.cems.all_cems_normalized_daily">
+<span class="sig-prename descclassname"><span class="pre">patio.data.cems.</span></span><span class="sig-name descname"><span class="pre">all_cems_normalized_daily</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/data/cems.html#all_cems_normalized_daily"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.all_cems_normalized_daily" title="Link to this definition">¶</a></dt>
+<dd><p>Create daily normlized cems data for patio model</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.data.cems.all_state_cems_normalized_daily">
+<span class="sig-prename descclassname"><span class="pre">patio.data.cems.</span></span><span class="sig-name descname"><span class="pre">all_state_cems_normalized_daily</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/data/cems.html#all_state_cems_normalized_daily"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.all_state_cems_normalized_daily" title="Link to this definition">¶</a></dt>
+<dd><p>Create daily normlized cems data by state for patio model</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.data.cems.all_cems_daily">
+<span class="sig-prename descclassname"><span class="pre">patio.data.cems.</span></span><span class="sig-name descname"><span class="pre">all_cems_daily</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/data/cems.html#all_cems_daily"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.all_cems_daily" title="Link to this definition">¶</a></dt>
+<dd><p>Create non-normalized daily CEMS for utility-level analysis</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.data.cems.epa_eia_crosswalk">
+<span class="sig-prename descclassname"><span class="pre">patio.data.cems.</span></span><span class="sig-name descname"><span class="pre">epa_eia_crosswalk</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/data/cems.html#epa_eia_crosswalk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.epa_eia_crosswalk" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.data.cems.egrid_crosswalk">
+<span class="sig-prename descclassname"><span class="pre">patio.data.cems.</span></span><span class="sig-name descname"><span class="pre">egrid_crosswalk</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/data/cems.html#egrid_crosswalk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.egrid_crosswalk" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)">pandas.DataFrame</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.data.cems.compare_crosswalks">
+<span class="sig-prename descclassname"><span class="pre">patio.data.cems.</span></span><span class="sig-name descname"><span class="pre">compare_crosswalks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/data/cems.html#compare_crosswalks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.compare_crosswalks" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)">pandas.DataFrame</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.data.cems.combine_crosswalk">
+<span class="sig-prename descclassname"><span class="pre">patio.data.cems.</span></span><span class="sig-name descname"><span class="pre">combine_crosswalk</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/patio/data/cems.html#combine_crosswalk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.data.cems.combine_crosswalk" title="Link to this definition">¶</a></dt>
+<dd><p>Combine egrid and epa crosswalks</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)">pandas.DataFrame</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="../entity_ids/index.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">patio.data.entity_ids</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="../asset_data/index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">patio.data.asset_data</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2025, RMI, CC-BY-4.0
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/rmi-electricity/patio" aria-label="GitHub">
+        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+        </svg>
+    </a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">patio.data.cems</a><ul>
+<li><a class="reference internal" href="#classes">Classes</a></li>
+<li><a class="reference internal" href="#functions">Functions</a></li>
+<li><a class="reference internal" href="#module-contents">Module Contents</a><ul>
+<li><a class="reference internal" href="#patio.data.cems.CEMS"><code class="docutils literal notranslate"><span class="pre">CEMS</span></code></a><ul>
+<li><a class="reference internal" href="#patio.data.cems.CEMS.state"><code class="docutils literal notranslate"><span class="pre">CEMS.state</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.CEMS.years"><code class="docutils literal notranslate"><span class="pre">CEMS.years</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.CEMS._cems"><code class="docutils literal notranslate"><span class="pre">CEMS._cems</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.CEMS._crosswalk"><code class="docutils literal notranslate"><span class="pre">CEMS._crosswalk</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.CEMS._eia_cems"><code class="docutils literal notranslate"><span class="pre">CEMS._eia_cems</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.CEMS.__post_init__"><code class="docutils literal notranslate"><span class="pre">CEMS.__post_init__()</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.CEMS.from_p"><code class="docutils literal notranslate"><span class="pre">CEMS.from_p()</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.CEMS.eia_from_p"><code class="docutils literal notranslate"><span class="pre">CEMS.eia_from_p()</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.CEMS.to_p"><code class="docutils literal notranslate"><span class="pre">CEMS.to_p()</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.CEMS.cross_test"><code class="docutils literal notranslate"><span class="pre">CEMS.cross_test()</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.CEMS.monthly_unit_fuel_by_type"><code class="docutils literal notranslate"><span class="pre">CEMS.monthly_unit_fuel_by_type()</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.CEMS.fuel_by_type"><code class="docutils literal notranslate"><span class="pre">CEMS.fuel_by_type()</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.CEMS.count_unit_starts"><code class="docutils literal notranslate"><span class="pre">CEMS.count_unit_starts()</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.CEMS.fuel_by_type_and_starts"><code class="docutils literal notranslate"><span class="pre">CEMS.fuel_by_type_and_starts()</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.CEMS.annual_summary"><code class="docutils literal notranslate"><span class="pre">CEMS.annual_summary()</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.CEMS.daily_cems"><code class="docutils literal notranslate"><span class="pre">CEMS.daily_cems()</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.CEMS.normalized_daily_state_cems"><code class="docutils literal notranslate"><span class="pre">CEMS.normalized_daily_state_cems()</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.CEMS.normalized_daily_cems"><code class="docutils literal notranslate"><span class="pre">CEMS.normalized_daily_cems()</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.CEMS.agg_to_plant_prime_fuel"><code class="docutils literal notranslate"><span class="pre">CEMS.agg_to_plant_prime_fuel()</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.CEMS.write_daily"><code class="docutils literal notranslate"><span class="pre">CEMS.write_daily()</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.CEMS.write_normalized_daily"><code class="docutils literal notranslate"><span class="pre">CEMS.write_normalized_daily()</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.CEMS.write_normalized_daily_state"><code class="docutils literal notranslate"><span class="pre">CEMS.write_normalized_daily_state()</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.CEMS.apply_crosswalk"><code class="docutils literal notranslate"><span class="pre">CEMS.apply_crosswalk()</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.CEMS.write_eia_matched_cems"><code class="docutils literal notranslate"><span class="pre">CEMS.write_eia_matched_cems()</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.CEMS._clean_cems"><code class="docutils literal notranslate"><span class="pre">CEMS._clean_cems()</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.CEMS.raw_cems"><code class="docutils literal notranslate"><span class="pre">CEMS.raw_cems</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.CEMS.cems_eia_plant_ids"><code class="docutils literal notranslate"><span class="pre">CEMS.cems_eia_plant_ids</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.CEMS.count_plant_prime_fuel_starts"><code class="docutils literal notranslate"><span class="pre">CEMS.count_plant_prime_fuel_starts()</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.CEMS.units_with_missing_rows"><code class="docutils literal notranslate"><span class="pre">CEMS.units_with_missing_rows()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#patio.data.cems.make_eia_cems"><code class="docutils literal notranslate"><span class="pre">make_eia_cems()</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.make_ba_cems"><code class="docutils literal notranslate"><span class="pre">make_ba_cems()</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.clean_all_cems"><code class="docutils literal notranslate"><span class="pre">clean_all_cems()</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.all_cems_starts"><code class="docutils literal notranslate"><span class="pre">all_cems_starts()</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.all_cems_normalized_daily"><code class="docutils literal notranslate"><span class="pre">all_cems_normalized_daily()</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.all_state_cems_normalized_daily"><code class="docutils literal notranslate"><span class="pre">all_state_cems_normalized_daily()</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.all_cems_daily"><code class="docutils literal notranslate"><span class="pre">all_cems_daily()</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.epa_eia_crosswalk"><code class="docutils literal notranslate"><span class="pre">epa_eia_crosswalk()</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.egrid_crosswalk"><code class="docutils literal notranslate"><span class="pre">egrid_crosswalk()</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.compare_crosswalks"><code class="docutils literal notranslate"><span class="pre">compare_crosswalks()</span></code></a></li>
+<li><a class="reference internal" href="#patio.data.cems.combine_crosswalk"><code class="docutils literal notranslate"><span class="pre">combine_crosswalk()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../../_static/documentation_options.js?v=fce13f47"></script>
+    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>

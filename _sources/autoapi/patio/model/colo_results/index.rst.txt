@@ -1,0 +1,191 @@
+patio.model.colo_results
+========================
+
+.. py:module:: patio.model.colo_results
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   patio.model.colo_results.LOGGER
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   patio.model.colo_results.Results
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   patio.model.colo_results.text_position
+   patio.model.colo_results.sankey
+
+
+Module Contents
+---------------
+
+.. py:data:: LOGGER
+
+.. py:function:: text_position(scen_df, pid)
+
+.. py:function:: sankey(h3)
+
+.. py:class:: Results(*results, min_served=1, min_pct_load_clean=0.6, max_ppa=200, max_reg_rank=9, max_violation=0.5, max_attr_rev_export_clean=100, font='Gill Sans')
+
+   .. py:attribute:: id_cols
+      :value: ('ba_code', 'icx_id', 'icx_gen', 'regime', 'name')
+
+
+
+   .. py:attribute:: renamer
+
+
+   .. py:attribute:: colors
+      :value: ['#003B63', '#45CFCC', '#58595B', '#92AEC5', '#135908', '#00CC66', '#FFCB00', '#E04D39',...
+
+
+
+   .. py:attribute:: fs
+
+
+   .. py:attribute:: min_served
+      :value: 1
+
+
+
+   .. py:attribute:: min_pct_load_clean
+      :value: 0.6
+
+
+
+   .. py:attribute:: max_ppa
+      :value: 200
+
+
+
+   .. py:attribute:: max_reg_rank
+      :value: 9
+
+
+
+   .. py:attribute:: max_violation
+      :value: 0.5
+
+
+
+   .. py:attribute:: max_attr_rev_export_clean
+      :value: 100
+
+
+
+   .. py:attribute:: font
+      :value: 'Gill Sans'
+
+
+
+   .. py:attribute:: names
+
+
+   .. py:attribute:: name_indices
+
+
+   .. py:attribute:: pudl_release
+
+
+   .. py:attribute:: summaries
+      :type:  dict[str, polars.DataFrame]
+
+
+   .. py:attribute:: flows
+      :type:  dict[str, polars.DataFrame]
+
+
+   .. py:attribute:: fig_path
+
+
+   .. py:method:: __getitem__(item=None)
+
+
+   .. py:method:: update_params(**kwargs)
+
+
+   .. py:method:: load()
+
+
+   .. py:method:: get_aligned(run=None, *, land_screen=False)
+
+
+   .. py:property:: last
+
+
+   .. py:method:: good_screen(df)
+
+
+   .. py:method:: all_summaries()
+
+
+   .. py:method:: best_at_site(df)
+
+
+   .. py:method:: source_for_load(run)
+
+
+   .. py:method:: get_flows(run)
+
+
+   .. py:method:: get_summary(run)
+
+
+   .. py:method:: _cc_cost()
+
+
+   .. py:method:: parse_log(run, *, local = False)
+
+
+   .. py:method:: norm_name(run)
+
+
+   .. py:method:: summary_stats(cols=())
+
+
+   .. py:method:: for_dataroom(run=None, *, clip=False)
+
+
+   .. py:method:: for_xl(run=None, *, clip=False)
+
+
+   .. py:method:: case_sheets(run=None, *, land_screen=False)
+
+
+   .. py:method:: fig_case_subplots(run=None, *, land_screen=False, test=False)
+
+
+   .. py:method:: package_econ_data(run=None, addl_filter=None, *, local=False)
+
+
+   .. py:method:: compare(a, b, *, on=('balancing_authority_code_eia', 'plant_name_eia', 'utility_name_eia_lse', 'owner_utility_name_eia', 'state', 'icx_id', 'tech', 'status', 'name', 'regime'), values=('run_status', 'load_mw', 'served_pct', 'pct_load_clean', 'ppa_ex_fossil_export_profit'), clip=False)
+
+
+   .. py:method:: fig_scatter_geo(run=None, sixe_max=25, *, land_screen=False)
+
+
+   .. py:method:: fig_selection_map(run=None, *, land_screen=False, px_size_max=8, fossil_size=0.15, selected_size=1, potential_size=0.8)
+
+
+   .. py:method:: fig_indicator_distributions(metrics = ('load_mw', 'ppa_ex_fossil_export_profit', 'pct_overbuild'), color='good')
+
+
+   .. py:method:: fig_supply_curve(run=None, *, land_screen=False)
+
+
+   .. py:method:: hourly_analysis(run)
+
+

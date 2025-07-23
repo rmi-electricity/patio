@@ -1,0 +1,22 @@
+patio.model.colo_data
+=====================
+
+.. py:module:: patio.model.colo_data
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   patio.model.colo_data.get_lse
+   patio.model.colo_data.get_re_data
+
+
+Module Contents
+---------------
+
+.. py:function:: get_lse(lat, lon, pudl_release)
+
+.. py:function:: get_re_data(lat, lon, sqkm)
+

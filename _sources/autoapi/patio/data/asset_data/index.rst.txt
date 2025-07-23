@@ -1,0 +1,277 @@
+patio.data.asset_data
+=====================
+
+.. py:module:: patio.data.asset_data
+
+.. autoapi-nested-parse::
+
+   a model I first heard of while on a patio
+
+   This module contains the objects and specific methods to set up and manage data.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   patio.data.asset_data.LOGGER
+   patio.data.asset_data._
+   patio.data.asset_data.fs
+   patio.data.asset_data.CACHE_PATH
+   patio.data.asset_data.USER_DATA_PATH
+   patio.data.asset_data._
+   patio.data.asset_data.r_map
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   patio.data.asset_data.AssetData
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   patio.data.asset_data.fix_cc_in_prime
+   patio.data.asset_data.clean_atb
+   patio.data.asset_data.get_atb
+   patio.data.asset_data.generator_ownership
+   patio.data.asset_data.load_ec
+   patio.data.asset_data.add_ec_flag
+   patio.data.asset_data.cost_comparison
+   patio.data.asset_data.cost_helper
+   patio.data.asset_data.add_plant_role
+   patio.data.asset_data.master_unit_list
+   patio.data.asset_data.read_ferc860
+   patio.data.asset_data.irp_data
+   patio.data.asset_data.ferc714_ids
+   patio.data.asset_data.add_id_ferc714
+   patio.data.asset_data._
+   patio.data.asset_data._
+   patio.data.asset_data._
+
+
+Module Contents
+---------------
+
+.. py:data:: LOGGER
+
+.. py:data:: _
+
+.. py:data:: fs
+
+.. py:function:: fix_cc_in_prime(df, old_col='prime_mover_code')
+
+   Add prime_mover call with CCs rolled together.
+
+
+.. py:data:: CACHE_PATH
+
+.. py:data:: USER_DATA_PATH
+
+.. py:data:: _
+   :value: ('Batteries', 'Hydroelectric Pumped Storage', 'H2 Storage')
+
+
+.. py:data:: r_map
+
+.. py:function:: clean_atb(case='Market', scenario='Moderate', report_year=2022, crp=30, pudl_release=PATIO_PUDL_RELEASE)
+
+.. py:function:: get_atb(df, years = (2008, 2021), how='inner', operating_date_col='operating_date', pudl_release = PATIO_PUDL_RELEASE)
+
+.. py:function:: generator_ownership(year = None, release = 'nightly')
+
+   Generator ownership.
+
+   :param year: year of report date to use
+   :param release: ``nightly``, ``stable`` or versioned, use :func:`.pudl_list` to
+                   see releases.
+
+   Examples:
+   --------
+   >>> from etoolbox.utils.pudl import generator_ownership
+   >>>
+   >>> generator_ownership(year=2023, release="v2024.10.0").sort("plant_id_eia").select(
+   ...     "plant_id_eia", "generator_id", "owner_utility_id_eia"
+   ... ).head()
+   shape: (5, 3)
+   ┌──────────────┬──────────────┬──────────────────────┐
+   │ plant_id_eia ┆ generator_id ┆ owner_utility_id_eia │
+   │ ---          ┆ ---          ┆ ---                  │
+   │ i64          ┆ str          ┆ i64                  │
+   ╞══════════════╪══════════════╪══════════════════════╡
+   │ 1            ┆ 1            ┆ 63560                │
+   │ 1            ┆ 2            ┆ 63560                │
+   │ 1            ┆ 3            ┆ 63560                │
+   │ 1            ┆ 5.1          ┆ 63560                │
+   │ 1            ┆ WT1          ┆ 63560                │
+   └──────────────┴──────────────┴──────────────────────┘
+
+
+
+.. py:class:: AssetData
+
+   .. py:attribute:: years
+      :type:  tuple[int, int]
+      :value: (2008, 2022)
+
+
+
+   .. py:attribute:: cutoff
+      :type:  float
+      :value: 0.99
+
+
+
+   .. py:attribute:: state_cutoff
+      :type:  float
+      :value: 0.95
+
+
+
+   .. py:attribute:: addl_fuels
+      :type:  bool
+      :value: False
+
+
+
+   .. py:attribute:: overrides
+      :type:  dict[str, dict[int, tuple]] | None
+      :value: None
+
+
+
+   .. py:attribute:: pudl_release
+      :type:  str
+      :value: 'v2024.11.0'
+
+
+
+   .. py:attribute:: _dfs
+      :type:  dict[str, pandas.DataFrame | dict]
+
+
+   .. py:method:: __post_init__()
+
+
+   .. py:method:: add_regulatory_ranking(gens)
+
+
+   .. py:method:: _fuel_cost_setup()
+
+
+   .. py:method:: raw_curves(atb_year, regime, pudl_release)
+      :staticmethod:
+
+
+
+   .. py:method:: proposed_atb_class(gens)
+
+
+   .. py:method:: re_sites_for_encom()
+
+
+   .. py:method:: curve_for_site_selection(atb_year, assumed_ilr, regime = None)
+
+
+   .. py:method:: re_curve(atb_year, assumed_ilr)
+
+
+   .. py:method:: temp_nuke_replacements()
+
+      Screen for plants with high CF that could be replaced by nuclear.
+
+
+
+   .. py:method:: temp_ccs_conversion()
+
+      Screen for plants with high CF that could be replaced by nuclear.
+
+
+
+   .. py:method:: _ba_overrides(df)
+
+
+   .. py:method:: historical_cost()
+
+
+   .. py:method:: counterfactual_cost()
+
+
+   .. py:method:: problem_cost_explorer()
+
+      Code for finding weird cost data.
+
+
+
+   .. py:method:: unsafe_plants()
+
+      Plants whose lat/lon is outside state bounds
+
+
+
+   .. py:method:: utility_codes()
+
+
+   .. py:method:: get_missing_generators(ba_code, plant_data)
+
+
+   .. py:method:: modelable_generators()
+
+
+   .. py:method:: all_modelable_generators()
+
+
+   .. py:method:: get_generator_data(ba_code, cost_type, solar_ilr)
+
+
+   .. py:method:: pl_counterfactual_re()
+
+
+   .. py:method:: counterfactual_re()
+
+
+   .. py:method:: re()
+
+      All operating renewable generators that would generate unique
+      profiles from renewables.ninja
+
+
+
+   .. py:method:: _close_re_helper(close, dist, max_num)
+      :staticmethod:
+
+
+
+.. py:function:: load_ec()
+
+.. py:function:: add_ec_flag(df, key_col = 'plant_id_eia', lat_lon_cols = ('latitude', 'longitude'), ec_col = 'energy_community')
+
+.. py:function:: cost_comparison(pudl_release=PATIO_PUDL_RELEASE)
+
+.. py:function:: cost_helper(df, kind)
+
+.. py:function:: add_plant_role(df)
+
+.. py:function:: master_unit_list(xl=None)
+
+.. py:function:: read_ferc860()
+
+.. py:function:: irp_data(asset_data)
+
+.. py:function:: ferc714_ids(pudl_release=PATIO_PUDL_RELEASE)
+
+.. py:function:: add_id_ferc714(df, util_id_col='utility_id_eia', pudl_release=PATIO_PUDL_RELEASE)
+
+.. py:function:: _(df, util_id_col='utility_id_eia', pudl_release=PATIO_PUDL_RELEASE)
+
+.. py:function:: _(df, util_id_col='utility_id_eia', pudl_release=PATIO_PUDL_RELEASE)
+
+.. py:function:: _(df, util_id_col='utility_id_eia', pudl_release=PATIO_PUDL_RELEASE)
+

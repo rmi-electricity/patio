@@ -1,0 +1,100 @@
+patio.constants
+===============
+
+.. py:module:: patio.constants
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   patio.constants.ROOT_PATH
+   patio.constants.MTDF
+   patio.constants.FOSSIL_PRIME_MOVER_MAP
+   patio.constants.RAMP_CODES_TO_HRS
+   patio.constants.CEMS_CARB_INTENSITY
+   patio.constants.FOSSIL_INTENSITY
+   patio.constants.CEMS_COL_MAP
+   patio.constants.CROSSWALK_DTYPES
+   patio.constants.CROSSWALK_COL_MAP
+   patio.constants.EGRID_DTYPES
+   patio.constants.EGRID_COL_MAP
+   patio.constants.GEN_TO_X_AGG
+   patio.constants.PERMUTATIONS
+   patio.constants.STATE_BOUNDS
+   patio.constants.FOSSIL_TECH
+   patio.constants.RE_TECH
+   patio.constants.GEN_COLS
+   patio.constants.GEN_COLS_OLD
+   patio.constants.COLORS
+   patio.constants.SCALE_FACTOR_OVERRIDES
+
+
+Module Contents
+---------------
+
+.. py:data:: ROOT_PATH
+
+   x:/g/personal/cfong_rmi_org/ES-9u5euInVFuO7KnpmjNiIByXnSx7gmAtBuNtET7-w6kQ
+   https://rockmtnins-my.sharepoint.com/:x:/g/personal/cfong_rmi_org/EcmLETNDwIlHjTk_YSEGiLYBz02VgHR1RG69rsKEAIFlkw
+
+   :type: https
+
+   :type: //rockmtnins-my.sharepoint.com/
+
+.. py:data:: MTDF
+
+.. py:data:: FOSSIL_PRIME_MOVER_MAP
+
+.. py:data:: RAMP_CODES_TO_HRS
+
+   'Time from Cold Shutdown to Full Load' from EIA 860 3B
+   The minimum amount of time required to bring the unit to full load from shutdown
+
+.. py:data:: CEMS_CARB_INTENSITY
+
+   //www.eia.gov/environment/emissions/co2_vol_mass.php
+
+   in short_tons/mmbtu
+
+   :type: https
+
+.. py:data:: FOSSIL_INTENSITY
+
+   Unknown units
+
+.. py:data:: CEMS_COL_MAP
+
+.. py:data:: CROSSWALK_DTYPES
+
+.. py:data:: CROSSWALK_COL_MAP
+
+.. py:data:: EGRID_DTYPES
+
+.. py:data:: EGRID_COL_MAP
+
+.. py:data:: GEN_TO_X_AGG
+
+.. py:data:: PERMUTATIONS
+
+.. py:data:: STATE_BOUNDS
+
+.. py:data:: FOSSIL_TECH
+   :value: ['Petroleum Liquids', 'Natural Gas Steam Turbine', 'Conventional Steam Coal', 'Natural Gas Fired...
+
+
+.. py:data:: RE_TECH
+
+.. py:data:: GEN_COLS
+   :value: ['plant_id_eia', 'plant_name_eia', 'utility_id_eia', 'generator_id', 'state', 'final_ba_code',...
+
+
+.. py:data:: GEN_COLS_OLD
+   :value: ['report_date', 'plant_id_eia', 'plant_name_eia', 'utility_id_eia', 'utility_name_eia',...
+
+
+.. py:data:: COLORS
+
+.. py:data:: SCALE_FACTOR_OVERRIDES
+

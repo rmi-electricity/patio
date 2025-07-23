@@ -1,0 +1,93 @@
+patio.model.colo_core
+=====================
+
+.. py:module:: patio.model.colo_core
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   patio.model.colo_core.LOGGER
+   patio.model.colo_core.WORKERS
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   patio.model.colo_core.set_workers
+   patio.model.colo_core.set_timeout
+   patio.model.colo_core.mround
+   patio.model.colo_core.run_colo_mp
+   patio.model.colo_core.make_all_re_sites
+   patio.model.colo_core.setup_plants_configs
+   patio.model.colo_core.make_configs_from_defaults
+   patio.model.colo_core.model_colo_config
+   patio.model.colo_core.model_colo_load
+   patio.model.colo_core.assemble_results
+   patio.model.colo_core.open_log
+   patio.model.colo_core.worker_logger
+   patio.model.colo_core.setup_logger
+   patio.model.colo_core.logging_process
+   patio.model.colo_core.combine_runs
+   patio.model.colo_core.main
+   patio.model.colo_core._add_to_json
+   patio.model.colo_core.break_summary
+
+
+Module Contents
+---------------
+
+.. py:data:: LOGGER
+
+.. py:data:: WORKERS
+
+.. py:function:: set_workers(workers)
+
+.. py:function:: set_timeout(seconds)
+
+.. py:function:: mround(x, base=50)
+
+.. py:function:: run_colo_mp(config, queue, *, mp=True)
+
+.. py:function:: make_all_re_sites(c_dir, d_dir, plants_data)
+
+.. py:function:: setup_plants_configs(config, plants, pudl_release=PATIO_PUDL_RELEASE, **kwargs)
+
+   Combine plant_data and data config from colo_json with scenarios from toml.
+
+
+.. py:function:: make_configs_from_defaults(config)
+
+.. py:function:: model_colo_config(config, colo_dir, data_dir, info, regime = 'limited')
+
+.. py:function:: model_colo_load(model, run_econ, saved_select, **kwargs)
+
+.. py:function:: assemble_results(colo_dir, *, keep=True)
+
+.. py:function:: open_log(colo_dir=None, info=None, regime=None, name=None)
+
+.. py:function:: worker_logger(queue)
+
+.. py:function:: setup_logger(log_path)
+
+.. py:function:: logging_process(queue)
+
+   alt: https://stackoverflow.com/questions/28050451/elegant-way-to-make-logging-loggeradapter-available-to-other-modules/28050837#28050837
+   :param queue:
+
+   Returns:
+
+
+
+.. py:function:: combine_runs(*runs)
+
+.. py:function:: main(run_dir='', config_dir='', source_data='', resume=False, plants='', workers=-1, keep=False, local=False, saved='', assemble=False)
+
+.. py:function:: _add_to_json(json_path, add_to_json)
+
+.. py:function:: break_summary(summary)
+

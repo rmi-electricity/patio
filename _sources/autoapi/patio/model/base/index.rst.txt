@@ -1,0 +1,427 @@
+patio.model.base
+================
+
+.. py:module:: patio.model.base
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   patio.model.base.LOGGER
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   patio.model.base.ScenarioConfig
+   patio.model.base.BaseProfileMatch
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   patio.model.base.equal_energy
+   patio.model.base.fuel_auc
+   patio.model.base.objective
+   patio.model.base.optimize_equal_energy
+   patio.model.base.optimize
+   patio.model.base.np_all_axis1
+   patio.model.base.equal_capacity
+   patio.model.base.rolling_re_match
+   patio.model.base.to_nuclear
+   patio.model.base.adjust_profiles
+   patio.model.base.calc_redispatch_cost
+   patio.model.base.redispatch_cost_loop
+
+
+Module Contents
+---------------
+
+.. py:data:: LOGGER
+
+.. py:class:: ScenarioConfig
+
+   Bases: :py:obj:`NamedTuple`
+
+
+   .. py:attribute:: re_energy
+      :type:  float
+
+
+   .. py:attribute:: storage_li_pct
+      :type:  float
+      :value: 0.0
+
+
+
+   .. py:attribute:: storage_fe_pct
+      :type:  float
+      :value: 0.0
+
+
+
+   .. py:attribute:: storage_h2_pct
+      :type:  float
+      :value: 0.0
+
+
+
+   .. py:attribute:: nuclear_scen
+      :type:  int
+      :value: 0
+
+
+
+   .. py:attribute:: ccs_scen
+      :type:  int
+      :value: 0
+
+
+
+   .. py:attribute:: excl_or_moth
+      :type:  Literal['mothball', 'exclude']
+      :value: 'mothball'
+
+
+
+   .. py:property:: re_share_of_total
+
+
+   .. py:method:: is_re_child(other)
+
+      Determine if ``other`` is a child of this scenario.
+
+
+
+   .. py:method:: is_li_child(other)
+
+      Determine if ``other`` is a child of this scenario.
+
+
+
+   .. py:method:: __str__()
+
+
+   .. py:property:: for_idx
+
+
+   .. py:property:: storage_cap_pct_array
+
+
+   .. py:method:: split_ccs()
+
+
+   .. py:method:: storage_specs(capacity, operating_date = None, eff = (0.9, 0.75, 0.5), ids = (-1, -2, -3), **kwargs)
+
+
+   .. py:method:: from_sweeps(re, li = (0.0, ), fe = (0.0, ), h2 = (0.0, ), nuke = (0, ), ccs = (0, ), excl_or_moth = ('mothball', ), no_limit_prime = ('GT', ))
+      :staticmethod:
+
+
+
+.. py:class:: BaseProfileMatch
+
+   .. py:attribute:: capacity
+      :type:  float
+
+
+   .. py:attribute:: req_profile
+      :type:  pandas.Series | pandas.DataFrame
+
+
+   .. py:attribute:: re_profiles
+      :type:  pandas.DataFrame
+
+
+   .. py:attribute:: fuel_profile
+      :type:  pandas.DataFrame
+      :value: None
+
+
+
+   .. py:attribute:: _re_cap
+      :type:  None | numpy.ndarray
+      :value: None
+
+
+
+   .. py:attribute:: _en_cap
+      :type:  None | numpy.ndarray
+      :value: None
+
+
+
+   .. py:attribute:: _errors
+      :type:  list
+      :value: []
+
+
+
+   .. py:attribute:: _resources
+      :type:  tuple
+      :value: ()
+
+
+
+   .. py:attribute:: _cap
+      :type:  bool
+      :value: False
+
+
+
+   .. py:attribute:: _co2_profile
+      :type:  pandas.DataFrame
+
+
+   .. py:method:: __post_init__()
+
+
+   .. py:method:: kw(**kwargs)
+      :classmethod:
+
+
+
+   .. py:property:: resources
+      :type: tuple
+
+
+
+   .. py:method:: by_inverse()
+
+      Find the solar and wind capacity that most closely matches
+      the fossil plant's output using a generalized inverse
+
+      :return: None
+
+      .. math::
+          \mathbf{G} = egin{bmatrix}
+          \mathbf{daily\:solar} & \mathbf{daily\:wind}
+          \end{bmatrix}\
+          \mathbf{d} = [\mathbf{daily\:output}]
+
+          egin{bmatrix}
+          solar\:cap & wind\:cap
+          \end{bmatrix} = (\mathbf{G}^{T}\mathbf{G})^{-1}\mathbf{G}^{T}\mathbf{d}
+
+
+
+   .. py:method:: optimize(try_capacity=True)
+
+
+   .. py:method:: try_capacity(try_capacity)
+
+
+   .. py:method:: by_equal_energy(inc=0.1)
+
+      Find the solar and wind capacity that produces the same energy
+      while avoiding as much fossil generation as possible
+
+      :param inc: increment to use in search
+      :return: None
+
+
+
+   .. py:method:: by_equal_capacity(inc=0.1)
+
+      Find the solar and wind capacity equal to fossil capacity
+      that avoids as much fossil generation as possible
+
+      :param inc: increment to use in search
+      :return: None
+
+
+
+   .. py:method:: to_pd(item, name=None, prefix='', suffix='')
+
+
+   .. py:property:: re_cap
+      :type: dict
+
+
+
+   .. py:property:: re
+      :type: numpy.ndarray
+
+
+      Total renewable generation
+
+
+   .. py:property:: re_shares
+      :type: numpy.ndarray
+
+
+
+   .. py:property:: re_by_type
+      :type: numpy.ndarray
+
+
+      Total renewable generation
+
+
+   .. py:property:: avoided
+      :type: numpy.ndarray
+
+
+      Avoided fossil generation
+
+
+   .. py:method:: avoided_test(re)
+
+
+   .. py:property:: avoided_fuel
+      :type: numpy.ndarray
+
+
+      Avoided fossil generation
+
+
+   .. py:property:: excess_re
+      :type: numpy.ndarray
+
+
+      Renewable generation that exceeds fossil requirement
+
+
+   .. py:property:: excess_by_type
+      :type: numpy.ndarray
+
+
+
+   .. py:property:: ix
+
+
+   .. py:property:: ix_names
+
+
+   .. py:property:: carbon_intensity
+
+
+   .. py:method:: _output_incr(share)
+
+
+   .. py:method:: _output_incr_freq(share, freq='MS')
+
+
+   .. py:method:: fmt_share(share)
+      :staticmethod:
+
+
+
+   .. py:method:: output_incr(step=0.1, freq='T')
+
+
+   .. py:method:: output_incr_df(step=0.1, freq='T')
+
+
+   .. py:property:: out_metr
+
+
+   .. py:property:: fixed_out_metr
+
+
+   .. py:method:: make_fig(starting_year=None)
+
+      Create bar figure showing results
+
+
+
+   .. py:method:: copy()
+
+
+   .. py:property:: for_cap_func
+
+      cap, req_prof, re_profs = self.for_cap_func
+      Returns:
+
+
+   .. py:method:: test_offshore()
+
+
+   .. py:method:: test_onshore()
+
+
+   .. py:method:: grouper(df, prefix='', suffix='', freq=None, group_cols=True, total=False)
+      :staticmethod:
+
+
+
+   .. py:method:: stacker(df, name=None, freq='YS')
+      :staticmethod:
+
+
+
+.. py:function:: equal_energy(req_prof, re_profs, inc=0.1, pct_to_replace=1.0)
+
+   Find the combination of wind and solar that produces the same energy
+   while avoiding as much fossil generation as possible.
+
+   :param req_prof: the fossil profile we are trying to match
+   :param re_profs: 2 or 3 cols of re CFs
+   :param inc: increment to use in search, only available with 2 profs
+   :param pct_to_replace: percentage of energy to actually replace
+   :return: re_capacity
+
+
+.. py:function:: fuel_auc(edges, curve)
+
+   Compute the area under a supply curve
+
+   :param edges: generators with start and end cumulative mmbtus,
+                 ie the bounds for their area under the curve
+   :param curve:
+
+   Returns:
+
+
+
+.. py:function:: objective(re_cap, re_prof, target)
+
+.. py:function:: optimize_equal_energy(re_profs, target, Ab_ub, Ab_eq)
+
+.. py:function:: optimize(req_prof, re_profs, max_re_cap, pct_to_replace=float)
+
+   Find the combination of wind and solar that produces no more
+   than the desired energy while avoiding as much fossil generation as possible.
+
+   :param req_prof: the fossil profile we are trying to match
+   :param re_profs: 2 or 3 cols of re CFs
+   :param pct_to_replace: percentage of energy to actually replace
+   :param max_re_cap: maximum renewable capacity by type
+
+   :return: re_capacity
+
+
+.. py:function:: np_all_axis1(x)
+
+   Numba compatible version of np.all(x, axis=1).
+
+
+.. py:function:: equal_capacity(cap, req_prof, re_profs, inc=0.1, sent=False)
+
+   Find the combination of wind and solar capacity that equals fossil capacity
+   while avoiding as much fossil generation as possible.
+
+   :param cap: capacity of the fossil plant
+   :param req_prof: the fossil profile we are trying to match
+   :param re_profs: 2 or 3 cols of re CFs
+   :param inc: increment to use in search, only available with 2 profs
+   :param sent: sentinel to avoid recursion
+   :return: re_capacity
+
+
+.. py:function:: rolling_re_match(load, re_profiles, obj, window_days=4)
+
+.. py:function:: to_nuclear(plant_id_eia, re_profiles, re_plant_specs, window_days=8, cap_override=None, **kwargs)
+
+.. py:function:: adjust_profiles(hist_dispatch, for_load, capacities)
+
+.. py:function:: calc_redispatch_cost(dm)
+
+.. py:function:: redispatch_cost_loop(m_index, dispatch, fom, var, start)
+

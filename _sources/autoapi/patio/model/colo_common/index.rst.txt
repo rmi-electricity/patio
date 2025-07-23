@@ -1,0 +1,477 @@
+patio.model.colo_common
+=======================
+
+.. py:module:: patio.model.colo_common
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   patio.model.colo_common.logger
+   patio.model.colo_common.SUCCESS
+   patio.model.colo_common.FAIL_SMALL
+   patio.model.colo_common.FAIL_SELECT
+   patio.model.colo_common.FAIL_DISPATCH
+   patio.model.colo_common.INFEASIBLE
+   patio.model.colo_common.FAIL_SERVICE
+   patio.model.colo_common.STATUS
+   patio.model.colo_common.nt
+   patio.model.colo_common.WACC
+   patio.model.colo_common.MACRS
+   patio.model.colo_common.TR
+   patio.model.colo_common.ES
+   patio.model.colo_common.COSTS
+   patio.model.colo_common.SUM_COL_ORDER
+   patio.model.colo_common.FANCY_COLS
+   patio.model.colo_common.AEO_MAP
+   patio.model.colo_common.LAND
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   patio.model.colo_common.SeriesLike
+   patio.model.colo_common.OptResult
+   patio.model.colo_common.OptimizationData
+   patio.model.colo_common.OutputGrabber
+   patio.model.colo_common.LoggingContext
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   patio.model.colo_common.hstack
+   patio.model.colo_common.vstack
+   patio.model.colo_common.safediv
+   patio.model.colo_common.add_missing_col
+   patio.model.colo_common.prof
+   patio.model.colo_common.to_dict
+   patio.model.colo_common.pl_exc_fmt
+   patio.model.colo_common._when_to_num
+   patio.model.colo_common.f_pmt
+   patio.model.colo_common.f_pv
+   patio.model.colo_common.f_npv
+   patio.model.colo_common.pl_filter
+   patio.model.colo_common.pl_str_contains
+   patio.model.colo_common.no_capture_stdout
+   patio.model.colo_common.capture_stdout
+   patio.model.colo_common.capture_stderr
+   patio.model.colo_common.timer
+   patio.model.colo_common.order_columns
+   patio.model.colo_common._
+   patio.model.colo_common._
+   patio.model.colo_common._
+   patio.model.colo_common.keep_nonzero_cols
+   patio.model.colo_common.aeo
+   patio.model.colo_common.compare
+   patio.model.colo_common.find_violations
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:data:: SUCCESS
+   :value: 0
+
+
+.. py:data:: FAIL_SMALL
+   :value: 1
+
+
+.. py:data:: FAIL_SELECT
+   :value: 2
+
+
+.. py:data:: FAIL_DISPATCH
+   :value: 3
+
+
+.. py:data:: INFEASIBLE
+   :value: 4
+
+
+.. py:data:: FAIL_SERVICE
+   :value: 5
+
+
+.. py:data:: STATUS
+
+.. py:data:: nt
+
+.. py:data:: WACC
+   :value: 0.085
+
+
+.. py:data:: MACRS
+
+.. py:data:: TR
+   :value: 0.257
+
+
+.. py:data:: ES
+
+   ATB 2024 downloaded April 4. 2025, moderate case
+   Year, DC, AC, extended to 2055
+
+.. py:data:: COSTS
+
+.. py:data:: SUM_COL_ORDER
+   :value: ['run', 'run_status', 'balancing_authority_code_eia', 'icx_id', 'status', 'tech', 'name',...
+
+
+.. py:data:: FANCY_COLS
+
+.. py:function:: hstack(*args)
+
+.. py:function:: vstack(*args)
+
+.. py:function:: safediv(a, b)
+
+.. py:function:: add_missing_col(df, col)
+
+.. py:function:: prof(df, years, selection=cs.numeric)
+
+.. py:function:: to_dict(d, suf='')
+
+.. py:function:: pl_exc_fmt(exc)
+
+.. py:function:: _when_to_num(when)
+
+.. py:function:: f_pmt(rate, nper, pv, fv=0, when='end')
+
+   Pmt method lifted from numpy/numpy-financial:
+
+   Compute the payment against loan principal plus interest.
+
+   :rtype: object
+   :param rate: Rate of interest (per period)
+   :type rate: array_like
+   :param nper: Number of compounding periods
+   :type nper: array_like
+   :param pv: Present value
+   :type pv: array_like
+   :param fv: Future value (default = 0)
+   :type fv: array_like
+   :param when: When payments are due ('begin' (1) or 'end' (0))
+   :type when: {{'begin', 1}, {'end', 0}}, {string, int}
+   :return: Payment against loan plus interest. If all input is scalar, returns a
+       scalar float. If any input is array_like, returns payment for each
+       input element. If multiple inputs are array_like, they all must have
+       the same shape.
+   :rtype: ndarray
+
+   .. [N] numpy-financial (2019, Nov 13)
+      github.com/numpy/numpy-financial/blob/master/numpy_financial/_financial.py
+   .. [WRW] Wheeler, D. A., E. Rathke, and R. Weir (Eds.) (2009, May).
+      Open Document Format for Office Applications (OpenDocument)v1.2,
+      Part 2: Recalculated Formula (OpenFormula) Format - Annotated Version,
+      Pre-Draft 12. Organization for the Advancement of Structured Information
+      Standards (OASIS). Billerica, MA, USA. [ODT Document].
+      Available:
+      http://www.oasis-open.org/committees/documents.php
+      ?wg_abbrev=office-formulaOpenDocument-formula-20090508.odt
+
+
+.. py:function:: f_pv(rate, nper, pmt, fv=0, when='end')
+
+   Pv method lifted from numpy/numpy-financial:
+
+   Compute the present value.
+
+   :param rate: Rate of interest (per period)
+   :type rate: array_like
+   :param nper: Number of compounding periods
+   :type nper: array_like
+   :param pmt: Payment
+   :type pmt: array_like
+   :param fv: Future value
+   :type fv: array_like
+   :param when: When payments are due ('begin' (1) or 'end' (0))
+   :type when: {{'begin', 1}, {'end', 0}}, {string, int}
+   :return: Present value of a series of payments or investments.
+   :rtype: ndarray, float
+
+   .. [N] numpy-financial (2019, Nov 13)
+      github.com/numpy/numpy-financial/blob/master/numpy_financial/_financial.py
+   .. [WRW] Wheeler, D. A., E. Rathke, and R. Weir (Eds.) (2009, May).
+      Open Document Format for Office Applications (OpenDocument)v1.2,
+      Part 2: Recalculated Formula (OpenFormula) Format - Annotated Version,
+      Pre-Draft 12. Organization for the Advancement of Structured Information
+      Standards (OASIS). Billerica, MA, USA. [ODT Document].
+      Available:
+      http://www.oasis-open.org/committees/documents.php
+      ?wg_abbrev=office-formulaOpenDocument-formula-20090508.odt
+
+
+.. py:function:: f_npv(rate, values)
+
+   Npv method lifted from numpy/numpy-financial:
+
+   Returns the NPV (Net Present Value) of a cash flow series.
+   Modified to behave the same as the excel function, i.e. the first value is
+   now discounted. i=1 -> len(values) + 1 rather than i=0 -> len(values)
+
+   :param rate: The discount rate.
+   :type rate: float
+   :param values: The values of the time
+       series of cash flows.  The (fixed) time
+       interval between cash flow "events" must be the same as that for
+       which `rate` is given (i.e., if `rate` is per year, then precisely
+       a year is understood to elapse between each cash flow event).  By
+       convention, investments or "deposits" are negative, income or
+       "withdrawals" are positive; `values` must begin with the initial
+       investment, thus `values[0]` will typically be negative.
+   :type values: array_like
+   :return: The NPV of the input cash flow series `values` at the discount
+       `rate`.
+   :rtype: float
+
+   .. [N] numpy-financial (2019, Nov 13)
+      github.com/numpy/numpy-financial/blob/master/numpy_financial/_financial.py
+   .. [G] L. J. Gitman, "Principles of Managerial Finance, Brief," 3rd ed.,
+      Addison-Wesley, 2003, pg. 346.
+
+
+.. py:function:: pl_filter(**kwargs)
+
+.. py:function:: pl_str_contains(col, *args)
+
+.. py:class:: SeriesLike(in_df = None, **kwargs)
+
+   .. py:method:: items()
+
+
+.. py:class:: OptResult
+
+   Bases: :py:obj:`NamedTuple`
+
+
+   .. py:attribute:: status
+      :type:  int
+
+
+   .. py:attribute:: result
+      :type:  dict
+
+
+   .. py:attribute:: dfs
+      :type:  dict
+
+
+   .. py:attribute:: bad_year
+      :type:  int | None
+      :value: None
+
+
+
+   .. py:attribute:: max_re
+      :type:  float | None
+      :value: None
+
+
+
+   .. py:method:: infeasible(info, regime)
+      :classmethod:
+
+
+
+   .. py:method:: fmt_result()
+
+
+   .. py:method:: fmt_status()
+
+
+.. py:class:: OptimizationData
+
+   Bases: :py:obj:`NamedTuple`
+
+
+   .. py:attribute:: l_re
+      :type:  int
+
+
+   .. py:attribute:: yrs
+      :type:  collections.abc.Sequence
+
+
+   .. py:attribute:: lp_in
+      :type:  dict
+
+
+   .. py:attribute:: result
+      :type:  dict
+
+
+   .. py:attribute:: new_clean
+      :type:  dict
+
+
+   .. py:attribute:: x_idx
+      :type:  dict
+
+
+   .. py:attribute:: dt_idx
+      :type:  dict
+
+
+   .. py:attribute:: ub_idx
+      :type:  dict
+
+
+   .. py:attribute:: dvs
+      :type:  list
+      :value: ['discharge', 'charge', 'soc', 'export_fossil', 'export_clean', 'curtailment', 'load_fossil']
+
+
+
+   .. py:method:: new(l_re, yrs)
+      :classmethod:
+
+
+
+   .. py:method:: add_year(year, result, lp_in, new_clean, x_idx, dt_idx, ub_idx, **kwargs)
+
+
+   .. py:method:: clean_cost()
+
+
+   .. py:method:: full_ptc()
+
+
+   .. py:method:: c_mw_all()
+
+
+   .. py:method:: c_ts_all()
+
+
+   .. py:method:: c_ts(year)
+
+
+   .. py:method:: x_ts(year)
+
+
+   .. py:method:: ineqlin(year, kind = 'marginals')
+
+
+   .. py:method:: hourly(year)
+
+
+.. py:class:: OutputGrabber(stream, threaded=True)
+
+   Class used to grab standard output or another stream.
+
+
+   .. py:attribute:: escape_char
+      :value: '\x08'
+
+
+
+   .. py:attribute:: origstream
+
+
+   .. py:attribute:: threaded
+      :value: True
+
+
+
+   .. py:attribute:: origstreamfd
+
+
+   .. py:attribute:: capturedtext
+      :value: ''
+
+
+
+   .. py:method:: __enter__()
+
+      Start capturing the stream data.
+
+
+
+   .. py:method:: __exit__(type, value, traceback)
+
+      Stop capturing the stream data and save the text in `capturedtext`.
+
+
+
+   .. py:method:: read_output()
+
+      Read the stream data (one byte at a time)
+      and save the text in `capturedtext`.
+
+
+
+.. py:function:: no_capture_stdout()
+
+.. py:function:: capture_stdout()
+
+   Save targetfd descriptor, and open a new
+   temporary file there.  If no tmpfile is
+   specified a tempfile.Tempfile() will be opened
+   in text mode.
+
+
+.. py:function:: capture_stderr()
+
+   Save targetfd descriptor, and open a new
+   temporary file there.  If no tmpfile is
+   specified a tempfile.Tempfile() will be opened
+   in text mode.
+
+
+.. py:function:: timer()
+
+.. py:class:: LoggingContext(logger, level=None, handler=None, close=True)
+
+   .. py:attribute:: logger
+
+
+   .. py:attribute:: level
+      :value: None
+
+
+
+   .. py:attribute:: handler
+      :value: None
+
+
+
+   .. py:attribute:: close
+      :value: True
+
+
+
+   .. py:method:: __enter__()
+
+
+   .. py:method:: __exit__(et, ev, tb)
+
+
+.. py:function:: order_columns(df)
+
+.. py:function:: _(df)
+
+.. py:function:: _(df)
+
+.. py:function:: _(df)
+
+.. py:function:: keep_nonzero_cols(df, keep=())
+
+.. py:function:: aeo(release)
+
+.. py:data:: AEO_MAP
+
+.. py:data:: LAND
+
+.. py:function:: compare(a, b, cols=None, **kwargs)
+
+.. py:function:: find_violations()
+

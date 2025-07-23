@@ -1,0 +1,244 @@
+patio.helpers
+=============
+
+.. py:module:: patio.helpers
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   patio.helpers.LOGGER
+   patio.helpers.QUERY_FUNCS
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   patio.helpers.df_query
+   patio.helpers.re_limited
+   patio.helpers.make_core_lhs_rhs
+   patio.helpers.lstrip0
+   patio.helpers.seconds_since_touch
+   patio.helpers.fix_cems_datetime
+   patio.helpers.combine_cols
+   patio.helpers.check_lat_lons
+   patio.helpers.add_states
+   patio.helpers.fix_na_neg_col
+   patio.helpers.adjust_col_for_pct_owned
+   patio.helpers.cat_multiindex_as_col
+   patio.helpers.round_coordinates
+   patio.helpers.as_ufunc
+   patio.helpers.isclose
+   patio.helpers.show
+   patio.helpers.agg_profile
+   patio.helpers.crn
+   patio.helpers.df_in_half
+   patio.helpers.distance_arrays
+   patio.helpers.distance
+   patio.helpers.pl_distance
+   patio.helpers.ninja_profile_fix
+   patio.helpers.find_na
+   patio.helpers.prep_for_re_ninja
+   patio.helpers.td_to_hours
+   patio.helpers.mo_to_days
+   patio.helpers.repeat_mo
+   patio.helpers.normalize_cems
+   patio.helpers.adjust_ilr
+   patio.helpers.shift_profile_utc
+   patio.helpers.pl_df_product
+   patio.helpers.df_product
+   patio.helpers.combine_profiles
+   patio.helpers.idfn
+   patio.helpers.load_or_rebuild_parquet
+   patio.helpers.clean_col
+   patio.helpers.min_i
+   patio.helpers._git_commit_info
+   patio.helpers.bbb_path
+   patio.helpers.get_year_map
+   patio.helpers.generate_projection_from_historical_pl
+   patio.helpers.generate_projection_from_historical
+   patio.helpers.read_named_range
+   patio.helpers.solver
+
+
+Module Contents
+---------------
+
+.. py:data:: LOGGER
+
+.. py:data:: QUERY_FUNCS
+
+.. py:function:: df_query(df, qs)
+
+.. py:function:: re_limited(re_meta)
+
+.. py:function:: make_core_lhs_rhs(re_meta, limited=False, fossil=True)
+
+.. py:function:: lstrip0(df, col)
+
+   Remove leading zeros from column
+
+
+.. py:function:: seconds_since_touch(file)
+
+.. py:function:: fix_cems_datetime(df, date_col = 'OP_DATE', hour_col = 'OP_HOUR', datetime_col = 'datetime')
+
+.. py:function:: combine_cols(df, col1, col2, out_col, sep = '_', drop=False)
+
+.. py:function:: check_lat_lons(df)
+
+   Add column that says if lat/lon is safe based on state bounds
+
+
+.. py:function:: add_states(df)
+
+.. py:function:: fix_na_neg_col(df, col)
+
+.. py:function:: adjust_col_for_pct_owned(df, col, pct_owned_col = 'pct_owned')
+
+.. py:function:: cat_multiindex_as_col(df, new_col, droplevel=None)
+
+.. py:function:: round_coordinates(df, in_cols = ('latitude', 'longitude'), out_cols = ('latitude', 'longitude'), tol = 0.5)
+
+   Round coordinates to the nearest ``tol`` degree
+
+
+.. py:function:: as_ufunc(func)
+
+   Turn ``np.frompyfunc`` into decorator
+
+
+.. py:function:: isclose(i, j)
+
+   ~equivalent of ``np.isclose`` for arrays with strs
+
+
+.. py:function:: show(fig)
+
+   Display a plotly figure in a notebook where ``fig.show()`` does not work
+
+   :param fig:
+   :return:
+
+
+.. py:function:: agg_profile(profile, freq='D')
+
+   Adjust frequency of profile to ``freq``
+
+   :param profile: input profile
+   :param freq: the time frequency to aggregate to
+       "D" for day, "H" for hour
+   :return:
+
+
+.. py:function:: crn(df, l)
+
+.. py:function:: df_in_half(df)
+
+   Split model output df in ~half wihtout breaking up plant/prime/fuel
+
+
+.. py:function:: distance_arrays(latlon1, latlon2)
+
+.. py:function:: distance(lat1, lon1, lat2, lon2)
+
+   Compute haversine distance between two points
+
+
+.. py:function:: pl_distance(df, lat1, lat2, lon1, lon2)
+
+.. py:function:: ninja_profile_fix(df, pid, rtype, solar_ilr)
+
+.. py:function:: find_na(df)
+
+.. py:function:: prep_for_re_ninja(re)
+
+   Set names and years to tell re_ninja what to download
+
+
+.. py:function:: td_to_hours(td)
+
+   Convert timedelta to hours
+
+
+.. py:function:: mo_to_days(monthly, years=(2006, 2020), last_day=30)
+
+   Take one year of monthly data and repeat it over ``years`` then resample it to
+   hourly so every hour has the full month value
+
+
+.. py:function:: repeat_mo(monthly, years=(2006, 2020))
+
+   Take one year of monthly data and repeat it over ``years`` then resample it to
+   hourly so every hour has the full month value
+
+
+.. py:function:: normalize_cems(cems)
+
+   Normalize cems data monthly for use with monthly 923 data
+
+
+.. py:function:: adjust_ilr(profile, ilr)
+
+.. py:function:: shift_profile_utc(profile, new_utc, old_utc, logid = '')
+
+   Roll profile to shift it from ``old_utc`` offset to ``new_utc`` offset
+
+
+.. py:function:: pl_df_product(left, right, suffix = '_r')
+
+   Determine the product (~combinations) of the rows of two dataframes
+
+
+.. py:function:: df_product(left, right, left_suffix = '_l', right_suffix = '_r')
+
+   Determine the product (~combinations) of the rows of two dataframes
+
+
+.. py:function:: combine_profiles(iter_file, solar_ilr)
+
+   Combine profiles from list of files, fix timezones, remove 12/31/20 and aggregate to daily
+
+
+.. py:function:: idfn(val)
+
+   Id function for pytest parameterization
+
+   :param val:
+   :return:
+
+
+.. py:function:: load_or_rebuild_parquet(e_file, p_file, func)
+
+   Load file from ``p_path`` if it is newer than ``e_path`` otherwise run ``func`` to
+   create a new parquet at ``p_path`` based on ``e_path`` and return the df
+
+
+.. py:function:: clean_col(df, col, dtype)
+
+   Remove blank strings from col and cast to numeric
+
+
+.. py:function:: min_i(x0, y0, x1, y1)
+
+   Max for iterative LPs.
+
+
+.. py:function:: _git_commit_info()
+
+.. py:function:: bbb_path()
+
+.. py:function:: get_year_map(min_year=2021, max_year=2039)
+
+.. py:function:: generate_projection_from_historical_pl(in_df, date_col = 'datetime', year_mapper = None)
+
+.. py:function:: generate_projection_from_historical(in_df, date_col = 'datetime', year_mapper = None)
+
+.. py:function:: read_named_range(path, name)
+
+.. py:function:: solver()
+

@@ -1,0 +1,1141 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" /><link rel="next" title="patio.model" href="../model/index.html" /><link rel="prev" title="patio.exceptions" href="../exceptions/index.html" />
+        <link rel="prefetch" href="../../../_static/Small_PNG-RMI_logo_PrimaryUse.PNG" as="image" />
+        <link rel="prefetch" href="../../../_static/Small_PNG-RMI_logo_PrimaryUse_White_Horizontal.PNG" as="image" />
+
+    <!-- Generated with Sphinx 8.2.3 and Furo 2025.07.19 -->
+        <title>patio.helpers - Patio 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=25af2a20" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #2b2b2b;
+  --color-code-foreground: #f8f8f2;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #2b2b2b;
+  --color-code-foreground: #f8f8f2;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">Patio 0.1 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../../../_static/Small_PNG-RMI_logo_PrimaryUse.PNG" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../../../_static/Small_PNG-RMI_logo_PrimaryUse_White_Horizontal.PNG" alt="Dark Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">Patio 0.1 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../LICENSE.html">Licensing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cli.html">CLI</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../../index.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current has-children"><a class="reference internal" href="../index.html">patio</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of patio</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../_version/index.html">patio._version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli/index.html">patio.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../constants/index.html">patio.constants</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../data/index.html">patio.data</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of patio.data</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../data/asset_data/index.html">patio.data.asset_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../data/cems/index.html">patio.data.cems</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../data/entity_ids/index.html">patio.data.entity_ids</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../data/profile_data/index.html">patio.data.profile_data</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../exceptions/index.html">patio.exceptions</a></li>
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">patio.helpers</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../model/index.html">patio.model</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of patio.model</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../model/ba_level/index.html">patio.model.ba_level</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../model/ba_scenario/index.html">patio.model.ba_scenario</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../model/base/index.html">patio.model.base</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../model/colo_common/index.html">patio.model.colo_common</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../model/colo_core/index.html">patio.model.colo_core</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../model/colo_data/index.html">patio.model.colo_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../model/colo_lp/index.html">patio.model.colo_lp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../model/colo_resources/index.html">patio.model.colo_resources</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../model/colo_results/index.html">patio.model.colo_results</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../re_ninja/index.html">patio.re_ninja</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="https://github.com/rmi-electricity/patio/blob/main/docs/autoapi/patio/helpers/index.rst?plain=true" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div><div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/rmi-electricity/patio/edit/main/docs/autoapi/patio/helpers/index.rst" rel="edit" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="module-patio.helpers">
+<span id="patio-helpers"></span><h1>patio.helpers<a class="headerlink" href="#module-patio.helpers" title="Link to this heading">¶</a></h1>
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#patio.helpers.LOGGER" title="patio.helpers.LOGGER"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LOGGER</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#patio.helpers.QUERY_FUNCS" title="patio.helpers.QUERY_FUNCS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">QUERY_FUNCS</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#patio.helpers.df_query" title="patio.helpers.df_query"><code class="xref py py-obj docutils literal notranslate"><span class="pre">df_query</span></code></a>(df, qs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#patio.helpers.re_limited" title="patio.helpers.re_limited"><code class="xref py py-obj docutils literal notranslate"><span class="pre">re_limited</span></code></a>(re_meta)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#patio.helpers.make_core_lhs_rhs" title="patio.helpers.make_core_lhs_rhs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_core_lhs_rhs</span></code></a>(re_meta[, limited, fossil])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#patio.helpers.lstrip0" title="patio.helpers.lstrip0"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lstrip0</span></code></a>(df, col)</p></td>
+<td><p>Remove leading zeros from column</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#patio.helpers.seconds_since_touch" title="patio.helpers.seconds_since_touch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">seconds_since_touch</span></code></a>(file)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#patio.helpers.fix_cems_datetime" title="patio.helpers.fix_cems_datetime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fix_cems_datetime</span></code></a>(df[, date_col, hour_col, datetime_col])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#patio.helpers.combine_cols" title="patio.helpers.combine_cols"><code class="xref py py-obj docutils literal notranslate"><span class="pre">combine_cols</span></code></a>(df, col1, col2, out_col[, sep, drop])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#patio.helpers.check_lat_lons" title="patio.helpers.check_lat_lons"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_lat_lons</span></code></a>(df)</p></td>
+<td><p>Add column that says if lat/lon is safe based on state bounds</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#patio.helpers.add_states" title="patio.helpers.add_states"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_states</span></code></a>(df)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#patio.helpers.fix_na_neg_col" title="patio.helpers.fix_na_neg_col"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fix_na_neg_col</span></code></a>(df, col)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#patio.helpers.adjust_col_for_pct_owned" title="patio.helpers.adjust_col_for_pct_owned"><code class="xref py py-obj docutils literal notranslate"><span class="pre">adjust_col_for_pct_owned</span></code></a>(df, col[, pct_owned_col])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#patio.helpers.cat_multiindex_as_col" title="patio.helpers.cat_multiindex_as_col"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cat_multiindex_as_col</span></code></a>(df, new_col[, droplevel])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#patio.helpers.round_coordinates" title="patio.helpers.round_coordinates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">round_coordinates</span></code></a>(df[, in_cols, out_cols, tol])</p></td>
+<td><p>Round coordinates to the nearest <code class="docutils literal notranslate"><span class="pre">tol</span></code> degree</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#patio.helpers.as_ufunc" title="patio.helpers.as_ufunc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">as_ufunc</span></code></a>(func)</p></td>
+<td><p>Turn <code class="docutils literal notranslate"><span class="pre">np.frompyfunc</span></code> into decorator</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#patio.helpers.isclose" title="patio.helpers.isclose"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isclose</span></code></a>(i, j)</p></td>
+<td><p>~equivalent of <code class="docutils literal notranslate"><span class="pre">np.isclose</span></code> for arrays with strs</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#patio.helpers.show" title="patio.helpers.show"><code class="xref py py-obj docutils literal notranslate"><span class="pre">show</span></code></a>(fig)</p></td>
+<td><p>Display a plotly figure in a notebook where <code class="docutils literal notranslate"><span class="pre">fig.show()</span></code> does not work</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#patio.helpers.agg_profile" title="patio.helpers.agg_profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">agg_profile</span></code></a>(profile[, freq])</p></td>
+<td><p>Adjust frequency of profile to <code class="docutils literal notranslate"><span class="pre">freq</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#patio.helpers.crn" title="patio.helpers.crn"><code class="xref py py-obj docutils literal notranslate"><span class="pre">crn</span></code></a>(df, l)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#patio.helpers.df_in_half" title="patio.helpers.df_in_half"><code class="xref py py-obj docutils literal notranslate"><span class="pre">df_in_half</span></code></a>(df)</p></td>
+<td><p>Split model output df in ~half wihtout breaking up plant/prime/fuel</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#patio.helpers.distance_arrays" title="patio.helpers.distance_arrays"><code class="xref py py-obj docutils literal notranslate"><span class="pre">distance_arrays</span></code></a>(latlon1, latlon2)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#patio.helpers.distance" title="patio.helpers.distance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">distance</span></code></a>(lat1, lon1, lat2, lon2)</p></td>
+<td><p>Compute haversine distance between two points</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#patio.helpers.pl_distance" title="patio.helpers.pl_distance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pl_distance</span></code></a>(df, lat1, lat2, lon1, lon2)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#patio.helpers.ninja_profile_fix" title="patio.helpers.ninja_profile_fix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ninja_profile_fix</span></code></a>(df, pid, rtype, solar_ilr)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#patio.helpers.find_na" title="patio.helpers.find_na"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_na</span></code></a>(df)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#patio.helpers.prep_for_re_ninja" title="patio.helpers.prep_for_re_ninja"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prep_for_re_ninja</span></code></a>(re)</p></td>
+<td><p>Set names and years to tell re_ninja what to download</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#patio.helpers.td_to_hours" title="patio.helpers.td_to_hours"><code class="xref py py-obj docutils literal notranslate"><span class="pre">td_to_hours</span></code></a>(td)</p></td>
+<td><p>Convert timedelta to hours</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#patio.helpers.mo_to_days" title="patio.helpers.mo_to_days"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mo_to_days</span></code></a>(monthly[, years, last_day])</p></td>
+<td><p>Take one year of monthly data and repeat it over <code class="docutils literal notranslate"><span class="pre">years</span></code> then resample it to</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#patio.helpers.repeat_mo" title="patio.helpers.repeat_mo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat_mo</span></code></a>(monthly[, years])</p></td>
+<td><p>Take one year of monthly data and repeat it over <code class="docutils literal notranslate"><span class="pre">years</span></code> then resample it to</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#patio.helpers.normalize_cems" title="patio.helpers.normalize_cems"><code class="xref py py-obj docutils literal notranslate"><span class="pre">normalize_cems</span></code></a>(cems)</p></td>
+<td><p>Normalize cems data monthly for use with monthly 923 data</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#patio.helpers.adjust_ilr" title="patio.helpers.adjust_ilr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">adjust_ilr</span></code></a>(profile, ilr)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#patio.helpers.shift_profile_utc" title="patio.helpers.shift_profile_utc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shift_profile_utc</span></code></a>(profile, new_utc, old_utc[, logid])</p></td>
+<td><p>Roll profile to shift it from <code class="docutils literal notranslate"><span class="pre">old_utc</span></code> offset to <code class="docutils literal notranslate"><span class="pre">new_utc</span></code> offset</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#patio.helpers.pl_df_product" title="patio.helpers.pl_df_product"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pl_df_product</span></code></a>(left, right[, suffix])</p></td>
+<td><p>Determine the product (~combinations) of the rows of two dataframes</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#patio.helpers.df_product" title="patio.helpers.df_product"><code class="xref py py-obj docutils literal notranslate"><span class="pre">df_product</span></code></a>(left, right[, left_suffix, right_suffix])</p></td>
+<td><p>Determine the product (~combinations) of the rows of two dataframes</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#patio.helpers.combine_profiles" title="patio.helpers.combine_profiles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">combine_profiles</span></code></a>(iter_file, solar_ilr)</p></td>
+<td><p>Combine profiles from list of files, fix timezones, remove 12/31/20 and aggregate to daily</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#patio.helpers.idfn" title="patio.helpers.idfn"><code class="xref py py-obj docutils literal notranslate"><span class="pre">idfn</span></code></a>(val)</p></td>
+<td><p>Id function for pytest parameterization</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#patio.helpers.load_or_rebuild_parquet" title="patio.helpers.load_or_rebuild_parquet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_or_rebuild_parquet</span></code></a>(e_file, p_file, func)</p></td>
+<td><p>Load file from <code class="docutils literal notranslate"><span class="pre">p_path</span></code> if it is newer than <code class="docutils literal notranslate"><span class="pre">e_path</span></code> otherwise run <code class="docutils literal notranslate"><span class="pre">func</span></code> to</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#patio.helpers.clean_col" title="patio.helpers.clean_col"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clean_col</span></code></a>(df, col, dtype)</p></td>
+<td><p>Remove blank strings from col and cast to numeric</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#patio.helpers.min_i" title="patio.helpers.min_i"><code class="xref py py-obj docutils literal notranslate"><span class="pre">min_i</span></code></a>(x0, y0, x1, y1)</p></td>
+<td><p>Max for iterative LPs.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#patio.helpers._git_commit_info" title="patio.helpers._git_commit_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_git_commit_info</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#patio.helpers.bbb_path" title="patio.helpers.bbb_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bbb_path</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#patio.helpers.get_year_map" title="patio.helpers.get_year_map"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_year_map</span></code></a>([min_year, max_year])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#patio.helpers.generate_projection_from_historical_pl" title="patio.helpers.generate_projection_from_historical_pl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_projection_from_historical_pl</span></code></a>(in_df[, ...])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#patio.helpers.generate_projection_from_historical" title="patio.helpers.generate_projection_from_historical"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_projection_from_historical</span></code></a>(in_df[, date_col, ...])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#patio.helpers.read_named_range" title="patio.helpers.read_named_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_named_range</span></code></a>(path, name)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#patio.helpers.solver" title="patio.helpers.solver"><code class="xref py py-obj docutils literal notranslate"><span class="pre">solver</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">¶</a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="patio.helpers.LOGGER">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">LOGGER</span></span><a class="reference internal" href="../../../_modules/patio/helpers.html#LOGGER"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.LOGGER" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="patio.helpers.QUERY_FUNCS">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">QUERY_FUNCS</span></span><a class="reference internal" href="../../../_modules/patio/helpers.html#QUERY_FUNCS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.QUERY_FUNCS" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.df_query">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">df_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#df_query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.df_query" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>df_query.T</em>)</p></li>
+<li><p><strong>qs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>df_query.T</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.re_limited">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">re_limited</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">re_meta</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#re_limited"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.re_limited" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>re_meta</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)"><em>pandas.DataFrame</em></a>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)">pandas.DataFrame</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.make_core_lhs_rhs">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">make_core_lhs_rhs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">re_meta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limited</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fossil</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#make_core_lhs_rhs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.make_core_lhs_rhs" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.lstrip0">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">lstrip0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#lstrip0"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.lstrip0" title="Link to this definition">¶</a></dt>
+<dd><p>Remove leading zeros from column</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)"><em>pandas.DataFrame</em></a>)</p></li>
+<li><p><strong>col</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)">pandas.DataFrame</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.seconds_since_touch">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">seconds_since_touch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#seconds_since_touch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.seconds_since_touch" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file</strong> (<a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.13)"><em>pathlib.Path</em></a>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.fix_cems_datetime">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">fix_cems_datetime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'OP_DATE'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hour_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'OP_HOUR'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datetime_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'datetime'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#fix_cems_datetime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.fix_cems_datetime" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)"><em>pandas.DataFrame</em></a>)</p></li>
+<li><p><strong>date_col</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>)</p></li>
+<li><p><strong>hour_col</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>)</p></li>
+<li><p><strong>datetime_col</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)">pandas.DataFrame</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.combine_cols">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">combine_cols</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#combine_cols"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.combine_cols" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)"><em>pandas.DataFrame</em></a>)</p></li>
+<li><p><strong>col1</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>)</p></li>
+<li><p><strong>col2</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>)</p></li>
+<li><p><strong>out_col</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>)</p></li>
+<li><p><strong>sep</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)">pandas.DataFrame</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.check_lat_lons">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">check_lat_lons</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#check_lat_lons"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.check_lat_lons" title="Link to this definition">¶</a></dt>
+<dd><p>Add column that says if lat/lon is safe based on state bounds</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>df</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)"><em>pandas.DataFrame</em></a>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)">pandas.DataFrame</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.add_states">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">add_states</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#add_states"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.add_states" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>df</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)"><em>pandas.DataFrame</em></a>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)">pandas.DataFrame</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.fix_na_neg_col">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">fix_na_neg_col</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#fix_na_neg_col"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.fix_na_neg_col" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)"><em>pandas.DataFrame</em></a>)</p></li>
+<li><p><strong>col</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)">pandas.DataFrame</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.adjust_col_for_pct_owned">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">adjust_col_for_pct_owned</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pct_owned_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pct_owned'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#adjust_col_for_pct_owned"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.adjust_col_for_pct_owned" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)"><em>pandas.DataFrame</em></a>)</p></li>
+<li><p><strong>col</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>)</p></li>
+<li><p><strong>pct_owned_col</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)">pandas.DataFrame</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.cat_multiindex_as_col">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">cat_multiindex_as_col</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">droplevel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#cat_multiindex_as_col"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.cat_multiindex_as_col" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)"><em>pandas.DataFrame</em></a>)</p></li>
+<li><p><strong>new_col</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)">pandas.DataFrame</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.round_coordinates">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">round_coordinates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('latitude',</span> <span class="pre">'longitude')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('latitude',</span> <span class="pre">'longitude')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#round_coordinates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.round_coordinates" title="Link to this definition">¶</a></dt>
+<dd><p>Round coordinates to the nearest <code class="docutils literal notranslate"><span class="pre">tol</span></code> degree</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)"><em>pandas.DataFrame</em></a>)</p></li>
+<li><p><strong>in_cols</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>]</em>)</p></li>
+<li><p><strong>out_cols</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>]</em>)</p></li>
+<li><p><strong>tol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)">pandas.DataFrame</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.as_ufunc">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">as_ufunc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#as_ufunc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.as_ufunc" title="Link to this definition">¶</a></dt>
+<dd><p>Turn <code class="docutils literal notranslate"><span class="pre">np.frompyfunc</span></code> into decorator</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.isclose">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">isclose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#isclose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.isclose" title="Link to this definition">¶</a></dt>
+<dd><p>~equivalent of <code class="docutils literal notranslate"><span class="pre">np.isclose</span></code> for arrays with strs</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.show">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">show</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fig</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#show"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.show" title="Link to this definition">¶</a></dt>
+<dd><p>Display a plotly figure in a notebook where <code class="docutils literal notranslate"><span class="pre">fig.show()</span></code> does not work</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fig</strong> (<em>plotly.graph_objs.Figure</em>)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.agg_profile">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">agg_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">profile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'D'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#agg_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.agg_profile" title="Link to this definition">¶</a></dt>
+<dd><p>Adjust frequency of profile to <code class="docutils literal notranslate"><span class="pre">freq</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>profile</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)"><em>pandas.DataFrame</em></a><em> | </em><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.3.1)"><em>pandas.Series</em></a>) – input profile</p></li>
+<li><p><strong>freq</strong> – the time frequency to aggregate to
+“D” for day, “H” for hour</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)">pandas.DataFrame</a> | <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.3.1)">pandas.Series</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.crn">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">crn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#crn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.crn" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.df_in_half">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">df_in_half</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#df_in_half"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.df_in_half" title="Link to this definition">¶</a></dt>
+<dd><p>Split model output df in ~half wihtout breaking up plant/prime/fuel</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.distance_arrays">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">distance_arrays</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">latlon1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">latlon2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#distance_arrays"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.distance_arrays" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>latlon1</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a>)</p></li>
+<li><p><strong>latlon2</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)">numpy.ndarray</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.distance">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lat1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#distance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.distance" title="Link to this definition">¶</a></dt>
+<dd><p>Compute haversine distance between two points</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lat1</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> | </em><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a>)</p></li>
+<li><p><strong>lon1</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> | </em><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a>)</p></li>
+<li><p><strong>lat2</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> | </em><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a>)</p></li>
+<li><p><strong>lon2</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> | </em><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.pl_distance">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">pl_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#pl_distance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.pl_distance" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>df</strong> (<em>polars.LazyFrame</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>polars.LazyFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.ninja_profile_fix">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">ninja_profile_fix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solar_ilr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#ninja_profile_fix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.ninja_profile_fix" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.find_na">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">find_na</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#find_na"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.find_na" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.prep_for_re_ninja">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">prep_for_re_ninja</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">re</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#prep_for_re_ninja"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.prep_for_re_ninja" title="Link to this definition">¶</a></dt>
+<dd><p>Set names and years to tell re_ninja what to download</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>re</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)"><em>pandas.DataFrame</em></a>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)">pandas.DataFrame</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.td_to_hours">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">td_to_hours</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">td</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#td_to_hours"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.td_to_hours" title="Link to this definition">¶</a></dt>
+<dd><p>Convert timedelta to hours</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>td</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.timedelta" title="(in Python v3.13)"><em>datetime.timedelta</em></a>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.mo_to_days">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">mo_to_days</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">monthly</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">years</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(2006,</span> <span class="pre">2020)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_day</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#mo_to_days"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.mo_to_days" title="Link to this definition">¶</a></dt>
+<dd><p>Take one year of monthly data and repeat it over <code class="docutils literal notranslate"><span class="pre">years</span></code> then resample it to
+hourly so every hour has the full month value</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>monthly</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)"><em>pandas.DataFrame</em></a><em> | </em><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.3.1)"><em>pandas.Series</em></a>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)">pandas.DataFrame</a> | <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.3.1)">pandas.Series</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.repeat_mo">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">repeat_mo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">monthly</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">years</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(2006,</span> <span class="pre">2020)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#repeat_mo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.repeat_mo" title="Link to this definition">¶</a></dt>
+<dd><p>Take one year of monthly data and repeat it over <code class="docutils literal notranslate"><span class="pre">years</span></code> then resample it to
+hourly so every hour has the full month value</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.normalize_cems">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">normalize_cems</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cems</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#normalize_cems"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.normalize_cems" title="Link to this definition">¶</a></dt>
+<dd><p>Normalize cems data monthly for use with monthly 923 data</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.adjust_ilr">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">adjust_ilr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">profile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ilr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#adjust_ilr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.adjust_ilr" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>profile</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.3.1)"><em>pandas.Series</em></a><em> | </em><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)"><em>pandas.DataFrame</em></a><em> | </em><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a>)</p></li>
+<li><p><strong>ilr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.3.1)">pandas.Series</a> | <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)">pandas.DataFrame</a> | <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)">numpy.ndarray</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.shift_profile_utc">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">shift_profile_utc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">profile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_utc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">old_utc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#shift_profile_utc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.shift_profile_utc" title="Link to this definition">¶</a></dt>
+<dd><p>Roll profile to shift it from <code class="docutils literal notranslate"><span class="pre">old_utc</span></code> offset to <code class="docutils literal notranslate"><span class="pre">new_utc</span></code> offset</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>profile</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.3.1)"><em>pandas.Series</em></a><em> | </em><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)"><em>pandas.DataFrame</em></a><em> | </em><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a>)</p></li>
+<li><p><strong>new_utc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>)</p></li>
+<li><p><strong>old_utc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>)</p></li>
+<li><p><strong>logid</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.3.1)">pandas.Series</a> | <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)">pandas.DataFrame</a> | <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)">numpy.ndarray</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.pl_df_product">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">pl_df_product</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">left</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_r'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#pl_df_product"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.pl_df_product" title="Link to this definition">¶</a></dt>
+<dd><p>Determine the product (~combinations) of the rows of two dataframes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>left</strong> (<em>pl_df_product.T</em>)</p></li>
+<li><p><strong>right</strong> (<em>pl_df_product.T</em>)</p></li>
+<li><p><strong>suffix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>pl_df_product.T</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.df_product">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">df_product</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">left</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">left_suffix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_l'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_suffix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_r'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#df_product"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.df_product" title="Link to this definition">¶</a></dt>
+<dd><p>Determine the product (~combinations) of the rows of two dataframes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>left</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)"><em>pandas.DataFrame</em></a>)</p></li>
+<li><p><strong>right</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)"><em>pandas.DataFrame</em></a>)</p></li>
+<li><p><strong>left_suffix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>)</p></li>
+<li><p><strong>right_suffix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)">pandas.DataFrame</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.combine_profiles">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">combine_profiles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iter_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solar_ilr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#combine_profiles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.combine_profiles" title="Link to this definition">¶</a></dt>
+<dd><p>Combine profiles from list of files, fix timezones, remove 12/31/20 and aggregate to daily</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.idfn">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">idfn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#idfn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.idfn" title="Link to this definition">¶</a></dt>
+<dd><p>Id function for pytest parameterization</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>val</strong></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.load_or_rebuild_parquet">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">load_or_rebuild_parquet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">e_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#load_or_rebuild_parquet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.load_or_rebuild_parquet" title="Link to this definition">¶</a></dt>
+<dd><p>Load file from <code class="docutils literal notranslate"><span class="pre">p_path</span></code> if it is newer than <code class="docutils literal notranslate"><span class="pre">e_path</span></code> otherwise run <code class="docutils literal notranslate"><span class="pre">func</span></code> to
+create a new parquet at <code class="docutils literal notranslate"><span class="pre">p_path</span></code> based on <code class="docutils literal notranslate"><span class="pre">e_path</span></code> and return the df</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>e_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.13)"><em>pathlib.Path</em></a>)</p></li>
+<li><p><strong>p_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.13)"><em>pathlib.Path</em></a>)</p></li>
+<li><p><strong>func</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.13)"><em>collections.abc.Callable</em></a><em>[</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.13)"><em>pathlib.Path</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.13)"><em>pathlib.Path</em></a><em>]</em><em>, </em><em>None</em><em>]</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)">pandas.DataFrame</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.clean_col">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">clean_col</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#clean_col"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.clean_col" title="Link to this definition">¶</a></dt>
+<dd><p>Remove blank strings from col and cast to numeric</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.min_i">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">min_i</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#min_i"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.min_i" title="Link to this definition">¶</a></dt>
+<dd><p>Max for iterative LPs.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers._git_commit_info">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">_git_commit_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#_git_commit_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers._git_commit_info" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.bbb_path">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">bbb_path</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#bbb_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.bbb_path" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.get_year_map">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">get_year_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2021</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2039</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#get_year_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.get_year_map" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.generate_projection_from_historical_pl">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">generate_projection_from_historical_pl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'datetime'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year_mapper</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#generate_projection_from_historical_pl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.generate_projection_from_historical_pl" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_df</strong> (<em>generate_projection_from_historical_pl.T</em>)</p></li>
+<li><p><strong>date_col</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>)</p></li>
+<li><p><strong>year_mapper</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em> | </em><em>None</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>generate_projection_from_historical_pl.T</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.generate_projection_from_historical">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">generate_projection_from_historical</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'datetime'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year_mapper</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#generate_projection_from_historical"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.generate_projection_from_historical" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_df</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)"><em>pandas.DataFrame</em></a>)</p></li>
+<li><p><strong>date_col</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>)</p></li>
+<li><p><strong>year_mapper</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em> | </em><em>None</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)">pandas.DataFrame</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.read_named_range">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">read_named_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#read_named_range"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.read_named_range" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="patio.helpers.solver">
+<span class="sig-prename descclassname"><span class="pre">patio.helpers.</span></span><span class="sig-name descname"><span class="pre">solver</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/patio/helpers.html#solver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#patio.helpers.solver" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="../model/index.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">patio.model</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="../exceptions/index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">patio.exceptions</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2025, RMI, CC-BY-4.0
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/rmi-electricity/patio" aria-label="GitHub">
+        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+        </svg>
+    </a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">patio.helpers</a><ul>
+<li><a class="reference internal" href="#attributes">Attributes</a></li>
+<li><a class="reference internal" href="#functions">Functions</a></li>
+<li><a class="reference internal" href="#module-contents">Module Contents</a><ul>
+<li><a class="reference internal" href="#patio.helpers.LOGGER"><code class="docutils literal notranslate"><span class="pre">LOGGER</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.QUERY_FUNCS"><code class="docutils literal notranslate"><span class="pre">QUERY_FUNCS</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.df_query"><code class="docutils literal notranslate"><span class="pre">df_query()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.re_limited"><code class="docutils literal notranslate"><span class="pre">re_limited()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.make_core_lhs_rhs"><code class="docutils literal notranslate"><span class="pre">make_core_lhs_rhs()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.lstrip0"><code class="docutils literal notranslate"><span class="pre">lstrip0()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.seconds_since_touch"><code class="docutils literal notranslate"><span class="pre">seconds_since_touch()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.fix_cems_datetime"><code class="docutils literal notranslate"><span class="pre">fix_cems_datetime()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.combine_cols"><code class="docutils literal notranslate"><span class="pre">combine_cols()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.check_lat_lons"><code class="docutils literal notranslate"><span class="pre">check_lat_lons()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.add_states"><code class="docutils literal notranslate"><span class="pre">add_states()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.fix_na_neg_col"><code class="docutils literal notranslate"><span class="pre">fix_na_neg_col()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.adjust_col_for_pct_owned"><code class="docutils literal notranslate"><span class="pre">adjust_col_for_pct_owned()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.cat_multiindex_as_col"><code class="docutils literal notranslate"><span class="pre">cat_multiindex_as_col()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.round_coordinates"><code class="docutils literal notranslate"><span class="pre">round_coordinates()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.as_ufunc"><code class="docutils literal notranslate"><span class="pre">as_ufunc()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.isclose"><code class="docutils literal notranslate"><span class="pre">isclose()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.show"><code class="docutils literal notranslate"><span class="pre">show()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.agg_profile"><code class="docutils literal notranslate"><span class="pre">agg_profile()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.crn"><code class="docutils literal notranslate"><span class="pre">crn()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.df_in_half"><code class="docutils literal notranslate"><span class="pre">df_in_half()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.distance_arrays"><code class="docutils literal notranslate"><span class="pre">distance_arrays()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.distance"><code class="docutils literal notranslate"><span class="pre">distance()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.pl_distance"><code class="docutils literal notranslate"><span class="pre">pl_distance()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.ninja_profile_fix"><code class="docutils literal notranslate"><span class="pre">ninja_profile_fix()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.find_na"><code class="docutils literal notranslate"><span class="pre">find_na()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.prep_for_re_ninja"><code class="docutils literal notranslate"><span class="pre">prep_for_re_ninja()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.td_to_hours"><code class="docutils literal notranslate"><span class="pre">td_to_hours()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.mo_to_days"><code class="docutils literal notranslate"><span class="pre">mo_to_days()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.repeat_mo"><code class="docutils literal notranslate"><span class="pre">repeat_mo()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.normalize_cems"><code class="docutils literal notranslate"><span class="pre">normalize_cems()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.adjust_ilr"><code class="docutils literal notranslate"><span class="pre">adjust_ilr()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.shift_profile_utc"><code class="docutils literal notranslate"><span class="pre">shift_profile_utc()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.pl_df_product"><code class="docutils literal notranslate"><span class="pre">pl_df_product()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.df_product"><code class="docutils literal notranslate"><span class="pre">df_product()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.combine_profiles"><code class="docutils literal notranslate"><span class="pre">combine_profiles()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.idfn"><code class="docutils literal notranslate"><span class="pre">idfn()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.load_or_rebuild_parquet"><code class="docutils literal notranslate"><span class="pre">load_or_rebuild_parquet()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.clean_col"><code class="docutils literal notranslate"><span class="pre">clean_col()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.min_i"><code class="docutils literal notranslate"><span class="pre">min_i()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers._git_commit_info"><code class="docutils literal notranslate"><span class="pre">_git_commit_info()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.bbb_path"><code class="docutils literal notranslate"><span class="pre">bbb_path()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.get_year_map"><code class="docutils literal notranslate"><span class="pre">get_year_map()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.generate_projection_from_historical_pl"><code class="docutils literal notranslate"><span class="pre">generate_projection_from_historical_pl()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.generate_projection_from_historical"><code class="docutils literal notranslate"><span class="pre">generate_projection_from_historical()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.read_named_range"><code class="docutils literal notranslate"><span class="pre">read_named_range()</span></code></a></li>
+<li><a class="reference internal" href="#patio.helpers.solver"><code class="docutils literal notranslate"><span class="pre">solver()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../_static/documentation_options.js?v=fce13f47"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>

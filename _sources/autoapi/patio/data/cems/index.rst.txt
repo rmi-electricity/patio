@@ -1,0 +1,226 @@
+patio.data.cems
+===============
+
+.. py:module:: patio.data.cems
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   patio.data.cems.CEMS
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   patio.data.cems.make_eia_cems
+   patio.data.cems.make_ba_cems
+   patio.data.cems.clean_all_cems
+   patio.data.cems.all_cems_starts
+   patio.data.cems.all_cems_normalized_daily
+   patio.data.cems.all_state_cems_normalized_daily
+   patio.data.cems.all_cems_daily
+   patio.data.cems.epa_eia_crosswalk
+   patio.data.cems.egrid_crosswalk
+   patio.data.cems.compare_crosswalks
+   patio.data.cems.combine_crosswalk
+
+
+Module Contents
+---------------
+
+.. py:class:: CEMS
+
+   object to contain, process, clean and transform CEMS data for a state
+
+
+   .. py:attribute:: state
+      :type:  str
+
+
+   .. py:attribute:: years
+      :type:  tuple[int, int]
+      :value: (2006, 2020)
+
+
+
+   .. py:attribute:: _cems
+      :type:  pandas.DataFrame | None
+      :value: None
+
+
+
+   .. py:attribute:: _crosswalk
+      :type:  pandas.DataFrame | None
+      :value: None
+
+
+
+   .. py:attribute:: _eia_cems
+      :type:  bool
+      :value: False
+
+
+
+   .. py:method:: __post_init__()
+
+
+   .. py:method:: from_p(state)
+      :classmethod:
+
+
+
+   .. py:method:: eia_from_p(state)
+      :classmethod:
+
+
+
+   .. py:method:: to_p()
+
+
+   .. py:method:: cross_test(cross=None)
+
+
+   .. py:method:: monthly_unit_fuel_by_type(plant_id, unit_id, fuels)
+
+      Use emission factors to split a unit's generation between a
+      primary and secondary fuel
+
+
+
+   .. py:method:: fuel_by_type(freq='MS')
+
+      WIP do the primary/secondary fuel split for all plants/units
+      works because all energy is allocated to the first fuel if
+      secondary intensity is 0
+
+
+
+   .. py:method:: count_unit_starts(freq='YS')
+
+      Identify each time that a unit starts generating electricity
+      and count the number of starts for each increment of time specified
+      in ``freq``
+
+
+
+   .. py:method:: fuel_by_type_and_starts(freq='MS')
+
+
+   .. py:method:: annual_summary()
+
+
+   .. py:method:: daily_cems()
+
+      Aggregates cems by prime_mover and fuel then converts to daily
+      for utility-level analysis, does not normalize
+
+
+
+   .. py:method:: normalized_daily_state_cems()
+
+      Normalize cems monthly then convert aggregate to days
+
+
+
+   .. py:method:: normalized_daily_cems()
+
+      Normalize cems monthly then convert aggregate to days
+
+
+
+   .. py:method:: agg_to_plant_prime_fuel(agg_dict=None)
+
+
+   .. py:method:: write_daily()
+
+
+   .. py:method:: write_normalized_daily()
+
+
+   .. py:method:: write_normalized_daily_state()
+
+
+   .. py:method:: apply_crosswalk(validate=False)
+
+
+   .. py:method:: write_eia_matched_cems()
+
+
+   .. py:method:: _clean_cems()
+
+
+   .. py:property:: raw_cems
+
+
+   .. py:property:: cems_eia_plant_ids
+
+
+   .. py:method:: count_plant_prime_fuel_starts(freq='YS')
+
+      Identify each time that a plant/prime/fuel starts generating electricity
+      and count the number of starts for each increment of time specified
+      in ``freq``
+
+
+
+   .. py:method:: units_with_missing_rows()
+
+
+.. py:function:: make_eia_cems(mp=True)
+
+   Combine CEMS data from all relevant states into parquets
+   of hourly CEMS data for each BA
+
+   :param mp: bool use multiprocessing
+
+   Returns: None, produces BA CEMS parquets
+
+
+
+.. py:function:: make_ba_cems(ba_dict, mp=True)
+
+   Combine CEMS data from all relevant states into parquets
+   of hourly CEMS data for each BA
+
+   :param ba_dict: dict of ba plant_data
+   :param mp: bool use multiprocessing
+
+   Returns: None, produces BA CEMS parquets
+
+
+
+.. py:function:: clean_all_cems(mp=False)
+
+.. py:function:: all_cems_starts(by='prime_fuel', freq='YS', raw=False)
+
+.. py:function:: all_cems_normalized_daily()
+
+   Create daily normlized cems data for patio model
+
+
+.. py:function:: all_state_cems_normalized_daily()
+
+   Create daily normlized cems data by state for patio model
+
+
+.. py:function:: all_cems_daily()
+
+   Create non-normalized daily CEMS for utility-level analysis
+
+
+.. py:function:: epa_eia_crosswalk()
+
+.. py:function:: egrid_crosswalk()
+
+.. py:function:: compare_crosswalks()
+
+.. py:function:: combine_crosswalk()
+
+   Combine egrid and epa crosswalks
+
+

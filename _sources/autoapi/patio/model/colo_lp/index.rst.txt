@@ -1,0 +1,644 @@
+patio.model.colo_lp
+===================
+
+.. py:module:: patio.model.colo_lp
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   patio.model.colo_lp.OPT_THREADS
+   patio.model.colo_lp.RE_NAME
+   patio.model.colo_lp.CONVERTERS
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   patio.model.colo_lp.Info
+   patio.model.colo_lp.Data
+   patio.model.colo_lp.Model
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   patio.model.colo_lp.encode_param
+   patio.model.colo_lp._encode_pl_df
+   patio.model.colo_lp._encode_ndarray
+   patio.model.colo_lp.nan_to_none
+
+
+Module Contents
+---------------
+
+.. py:data:: OPT_THREADS
+   :value: 2
+
+
+.. py:function:: encode_param(self, _, item)
+
+.. py:function:: _encode_pl_df(self, name, df, **kwargs)
+
+   Write a polars df in the ZIP as parquet.
+
+
+.. py:function:: _encode_ndarray(self, name, data, **kwargs)
+
+.. py:function:: nan_to_none(in_dict)
+
+.. py:data:: RE_NAME
+
+.. py:data:: CONVERTERS
+
+.. py:class:: Info
+
+   Bases: :py:obj:`NamedTuple`
+
+
+   .. py:attribute:: ba
+      :type:  str
+
+
+   .. py:attribute:: pid
+      :type:  int
+
+
+   .. py:attribute:: gens
+      :type:  collections.abc.Sequence[str]
+
+
+   .. py:attribute:: tech
+      :type:  str
+
+
+   .. py:attribute:: status
+      :type:  str
+
+
+   .. py:attribute:: cap
+      :type:  float
+
+
+   .. py:attribute:: fuel
+      :type:  str
+
+
+   .. py:attribute:: years
+      :type:  tuple[int, int]
+      :value: ()
+
+
+
+   .. py:attribute:: max_re
+      :type:  float
+      :value: 0.0
+
+
+
+   .. py:attribute:: area_sqkm
+      :type:  float
+      :value: 0.0
+
+
+
+   .. py:attribute:: lat_lon
+      :type:  tuple[float, float]
+      :value: ()
+
+
+
+   .. py:method:: file(regime=None, ix=None, suffix='.json', **kwargs)
+
+
+   .. py:method:: extra(regime='', name=None, **kwargs)
+
+
+   .. py:method:: pixs(regime, name, ix, param, **kwargs)
+
+
+   .. py:method:: filter(**kwargs)
+
+
+   .. py:method:: fix(i)
+      :classmethod:
+
+
+
+   .. py:method:: from_df(df)
+      :classmethod:
+
+      :abstractmethod:
+
+
+
+   .. py:method:: _(df)
+      :classmethod:
+
+
+
+.. py:class:: Data
+
+   .. py:attribute:: re_specs
+      :type:  polars.LazyFrame
+
+
+   .. py:attribute:: re_pro
+      :type:  polars.LazyFrame
+
+
+   .. py:attribute:: ba_pro
+      :type:  polars.LazyFrame
+
+
+   .. py:attribute:: mcoe
+      :type:  polars.DataFrame
+
+
+   .. py:attribute:: re_ids
+      :type:  tuple
+
+
+   .. py:attribute:: i
+      :type:  Info
+
+
+   .. py:attribute:: src_path
+      :type:  pathlib.Path
+
+
+   .. py:attribute:: ba_data
+      :type:  dict
+
+
+   .. py:attribute:: meta
+      :type:  dict
+
+
+   .. py:method:: __post_init__()
+
+
+   .. py:method:: from_dz(src_path, info, re_filter = None)
+      :classmethod:
+
+
+
+   .. py:method:: load_ba_data(path=None)
+
+
+   .. py:method:: del_ba_data()
+
+
+   .. py:method:: __getitem__(item)
+
+
+.. py:class:: Model(ix, name, i, d, *, life, build_year, atb_scenario, aeo_scenario, aeo_report_year, mkt_rev_mult = 0.5, num_crit_hrs = 0, max_pct_fos = 0.2, max_pct_hist_fos = 1.0, fos_load_cost_mult = 1.0, gas_window_max_hrs = 24, gas_window_max_mult = 1.0, gas_window_seasonal = False, stored_fuel_hrs = 48, backup_max_hrs_per_year = 250, solar_degrade_per_year = 0.0, load_icx_max_mult = 0.75, con_fossil_load_hrly = True, opt_years = (), regime = 'limited', logger = None, ptc = COSTS['ptc'], itc = COSTS['itc'], errors = None, dvs = None, result_dir = None, pudl_release = PATIO_PUDL_RELEASE)
+
+   Bases: :py:obj:`etoolbox.datazip.IOMixin`
+
+
+   Mixin for adding :class:`.DataZip` IO.
+
+   .. rubric:: Examples
+
+   >>> from io import BytesIO
+   >>> import numpy as np
+   >>> import pandas as pd
+
+   Create a class that inherits from :class:`IOMixin`.
+
+   >>> class MyClass(IOMixin):
+   ...     pass
+
+   Create an instance of the class with many kinds of things in it.
+   As nested as you like.
+
+   >>> inst = MyClass()
+   >>> inst.foo = {"a": 1, "b": (1, 2, 3), "c": np.array([1, 2, 4])}
+   >>> inst.bar = pd.Series([1, 2, 3])
+
+   The object can now be saved to a file, or buffer for this example.
+
+   >>> buffer = BytesIO()
+   >>> inst.to_file(buffer)
+   >>> del inst
+
+   And we can bring it back, as if it was pickled. Usually.
+
+   >>> inst = MyClass.from_file(buffer)
+   >>> type(inst.bar)
+   <class 'pandas.core.series.Series'>
+
+   >>> inst.foo
+   {'a': 1, 'b': (1, 2, 3), 'c': array([1, 2, 4])}
+
+   If your class has funny things in it like lambdas or unserializable objects,
+   you will need to define ``__getstate__`` and ``__setstate__``. If you don't use
+   ``__slots__`` they can be very simple.
+
+   >>> from collections import defaultdict
+   >>> class MyFunnyClass(IOMixin):
+   ...     def __init__(self):
+   ...         self.stuff = defaultdict(lambda: None)
+   ...
+   ...     def __getstate__(self):
+   ...         return self.__dict__ | {"stuff": dict(self.__dict__["stuff"])}
+   ...
+   ...     def __setstate__(self, state):
+   ...         self.__dict__ = state | {
+   ...             "stuff": defaultdict(lambda: None, state["stuff"])
+   ...         }
+
+   Instantiate the class and use the :class:`defaultdict`.
+
+   >>> inst = MyFunnyClass()
+   >>> inst.stuff["bar"] = 3
+   >>> print(inst.stuff["foo"])
+   None
+
+   Dump the object into the buffer and delete the original instance.
+
+   >>> buffer = BytesIO()
+   >>> inst.to_file(buffer)
+   >>> del inst
+
+   Recreate the object from the buffer and confirm it is as it should be.
+
+   >>> inst = MyFunnyClass.from_file(buffer)
+   >>> type(inst.stuff)
+   <class 'collections.defaultdict'>
+
+   >>> print(inst.stuff["foobar"])
+   None
+
+   >>> dict(inst.stuff)
+   {'bar': 3, 'foo': None, 'foobar': None}
+
+
+   .. py:attribute:: cost_cols
+      :value: ['re_site_id', 're_type', 'capex_raw', 'life_adj', 'dur', 'itc_adj', 'reg_mult', 'tx_capex_raw',...
+
+
+
+   .. py:attribute:: ix
+
+
+   .. py:attribute:: name
+
+
+   .. py:attribute:: i
+      :type:  Info
+
+
+   .. py:attribute:: d
+      :type:  Data
+
+
+   .. py:attribute:: life
+
+
+   .. py:attribute:: build_year
+
+
+   .. py:attribute:: atb_scenario
+
+
+   .. py:attribute:: aeo_report_year
+
+
+   .. py:attribute:: aeo_scenario
+
+
+   .. py:attribute:: pudl_release
+      :value: 'v2024.11.0'
+
+
+
+   .. py:attribute:: _params
+
+
+   .. py:attribute:: result_dir
+      :value: None
+
+
+
+   .. py:attribute:: ptc
+      :value: 17.0
+
+
+
+   .. py:attribute:: itc
+      :value: 0.3
+
+
+
+   .. py:attribute:: ptc_years
+      :value: ()
+
+
+
+   .. py:attribute:: r_disc
+      :value: 0.06372549019607843
+
+
+
+   .. py:attribute:: fcr
+
+
+   .. py:attribute:: yr_mapper
+
+
+   .. py:attribute:: export_profs
+
+
+   .. py:attribute:: re_land
+
+
+   .. py:attribute:: b_land
+
+
+   .. py:attribute:: errors
+      :type:  list[str]
+      :value: []
+
+
+
+   .. py:attribute:: logger
+      :value: None
+
+
+
+   .. py:attribute:: dvs
+      :type:  dict[str, patio.model.colo_resources.DecisionVariable]
+
+
+   .. py:attribute:: selected
+      :type:  None | cvxpy.Problem
+      :value: None
+
+
+
+   .. py:attribute:: dispatchs
+      :type:  dict[int, cvxpy.Problem]
+
+
+   .. py:attribute:: results
+      :type:  dict[tuple, dict]
+
+
+   .. py:attribute:: solver_logs
+      :type:  dict[tuple, str]
+
+
+   .. py:attribute:: _crit_hrs
+
+
+   .. py:property:: num_crit_hrs
+
+
+   .. py:attribute:: _state
+
+
+   .. py:attribute:: _dfs
+      :type:  dict[str, polars.DataFrame]
+
+
+   .. py:attribute:: _out_result_dict
+      :type:  dict[str, float | int | str | list]
+
+
+   .. py:attribute:: status
+      :value: 4
+
+
+
+   .. py:method:: add_dvs_from_config_dict(dv_dict)
+
+
+   .. py:method:: add_dv(dv)
+
+
+   .. py:property:: max_pct_fos
+
+
+   .. py:property:: max_pct_hist_fos
+
+
+   .. py:property:: fos_load_cost_mult
+
+
+   .. py:property:: mkt_rev_mult
+
+
+   .. py:property:: regime
+
+
+   .. py:property:: gas_window_max_hrs
+
+
+   .. py:property:: gas_window_max_mult
+
+
+   .. py:property:: stored_fuel_hrs
+
+
+   .. py:property:: backup_max_hrs_per_year
+
+
+   .. py:property:: solar_degrade_per_year
+
+
+   .. py:property:: load_icx_max_mult
+
+
+   .. py:property:: gas_window_seasonal
+
+
+   .. py:property:: con_fossil_load_hrly
+
+
+   .. py:property:: opt_years
+
+
+   .. py:property:: fuels
+
+
+   .. py:method:: mk_crit_hrs_mask(nh, yr)
+
+
+   .. py:method:: update_params(params, regime=None, ix=None, name=None, **kwargs)
+
+
+   .. py:method:: propagate_new_selection_years()
+
+
+   .. py:property:: load_mw
+      :type: float | None
+
+
+
+   .. py:method:: update_years()
+
+
+   .. py:method:: pre_check(load)
+
+
+   .. py:method:: select_resources(time_limit=1000)
+
+
+   .. py:method:: round()
+
+
+   .. py:method:: dispatch(yr, time_limit=1000)
+
+
+   .. py:method:: dispatch_all(time_limit)
+
+
+   .. py:method:: objective(yr)
+
+
+   .. py:method:: constraints(yr)
+
+
+   .. py:method:: b_exp_req(yr)
+
+
+   .. py:method:: b_fos_hist(yr)
+
+
+   .. py:method:: b_rolling_gas(yr)
+
+
+   .. py:method:: check_service()
+
+
+   .. py:property:: re_types
+
+
+   .. py:property:: es_types
+
+
+   .. py:property:: re_selected
+
+
+   .. py:method:: hourly(*, selection=False)
+
+
+   .. py:method:: finance_df(hourly = None)
+
+
+   .. py:method:: energy_df(hourly = None)
+
+
+   .. py:method:: gas_violation_df(hourly)
+
+
+   .. py:property:: selected_cost
+
+
+   .. py:method:: cost_detail()
+
+
+   .. py:method:: create_df_for_econ_model(flows_hourly, hourly)
+
+
+   .. py:method:: verify_hourly_df(hourly)
+
+
+   .. py:property:: out_result_dict
+      :type: dict
+
+
+
+   .. py:property:: util_info
+
+
+   .. py:property:: dfs
+      :type: dict[str, polars.DataFrame]
+
+
+
+   .. py:method:: add_df(**kwargs)
+
+
+   .. py:method:: add_to_result_dict(**kwargs)
+
+
+   .. py:property:: ppa
+
+
+   .. py:property:: pct_load_clean
+
+
+   .. py:method:: add_mapped_yrs(df)
+
+
+   .. py:property:: extra
+      :type: dict
+
+
+
+   .. py:method:: __contains__(other)
+
+
+   .. py:method:: __getitem__(index)
+
+
+   .. py:method:: __iter__()
+
+
+   .. py:method:: __repr__()
+
+
+   .. py:method:: _dzgetstate_()
+
+
+   .. py:method:: _dzsetstate_(state)
+
+
+   .. py:method:: load_saved_x_cap(saved_select)
+
+
+   .. py:method:: from_file(path, **kwargs)
+      :classmethod:
+
+
+      Recreate object fom file or buffer.
+
+
+
+   .. py:method:: from_cloud(datestr, info, regime, ix, **kwargs)
+      :classmethod:
+
+
+
+   .. py:method:: to_file(path = None, *, clobber=False, **kwargs)
+
+      Write object to file or buffer.
+
+
+
+   .. py:method:: from_run(info, name, regime, colo_dir)
+      :classmethod:
+
+
+
+   .. py:method:: write_model(dir_path=None)
+
+
+   .. py:method:: redispatch(hourly)
+
+
+   .. py:method:: econ_and_flows(hourly, run_econ)
+
+
+   .. py:method:: aeo_fuel_price(fuel)
+
+
