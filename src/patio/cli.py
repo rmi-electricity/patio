@@ -16,6 +16,7 @@ import click
 from patio import __version__
 from patio.constants import PATIO_DOC_PATH, ROOT_PATH
 from patio.model.ba_level import BAs
+from patio.model.base import ScenarioConfig
 from patio.model.colo_core import main as colo_main
 
 RELATIVE_ROOT = ROOT_PATH.relative_to(Path.home())
@@ -123,24 +124,19 @@ def clean_repower(bas, config, warnings, local):
         config["project"]["balancing_authorities"] = [s.strip() for s in bas.split(",")]
     elif not config["project"]["balancing_authorities"]:
         config["project"]["balancing_authorities"] = None
-    kwargs = (
-        config["data"]
-        | config["cr"]["project"]
-        | {
-            "colo_techs": config["colo"]["data"],
-        }
-    )
+    scenarios = [ScenarioConfig(**v) for v in config["cr"]["project"].pop("scenarios")]
+
     if not warnings:
         warnings_.simplefilter("ignore")
     try:
         patio = BAs(
             name="BAs_" + now,
             solar_ilr=config["project"]["solar_ilr"],
-            data_kwargs=kwargs,
+            data_kwargs=config["data"] | config["cr"]["project"],
             bas=config["project"]["balancing_authorities"],
-            by_plant=False,
             regime=config["project"]["regime"],
             pudl_release=config["project"]["pudl_release"],
+            scenario_configs=scenarios,
         )
         patio.run_all()
         patio.write_output()
@@ -169,7 +165,6 @@ def profiles(config, warnings):
         name="BAs_" + now,
         solar_ilr=config["project"]["solar_ilr"],
         bas=config["project"]["balancing_authorities"],
-        by_plant=False,
         regime=config["project"]["regime"],
         pudl_release=config["project"]["pudl_release"],
         scenario_configs=[],
@@ -201,7 +196,6 @@ def specs(config, warnings):
         solar_ilr=config["project"]["solar_ilr"],
         data_kwargs=kwargs,
         bas=config["project"]["balancing_authorities"],
-        by_plant=False,
         regime=config["project"]["regime"],
         pudl_release=config["project"]["pudl_release"],
         scenario_configs=[],
@@ -243,7 +237,6 @@ def colo_data(bas, config, warnings):
         solar_ilr=config["project"]["solar_ilr"],
         data_kwargs=kwargs,
         bas=config["project"]["balancing_authorities"],
-        by_plant=False,
         regime=config["project"]["regime"],
         pudl_release=config["project"]["pudl_release"],
         scenario_configs=[],

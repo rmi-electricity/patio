@@ -245,11 +245,21 @@ class TestPowerCouple:
 
 @pytest.mark.skip(reason="test_colo_config approach is easier to target.")
 @pytest.mark.script_launch_mode("inprocess")
+def test_patio_colo_data_entry_point(script_runner, test_dir, temp_dir):
+    """Test ``patio-colo`` entry point function."""
+    ret = script_runner.run(["patio", "colo", "data", "-b", "57"], print_result=True)
+    assert ret.success
+
+
+@pytest.mark.skip(reason="test_colo_config approach is easier to target.")
+@pytest.mark.script_launch_mode("inprocess")
 def test_patio_colo_entry_point(script_runner, test_dir, temp_dir):
     """Test ``patio-colo`` entry point function."""
     ret = script_runner.run(
         [
-            "patio-colo",
+            "patio",
+            "colo",
+            "run",
             "-l",
             "-k",
             "-w",

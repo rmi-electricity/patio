@@ -1,9 +1,7 @@
-from __future__ import annotations
-
 import logging
-from collections.abc import Sequence  # noqa: TC003
+from collections.abc import Sequence
 from dataclasses import dataclass, field
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, datetime
 from functools import cached_property, lru_cache
 from io import BytesIO
 from pathlib import Path
@@ -18,19 +16,20 @@ import polars as pl
 import pyarrow as pa
 from etoolbox.datazip import DataZip
 from etoolbox.utils.cloud import get, put
+from etoolbox.utils.pudl import pl_scan_pudl
 from pandas.util import hash_pandas_object
 from tqdm.auto import tqdm
 from tqdm.contrib.logging import logging_redirect_tqdm
 
 from patio.constants import (
-    MTDF,
+    CLEAN_TD_MAP,
     PATIO_DATA_AZURE_URLS,
     PATIO_DATA_RELEASE,
     RE_TECH,
     RE_TECH_R,
     ROOT_PATH,
 )
-from patio.data.asset_data import (  # noqa: TC001
+from patio.data.asset_data import (
     CACHE_PATH,
     USER_DATA_PATH,
     AssetData,
@@ -40,7 +39,6 @@ from patio.exceptions import (
     NoCEMS,
     NoEligibleCleanRepowering,
     NoMatchingPlantsAndCEMS,
-    NoMaxRE,
     NoNonZeroCEMS,
     NoREData,
     PatioData,
@@ -55,236 +53,11 @@ from patio.helpers import (
     round_coordinates,
     seconds_since_touch,
 )
-
-__all__ = ["ProfileData"]
-
 from patio.package_data import PACKAGE_DATA_PATH
 
 LOGGER = logging.getLogger("patio")
 
-# if not (PATIO_DOC_PATH / "data").exists():
-#     (PATIO_DOC_PATH / "data").mkdir(parents=True)
-
 pl.enable_string_cache()
-BAs_WITH_MISSING_DATA = ()
-PLANT_RE_MAX = {
-    3: {"solar": 1672, "onshore_wind": 0},
-    26: {"solar": 1485, "onshore_wind": 1347},
-    59: {"solar": 184, "onshore_wind": 99},
-    60: {"solar": 566, "onshore_wind": 309},
-    108: {"solar": 643, "onshore_wind": 405},
-    113: {"solar": 742, "onshore_wind": 1035},
-    130: {"solar": 3131, "onshore_wind": 0},
-    136: {"solar": 2851, "onshore_wind": 0},
-    160: {"solar": 471, "onshore_wind": 770},
-    165: {"solar": 519, "onshore_wind": 303},
-    298: {"solar": 2365, "onshore_wind": 1618},
-    470: {"solar": 3203, "onshore_wind": 3651},
-    525: {"solar": 1027, "onshore_wind": 1461},
-    564: {"solar": 1899, "onshore_wind": 0},
-    594: {"solar": 137, "onshore_wind": 0},
-    602: {"solar": 1187, "onshore_wind": 0},
-    628: {"solar": 2094, "onshore_wind": 0},
-    645: {"solar": 678, "onshore_wind": 0},
-    667: {"solar": 707, "onshore_wind": 0},
-    703: {"solar": 4090, "onshore_wind": 0},
-    856: {"solar": 1254, "onshore_wind": 759},
-    876: {"solar": 1795, "onshore_wind": 1069},
-    879: {"solar": 1248, "onshore_wind": 767},
-    883: {"solar": 1005, "onshore_wind": 0},
-    884: {"solar": 335, "onshore_wind": 200},
-    887: {"solar": 2268, "onshore_wind": 1515},
-    889: {"solar": 3123, "onshore_wind": 2042},
-    963: {"solar": 566, "onshore_wind": 336},
-    976: {"solar": 284, "onshore_wind": 180},
-    983: {"solar": 2269, "onshore_wind": 0},
-    994: {"solar": 3521, "onshore_wind": 0},
-    997: {"solar": 692, "onshore_wind": 0},
-    1001: {"solar": 2126, "onshore_wind": 1278},
-    1012: {"solar": 956, "onshore_wind": 636},
-    1040: {"solar": 13, "onshore_wind": 8},
-    1047: {"solar": 283, "onshore_wind": 181},
-    1073: {"solar": 23, "onshore_wind": 13},
-    1082: {"solar": 2874, "onshore_wind": 1599},
-    1091: {"solar": 742, "onshore_wind": 436},
-    1104: {"solar": 484, "onshore_wind": 291},
-    1167: {"solar": 448, "onshore_wind": 266},
-    1241: {"solar": 2829, "onshore_wind": 1590},
-    1250: {"solar": 827, "onshore_wind": 466},
-    1355: {"solar": 417, "onshore_wind": 296},
-    1356: {"solar": 4760, "onshore_wind": 0},
-    1364: {"solar": 3335, "onshore_wind": 0},
-    1379: {"solar": 2684, "onshore_wind": 0},
-    1384: {"solar": 210, "onshore_wind": 180},
-    1393: {"solar": 652, "onshore_wind": 503},
-    1554: {"solar": 55, "onshore_wind": 0},
-    1573: {"solar": 659, "onshore_wind": 0},
-    1702: {"solar": 1408, "onshore_wind": 0},
-    1710: {"solar": 3943, "onshore_wind": 0},
-    1733: {"solar": 7018, "onshore_wind": 0},
-    1743: {"solar": 1534, "onshore_wind": 0},
-    1745: {"solar": 525, "onshore_wind": 0},
-    1832: {"solar": 333, "onshore_wind": 0},
-    1893: {"solar": 2533, "onshore_wind": 0},
-    1915: {"solar": 651, "onshore_wind": 0},
-    2079: {"solar": 1185, "onshore_wind": 0},
-    2103: {"solar": 7676, "onshore_wind": 0},
-    2104: {"solar": 232, "onshore_wind": 158},
-    2107: {"solar": 1779, "onshore_wind": 1126},
-    2167: {"solar": 2484, "onshore_wind": 1554},
-    2168: {"solar": 3931, "onshore_wind": 2298},
-    2240: {"solar": 214, "onshore_wind": 120},
-    2277: {"solar": 374, "onshore_wind": 197},
-    2291: {"solar": 737, "onshore_wind": 415},
-    2364: {"solar": 145, "onshore_wind": 89},
-    2442: {"solar": 3070, "onshore_wind": 3875},
-    2451: {"solar": 1847, "onshore_wind": 2161},
-    2712: {"solar": 2464, "onshore_wind": 0},
-    2718: {"solar": 39, "onshore_wind": 36},
-    2721: {"solar": 2019, "onshore_wind": 0},
-    2727: {"solar": 2941, "onshore_wind": 0},
-    2790: {"solar": 241, "onshore_wind": 136},
-    2817: {"solar": 1249, "onshore_wind": 680},
-    2823: {"solar": 2154, "onshore_wind": 1123},
-    2828: {"solar": 4897, "onshore_wind": 0},
-    2832: {"solar": 3052, "onshore_wind": 0},
-    2836: {"solar": 412, "onshore_wind": 0},
-    2866: {"solar": 2296, "onshore_wind": 0},
-    2876: {"solar": 2386, "onshore_wind": 0},
-    2914: {"solar": 28, "onshore_wind": 18},
-    2935: {"solar": 7, "onshore_wind": 4},
-    2936: {"solar": 0, "onshore_wind": 0},
-    2952: {"solar": 1188, "onshore_wind": 729},
-    2963: {"solar": 995, "onshore_wind": 576},
-    3118: {"solar": 3704, "onshore_wind": 0},
-    3122: {"solar": 2267, "onshore_wind": 0},
-    3130: {"solar": 1457, "onshore_wind": 764},
-    3136: {"solar": 3755, "onshore_wind": 0},
-    3140: {"solar": 1267, "onshore_wind": 0},
-    3149: {"solar": 644, "onshore_wind": 427},
-    3297: {"solar": 642, "onshore_wind": 0},
-    3298: {"solar": 1035, "onshore_wind": 0},
-    3396: {"solar": 361, "onshore_wind": 291},
-    3399: {"solar": 4568, "onshore_wind": 0},
-    3403: {"solar": 1752, "onshore_wind": 0},
-    3407: {"solar": 1224, "onshore_wind": 1032},
-    3470: {"solar": 5436, "onshore_wind": 0},
-    3797: {"solar": 512, "onshore_wind": 362},
-    3845: {"solar": 1871, "onshore_wind": 1127},
-    3935: {"solar": 5884, "onshore_wind": 0},
-    3943: {"solar": 2602, "onshore_wind": 0},
-    3944: {"solar": 5622, "onshore_wind": 0},
-    3948: {"solar": 2271, "onshore_wind": 0},
-    3954: {"solar": 2686, "onshore_wind": 0},
-    4041: {"solar": 2142, "onshore_wind": 0},
-    4050: {"solar": 1104, "onshore_wind": 0},
-    4078: {"solar": 2254, "onshore_wind": 0},
-    4158: {"solar": 1587, "onshore_wind": 931},
-    4162: {"solar": 972, "onshore_wind": 712},
-    4271: {"solar": 859, "onshore_wind": 510},
-    6002: {"solar": 8939, "onshore_wind": 0},
-    6004: {"solar": 3655, "onshore_wind": 0},
-    6009: {"solar": 3057, "onshore_wind": 0},
-    6017: {"solar": 1485, "onshore_wind": 916},
-    6018: {"solar": 1148, "onshore_wind": 0},
-    6019: {"solar": 2091, "onshore_wind": 0},
-    6021: {"solar": 3022, "onshore_wind": 3479},
-    6030: {"solar": 4326, "onshore_wind": 0},
-    6034: {"solar": 3282, "onshore_wind": 0},
-    6041: {"solar": 3858, "onshore_wind": 0},
-    6052: {"solar": 483, "onshore_wind": 460},
-    6055: {"solar": 1091, "onshore_wind": 884},
-    6064: {"solar": 561, "onshore_wind": 331},
-    6065: {"solar": 3498, "onshore_wind": 0},
-    6068: {"solar": 3650, "onshore_wind": 2005},
-    6071: {"solar": 3705, "onshore_wind": 0},
-    6073: {"solar": 1212, "onshore_wind": 0},
-    6077: {"solar": 3007, "onshore_wind": 1865},
-    6085: {"solar": 1105, "onshore_wind": 674},
-    6090: {"solar": 4618, "onshore_wind": 0},
-    6095: {"solar": 1355, "onshore_wind": 775},
-    6096: {"solar": 3161, "onshore_wind": 1769},
-    6098: {"solar": 775, "onshore_wind": 439},
-    6101: {"solar": 747, "onshore_wind": 460},
-    6113: {"solar": 4174, "onshore_wind": 0},
-    6137: {"solar": 1210, "onshore_wind": 794},
-    6138: {"solar": 1199, "onshore_wind": 696},
-    6139: {"solar": 1868, "onshore_wind": 0},
-    6146: {"solar": 5612, "onshore_wind": 0},
-    6155: {"solar": 3767, "onshore_wind": 0},
-    6165: {"solar": 3799, "onshore_wind": 0},
-    6166: {"solar": 2168, "onshore_wind": 0},
-    6177: {"solar": 1296, "onshore_wind": 1829},
-    6178: {"solar": 1418, "onshore_wind": 1057},
-    6179: {"solar": 4278, "onshore_wind": 0},
-    6180: {"solar": 5116, "onshore_wind": 0},
-    6183: {"solar": 776, "onshore_wind": 570},
-    6190: {"solar": 957, "onshore_wind": 755},
-    6193: {"solar": 1909, "onshore_wind": 1172},
-    6194: {"solar": 948, "onshore_wind": 632},
-    6195: {"solar": 1057, "onshore_wind": 646},
-    6204: {"solar": 3607, "onshore_wind": 2591},
-    6213: {"solar": 2380, "onshore_wind": 1499},
-    6248: {"solar": 1191, "onshore_wind": 1114},
-    6249: {"solar": 1313, "onshore_wind": 0},
-    6250: {"solar": 582, "onshore_wind": 439},
-    6254: {"solar": 1916, "onshore_wind": 1098},
-    6257: {"solar": 3609, "onshore_wind": 0},
-    6264: {"solar": 3394, "onshore_wind": 0},
-    6469: {"solar": 2527, "onshore_wind": 1378},
-    6481: {"solar": 3114, "onshore_wind": 3939},
-    6639: {"solar": 1046, "onshore_wind": 716},
-    6641: {"solar": 1781, "onshore_wind": 1247},
-    6664: {"solar": 1986, "onshore_wind": 1182},
-    6761: {"solar": 694, "onshore_wind": 582},
-    6768: {"solar": 761, "onshore_wind": 487},
-    6772: {"solar": 354, "onshore_wind": 258},
-    6823: {"solar": 1338, "onshore_wind": 955},
-    7030: {"solar": 970, "onshore_wind": 681},
-    7097: {"solar": 2988, "onshore_wind": 0},
-    7213: {"solar": 417, "onshore_wind": 319},
-    7343: {"solar": 631, "onshore_wind": 371},
-    7504: {"solar": 268, "onshore_wind": 165},
-    7790: {"solar": 1229, "onshore_wind": 1933},
-    7902: {"solar": 1161, "onshore_wind": 0},
-    8023: {"solar": 2782, "onshore_wind": 0},
-    8042: {"solar": 3842, "onshore_wind": 0},
-    8066: {"solar": 4423, "onshore_wind": 2929},
-    8069: {"solar": 2615, "onshore_wind": 4206},
-    8102: {"solar": 6551, "onshore_wind": 0},
-    8219: {"solar": 454, "onshore_wind": 613},
-    8222: {"solar": 1186, "onshore_wind": 634},
-    8223: {"solar": 3095, "onshore_wind": 4253},
-    8224: {"solar": 690, "onshore_wind": 1013},
-    8226: {"solar": 694, "onshore_wind": 0},
-    10143: {"solar": 329, "onshore_wind": 169},
-    10151: {"solar": 310, "onshore_wind": 230},
-    10603: {"solar": 118, "onshore_wind": 59},
-    10671: {"solar": 437, "onshore_wind": 334},
-    50611: {"solar": 75, "onshore_wind": 45},
-    50776: {"solar": 65, "onshore_wind": 35},
-    50974: {"solar": 156, "onshore_wind": 100},
-    55076: {"solar": 1179, "onshore_wind": 895},
-    55749: {"solar": 237, "onshore_wind": 209},
-    55856: {"solar": 5755, "onshore_wind": 0},
-    56068: {"solar": 3687, "onshore_wind": 0},
-    56224: {"solar": 525, "onshore_wind": 744},
-    56456: {"solar": 1754, "onshore_wind": 1079},
-    56564: {"solar": 1481, "onshore_wind": 1088},
-    56609: {"solar": 1283, "onshore_wind": 822},
-    56611: {"solar": 2234, "onshore_wind": 1463},
-    56671: {"solar": 2774, "onshore_wind": 0},
-    56786: {"solar": 83, "onshore_wind": 45},
-    56808: {"solar": 435, "onshore_wind": 408},
-}
-RE_MAP = {
-    "Offshore Wind Turbine": "offshore_wind",
-    "Onshore Wind Turbine": "onshore_wind",
-    "Solar Photovoltaic": "solar",
-    "offshore_wind": "offshore_wind",
-    "onshore_wind": "onshore_wind",
-    "solar": "solar",
-}
 
 
 def choose_years_for_map(h_range=(2008, 2021), f_range0=(2021, 2036), f_range1=(2036, 2040)):
@@ -352,6 +125,31 @@ def select_re_profiles(specs, profiles, id_cols=("plant_id_prof_site", "generato
     id_cols = list(id_cols)
     ids = specs[id_cols].drop_duplicates().sort_values(id_cols)
     return profiles.loc[:, list(ids.itertuples(index=False, name=None))]
+
+
+def get_714profile(id_ferc714: int | Sequence[int], pudl_release):
+    if isinstance(id_ferc714, int):
+        id_ferc714 = (id_ferc714,)
+    df = pl_scan_pudl("out_ferc714__hourly_planning_area_demand", release=pudl_release).filter(
+        pl.col("respondent_id_ferc714").is_in(id_ferc714)
+    )
+    try:
+        tz = (tzs := df.select(pl.col("timezone").drop_nulls().mode()).collect()).item()
+    except ValueError as exc:
+        raise RuntimeError(
+            f"cannot deal with multiple timezones {tzs.to_series().to_list()}"
+        ) from exc
+    return (
+        df.with_columns(datetime=pl.col("datetime_utc").dt.convert_time_zone(tz))
+        .select(
+            "respondent_id_ferc714",
+            pl.col("datetime").dt.replace_time_zone(None) - pl.col("datetime").dt.dst_offset(),
+            mwh="demand_imputed_pudl_mwh",
+        )
+        .sort("respondent_id_ferc714", "datetime")
+        .drop_nulls()
+        .collect()
+    )
 
 
 @dataclass
@@ -462,7 +260,16 @@ class ProfileData:
             )
             .merge(
                 self.ad.gens.rename(columns=icx_rn)[
-                    ["icx_id", "icx_gen", "icx_status", "reg_rank"]
+                    [
+                        "icx_id",
+                        "icx_gen",
+                        "icx_status",
+                        "reg_rank",
+                        "utility_id_eia_lse",
+                        "utility_name_eia_lse",
+                        "balancing_authority_code_eia",
+                        "respondent_id_ferc714",
+                    ]
                 ],
                 on=["icx_id", "icx_gen"],
                 how="left",
@@ -564,7 +371,6 @@ class ProfileData:
             "re_profiles": re_profiles,
             "re_plant_specs": re_specs,
             "year_mapper": self.year_mapper.copy(),
-            # "cems_change": cems_change,
             "baseload_replace": {
                 k: sorted(
                     set(replaceable.index.get_level_values("plant_id_eia")).intersection(
@@ -585,19 +391,8 @@ class ProfileData:
             "existing_re_prof": generate_projection_from_historical(
                 existing_re_prof, year_mapper=self.year_mapper
             ),
-            "exclude_or_mothball": {
-                # "57": [703],  # Bowen in Georgia Power 2103
-                # "177": [6155],  # Rush Island in Ameren
-                # "177": [2103],  # Labadie in Ameren
-            }.get(ba_code, []),
-            # because we added Vogtle, we remove Scherer and Wansley as in IRA
-            "exclude": {
-                # "57": [6257, 6052],
-                # "177": [
-                #     2104,
-                #     6155,
-                # ],
-            }.get(ba_code, []),
+            "exclude_or_mothball": [],
+            "exclude": [],
             "max_solar_distance": max_solar_distance,
             "max_wind_distance": max_wind_distance,
             "min_re_site_mw": min_re_site_mw,
@@ -606,109 +401,6 @@ class ProfileData:
             "regime": self.regime,
             **kwargs,
         }
-
-    def one_plant(self, pid: int, d: dict):
-        """Args:
-            pid: plant_id_eia
-            d: from :meth:`.ProfileData.get_ba_data`
-
-        Returns:
-
-        """  # noqa: D414
-        if pid not in PLANT_RE_MAX:
-            raise NoMaxRE(f"No Max RE data for {pid=} from ba_code={d['ba_code']}")
-        else:
-            LOGGER.warning("USING CRUDE CCC3 RE CAP MAX")
-        try:
-            plant_data = (
-                d["plant_data"]
-                .query("plant_id_eia == @pid")
-                .copy()
-                .assign(
-                    # remove retirement date so we get all years
-                    retirement_date=pd.NaT,
-                )
-            )
-            # re_plant_specs = self._adjust_re_for_fossil_data(
-            #     d["re_plant_specs"], plant_data
-            # )
-            tz_code = self.ad.ba_offsets.loc[d["ba_code"], "tz_code"]
-            dt = datetime(self.ad.years[0], 1, 1, 0, tzinfo=ZoneInfo(tz_code))
-            re = generate_projection_from_historical(
-                pd.concat(
-                    [
-                        pl.scan_parquet(Path.home() / "patio_data/hyperlocal_re.parquet")
-                        .filter(
-                            (pl.col("plant_id_eia") == pid)
-                            & (pl.col("datetime") >= dt.astimezone(UTC))
-                        )
-                        .select(["datetime", "solar", "onshore_wind"])
-                        .with_columns(
-                            pl.col("datetime")
-                            .dt.convert_time_zone(tz_code)
-                            .dt.replace_time_zone(None)
-                        )
-                        .collect()
-                        .to_pandas()
-                        .set_index("datetime")
-                    ],
-                    keys=[-pid],
-                    names=["plant_id_eia", "generator_id"],
-                    axis=1,
-                ).sort_index(axis=1),
-                year_mapper=d["year_mapper"],
-            )
-
-            re_cols = ["fos_id", "fos_gen", "latitude", "longitude", "state"]
-            pdata = plant_data.reset_index().rename(
-                columns={"plant_id_eia": "fos_id", "generator_id": "fos_gen"}
-            )[re_cols]
-            re_plant_specs = (
-                pd.concat(
-                    [
-                        pdata.assign(
-                            technology_description=RE_TECH_R[rtype],
-                            ilr=ilr,
-                            plant_id_eia=-pid,
-                            generator_id=rtype,
-                            operating_date=re.index.min() - timedelta(days=30),
-                        )
-                        for rtype, ilr in (("solar", 1.3), ("onshore_wind", 1.0))
-                    ]
-                )
-                .assign(
-                    distance=15.0,
-                    ba_code=d["ba_code"],
-                    capacity_mw=100.0,
-                    ba_weight=len(plant_data) ** -1,
-                )
-                .sort_values(["plant_id_eia", "generator_id"])
-            )
-            out = {
-                "ba_code": d["ba_code"] + f"_{pid}",
-                "capacity": plant_data.capacity_mw.sum(),
-                "plant_data": plant_data,
-                "profiles": d["profiles"].loc[:, [pid]],
-                "cost_data": d["cost_data"].loc[[pid], :],
-                "re_plant_specs": re_plant_specs,
-                "re_profiles": re,
-                "cems_change": MTDF.copy(),
-                "baseload_replace": {1: []},
-                "ccs_convert": {1: []},
-                "old_re_specs": d["old_re_specs"].assign(capacity_mw=0),
-                "old_re_profs": d["old_re_profs"],
-                "exclude_or_mothball": [],
-                "exclude": [],
-                "max_re": PLANT_RE_MAX[pid],
-                "missing": MTDF.reindex(columns=d["missing"].columns, copy=True),
-                "year_mapper": d["year_mapper"],
-            }
-        except Exception as exc:
-            raise RuntimeError(
-                f"Unable to select {pid=} from ba_code={d['ba_code']}, {exc!r}"  # noqa: S608
-            ) from exc
-        else:
-            return out
 
     ###########################################################################
     # BA DATA HELPERS
@@ -913,7 +605,9 @@ class ProfileData:
         if tech in ("Geothermal", "Nuclear"):
             return np.ones_like(re_profiles.iloc[:, 0])
         return (
-            re_profiles.loc[:, (slice(None), RE_MAP.get(tech, tech))].mean(axis=1).to_numpy()
+            re_profiles.loc[:, (slice(None), CLEAN_TD_MAP.get(tech, tech))]
+            .mean(axis=1)
+            .to_numpy()
         )
 
     @staticmethod

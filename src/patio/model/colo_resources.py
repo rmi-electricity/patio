@@ -2,11 +2,6 @@ from ast import literal_eval as lit_eval
 from types import NotImplementedType, SimpleNamespace
 from typing import TYPE_CHECKING, Protocol, Self
 
-from patio.constants import CARB_INTENSITY
-
-if TYPE_CHECKING:
-    from colo_lp import Model
-
 import cvxpy as cp
 import numpy as np
 import polars as pl
@@ -14,8 +9,12 @@ import polars.selectors as cs
 import scipy.sparse as sp
 from etoolbox.utils.misc import all_logging_disabled
 
+from patio.constants import CARB_INTENSITY
 from patio.data.asset_data import clean_atb
 from patio.model.colo_common import COSTS, ES, f_npv, f_pmt, f_pv, hstack, nt, prof, to_dict
+
+if TYPE_CHECKING:
+    from patio.model.colo_lp import Model
 
 
 class ParamVarLike(Protocol):
@@ -162,7 +161,7 @@ class DecisionVariable:
                         v.with_columns(
                             capacity_mw=self.x_cap.value,
                             datetime=pl.datetime(
-                                {self.m.i.years: min(self.m.d.opt_years)}.get(k, k[0]),
+                                {self.m.i.years: min(self.m.opt_years)}.get(k, k[0]),
                                 1,
                                 1,
                             ),
@@ -252,7 +251,7 @@ class DecisionVariable:
     def c_hourly(self, selection=False) -> pl.LazyFrame | None:
         if not self.cost:
             return None
-        c = self.m.i.years if selection else (self.m.d.opt_years[0],)
+        c = self.m.i.years if selection else (self.m.opt_years[0],)
         f = (lambda x: x.value) if isinstance(self.cost[c], cp.Expression) else lambda x: x
         c_hourly = self._h_core(selection, self.cost, "c_", func=f)
         non_zero = (
@@ -807,7 +806,7 @@ class _StorageCostCapShim:
         )
 
     def items(self):
-        for y in [self.dv.m.i.years] + [(y,) for y in self.dv.m.d.opt_years]:
+        for y in [self.dv.m.i.years] + [(y,) for y in self.dv.m.opt_years]:
             yield y, self[y]
 
     def pop(self, key, default=None):
@@ -948,7 +947,7 @@ class FeStorage(Storage):
                 generator_id=pl.lit("fe_storage"),
             )
             .lazy()
-            for y in self.m.d.opt_years
+            for y in self.m.opt_years
         ]
 
     def single_dv(self, yr: tuple, soc_ixs, *args) -> tuple[cp.Constraint, ...]:
@@ -958,8 +957,8 @@ class FeStorage(Storage):
             ef_mod, en_cap_mod = 0.995**20, 0.98**20
         else:
             x = self.x_cap.value
-            ef_mod = 0.995 ** (yr[0] - self.m.d.opt_years[0])
-            en_cap_mod = 0.98 ** (yr[0] - self.m.d.opt_years[0])
+            ef_mod = 0.995 ** (yr[0] - self.m.opt_years[0])
+            en_cap_mod = 0.98 ** (yr[0] - self.m.opt_years[0])
         d_ef, c_ef = 1 / (self.d_ef * ef_mod), self.c_ef * ef_mod
         return (
             s[1:] == s[:-1] - d[1:] * d_ef + ch[1:] * c_ef - s[1:] * self.l_ef,
@@ -989,7 +988,7 @@ class FeStorage(Storage):
             en_cap_mod = 0.98**20
         else:
             limit = self.x_cap.value.item()
-            en_cap_mod = 0.98 ** (yr[0] - self.m.d.opt_years[0])
+            en_cap_mod = 0.98 ** (yr[0] - self.m.opt_years[0])
         d, ch, s = self.get_x(yr)
         core = (
             d >= 0.0,
@@ -1060,7 +1059,7 @@ class EndogenousDurationStorage(Storage):
                 dur=self.dur.value.item(), opex_raw=pl.col("opex_raw") / pl.col("capacity_mw")
             )
             .lazy()
-            for y in self.m.d.opt_years
+            for y in self.m.opt_years
         ]
 
     def round(self):
@@ -1513,7 +1512,7 @@ class Renewables(DecisionVariable):
                 .to_numpy()
             )
             return pro @ self.x_cap
-        perf_mult = (1 - self.m.solar_degrade_per_year) ** (yr[0] - self.m.d.opt_years[0])
+        perf_mult = (1 - self.m.solar_degrade_per_year) ** (yr[0] - self.m.opt_years[0])
         pro = (
             prof(self.m.d.re_pro.with_columns(cs.contains("solar") * perf_mult), yr)
             .collect()
@@ -1711,7 +1710,7 @@ class ExportIncumbentFixed(DecisionVariable):
         if is_resource_selection(yr):
             perf_mult = (1 - self.m.solar_degrade_per_year) ** 20
         else:
-            perf_mult = (1 - self.m.solar_degrade_per_year) ** (yr[0] - self.m.d.opt_years[0])
+            perf_mult = (1 - self.m.solar_degrade_per_year) ** (yr[0] - self.m.opt_years[0])
         pro = (
             prof(self.m.d.re_pro.with_columns(cs.contains("solar") * perf_mult), yr)
             .collect()

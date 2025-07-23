@@ -4,21 +4,20 @@ from collections.abc import Iterator, Sequence
 from dataclasses import dataclass, field
 from functools import cached_property, reduce, singledispatchmethod
 from io import BytesIO, StringIO
-from operator import and_, or_
+from operator import and_
 from pathlib import Path
 from types import SimpleNamespace
-from typing import Literal, NamedTuple, Self
+from typing import TYPE_CHECKING, Literal, NamedTuple, Self
 from warnings import catch_warnings
 
 import cvxpy as cp
-import gurobipy  # noqa: TC002
 import numpy as np
 import pandas as pd
 import polars as pl
 import polars.selectors as cs
 from dispatch import DispatchModel
 from etoolbox.datazip import DataZip, IOMixin
-from etoolbox.utils.cloud import get, rmi_cloud_fs
+from etoolbox.utils.cloud import rmi_cloud_fs
 from polars import col as c
 from scipy.signal import argrelextrema
 
@@ -30,13 +29,11 @@ from patio.constants import (
     SIMPLE_TD_MAP,
     TECH_CODES,
 )
-from patio.data.asset_data import USER_DATA_PATH, AssetData
 from patio.helpers import (
     generate_projection_from_historical_pl as gen_proj,
 )
 from patio.helpers import (
     make_core_lhs_rhs,
-    pl_distance,
     solver,
 )
 from patio.model.base import adjust_profiles, calc_redispatch_cost
@@ -57,12 +54,12 @@ from patio.model.colo_common import (
     hstack,
     keep_nonzero_cols,
     nt,
-    pl_filter,
     prof,
     safediv,
     timer,
     to_dict,
 )
+from patio.model.colo_data import get_re_data
 from patio.model.colo_resources import (
     DecisionVariable,
     ExportIncumbentFossil,
@@ -73,7 +70,10 @@ from patio.model.colo_resources import (
     Storage,
     is_resource_selection,
 )
-from patio.package_data import PACKAGE_DATA_PATH
+
+if TYPE_CHECKING:
+    import gurobipy
+
 
 OPT_THREADS = 2
 
@@ -169,6 +169,7 @@ class Info(NamedTuple):
     years: tuple[int, int] = ()
     max_re: float = 0.0
     area_sqkm: float = 0.0
+    lat_lon: tuple[float, float] = ()
 
     def file(self, regime=None, ix=None, suffix=".json", **kwargs):
         if regime is None and ix is None:
@@ -207,67 +208,6 @@ class Info(NamedTuple):
         #     & (pl.col("regime") == regime)
         #     & (pl.col("name") == name)
         # )
-
-    @staticmethod
-    def get_re_data(lat, lon, sqkm):
-        sites = (
-            pl.read_csv(PACKAGE_DATA_PATH / "re_site_ids.csv")
-            .filter(pl.col("re_type").is_in(("solar", "onshore_wind")))
-            .with_columns(lat=lat, lon=lon)
-            .pipe(pl_distance, "latitude", "lat", "longitude", "lon")
-            .sort("distance")
-            .group_by("re_type")
-            .agg(pl.first("plant_id_eia"))
-        )
-        if not (
-            all_re_path := USER_DATA_PATH.parent / "all_re_new_too_big_tabled.parquet"
-        ).exists():
-            get("patio-data/all_re_new_too_big_tabled.parquet", all_re_path)
-        profs = (
-            pl.scan_parquet(all_re_path)
-            .filter(reduce(or_, [pl_filter(**v) for v in sites.iter_rows(named=True)]))
-            .collect()
-        )
-        solar, wind, _ = AssetData.raw_curves(
-            2025, regime="reference", pudl_release="v2025.7.0"
-        )
-        nrel_site_data = (
-            sites.join(
-                pl.from_pandas(
-                    pd.concat(
-                        [solar.assign(re_type="solar"), wind.assign(re_type="onshore_wind")]
-                    )
-                ),
-                on="re_type",
-            )
-            .with_columns(lat=lat, lon=lon)
-            .pipe(pl_distance, "latitude", "lat", "longitude", "lon")
-            .sort("distance")
-        )
-        combi_id = pl.concat_str(pl.lit("0"), pl.lit("0"), "re_type", separator="_")
-        # these specs represent the site itself, addl sites might be intereting to include?
-        specs = (
-            nrel_site_data.group_by("re_type")
-            .agg(pl.all().first())
-            .rename({"capacity_mw_ac": "capacity_mw_nrel_site"})
-            .with_columns(
-                icx_genid=pl.lit("0"),
-                re_site_id=0,
-                combi_id=combi_id,
-                area_per_mw=pl.col("area_sq_km") / pl.col("capacity_mw_nrel_site"),
-                capacity_mw_nrel_site=(pl.col("capacity_mw_nrel_site") / pl.col("area_sq_km"))
-                * sqkm,
-                area_sq_km=sqkm,
-            )
-            .sort("combi_id")
-        )
-
-        return specs, profs.with_columns(combi_id=combi_id).pivot(
-            on="combi_id", index="datetime", values="generation"
-        ).select(
-            "datetime",
-            *specs["combi_id"],
-        )
 
     @classmethod
     def fix(cls, i: Self) -> Self:
@@ -312,7 +252,6 @@ class Data:
     re_pro: pl.LazyFrame
     ba_pro: pl.LazyFrame
     mcoe: pl.DataFrame
-    opt_years: list
     re_ids: tuple
     i: Info
     src_path: Path
@@ -334,16 +273,7 @@ class Data:
         )
 
     @classmethod
-    def from_dz(cls, src_path, info, re_filter: pl.Expr | None = None):
-        with DataZip(src_path / f"{info.ba}_{info.pid}_{info.tech}_{info.status}.zip") as z:
-            p_data = {k: v for k, v in z.items()}  # noqa: C416
-        re_specs = p_data.get("re", p_data.get("re_specs")).with_columns(
-            technology_description=pl.col("re_type").replace(TECH_CODES)
-        )
-        if re_filter is not None:
-            re_specs = re_specs.filter(re_filter)
-        re_ids = tuple(re_specs["combi_id"])
-        re_pro = p_data.get("re_pro", p_data.get("re_pro"))
+    def from_dz(cls, src_path: Path, info: Info, re_filter: pl.Expr | None = None):
         with DataZip(src_path / f"{info.ba}.zip") as z:
             baseline = z["baseline"]
             plant_data = z["plant_data"]
@@ -355,15 +285,33 @@ class Data:
             if isinstance(re_filter, pl.Expr)
             else "no_filter"
         )
+        if info.lat_lon and info.area_sqkm:
+            re_specs, re_pro = get_re_data(*info.lat_lon, info.area_sqkm)
+            re_ids = tuple(re_specs["combi_id"])
+            ba_pro = baseline.with_columns(icx=None, icx_hist=None)
+            mcoe = disp_cost.select(
+                pl.col("datetime").unique(), total_var_mwh=pl.lit(None).cast(pl.Float64)
+            )
+        else:
+            with DataZip(src_path / info.file(suffix=".zip")) as z:
+                p_data = dict(z.items())
+            re_specs = p_data.get("re", p_data.get("re_specs")).with_columns(
+                technology_description=pl.col("re_type").replace(TECH_CODES)
+            )
+            if re_filter is not None:
+                re_specs = re_specs.filter(re_filter)
+            re_ids = tuple(re_specs["combi_id"])
+            re_pro = p_data.get("re_pro", p_data.get("re_pro"))
+            ba_pro = p_data.get("icx_pro", p_data.get("ba_pro")).join(
+                baseline, on="datetime", how="left"
+            )
+            mcoe = p_data.get("var_all").cast({"datetime": pl.Datetime()})
+
         return cls(
             re_specs=re_specs.lazy(),
             re_pro=re_pro.select(pl.col("datetime").cast(pl.Datetime()), *re_ids).lazy(),
-            ba_pro=p_data.get("icx_pro", p_data.get("ba_pro"))
-            .join(baseline, on="datetime", how="left")
-            .cast({"datetime": pl.Datetime()})
-            .lazy(),
-            mcoe=p_data.get("var_all").cast({"datetime": pl.Datetime()}),
-            opt_years=p_data.get("opt_years"),
+            ba_pro=ba_pro.cast({"datetime": pl.Datetime()}).lazy(),
+            mcoe=mcoe,
             re_ids=re_ids,
             i=info,
             src_path=src_path,
@@ -437,6 +385,7 @@ class Model(IOMixin):
         solar_degrade_per_year: float = 0.0,
         load_icx_max_mult: float = 0.75,
         con_fossil_load_hrly: bool = True,
+        opt_years: tuple = (),
         regime: Literal["limited", "reference"] = "limited",
         logger: logging.Logger | None = None,
         ptc: float = COSTS["ptc"],
@@ -471,19 +420,20 @@ class Model(IOMixin):
             "load_icx_max_mult": load_icx_max_mult,
             "gas_window_seasonal": gas_window_seasonal,
             "con_fossil_load_hrly": con_fossil_load_hrly,
+            "opt_years": opt_years,
         }
         self.result_dir = result_dir
         self.ptc = ptc
         self.itc = itc
-        self.ptc_years = self.d.opt_years[:10]
+        self.ptc_years = self.opt_years[:10]
         self.r_disc = ((1 + COSTS["discount"]) / (1 + COSTS["inflation"])) - 1
         self.fcr = self.r_disc / (1 - (1 + self.r_disc) ** -self.life)
-        max_opt, len_opt = max(self.d.opt_years) + 1, len(self.d.opt_years)
+        max_opt, len_opt = max(self.opt_years) + 1, len(self.opt_years)
         self.yr_mapper = {
-            y: self.d.opt_years[-(4 - i % 4)]
+            y: self.opt_years[-(4 - i % 4)]
             for i, y in enumerate(range(max_opt, max_opt + self.life - len_opt))
         }
-        cost_years = self.d.opt_years + list(self.yr_mapper.values())
+        cost_years = self.opt_years + list(self.yr_mapper.values())
         assert len(cost_years) == self.life, "remap of years to full life of project failed"
 
         # this export requirement incorporates both historical and baseline dispatch
@@ -530,7 +480,7 @@ class Model(IOMixin):
         )
         self.i = self.i._replace(max_re=p.solve().item())
         self._crit_hrs = {self.i.years: cp.Parameter(8760 * 2, name="crit_hrs_select")} | {
-            (yr,): cp.Parameter(8760, name=f"crit_hrs_{yr}") for yr in self.d.opt_years
+            (yr,): cp.Parameter(8760, name=f"crit_hrs_{yr}") for yr in self.opt_years
         }
         self.num_crit_hrs = num_crit_hrs
         self._state = {}  #  {"dvs": dvs}
@@ -639,6 +589,10 @@ class Model(IOMixin):
     @property
     def con_fossil_load_hrly(self):
         return self._params["con_fossil_load_hrly"]
+
+    @cached_property
+    def opt_years(self):
+        return self._params["opt_years"]
 
     @cached_property
     def fuels(self):
@@ -860,7 +814,7 @@ class Model(IOMixin):
     def dispatch_all(self, time_limit):
         if not any(dv.x_cap.value for dv in self.dvs.values() if dv.x_cap is not None):
             raise RuntimeError("must run select_resources first or use Model.from_run")
-        for yr in self.d.opt_years:
+        for yr in self.opt_years:
             self.dispatch(yr, time_limit)
             if self.status == FAIL_DISPATCH:
                 break
@@ -986,7 +940,7 @@ class Model(IOMixin):
         )
 
         if not hrly_check.is_empty():
-            pct_hrs = len(hrly_check) / (len(self.d.opt_years) * 8760)
+            pct_hrs = len(hrly_check) / (len(self.opt_years) * 8760)
             miss_pct = -(
                 hrly_check.select("miss").sum()
                 / self.hourly()
@@ -1368,7 +1322,7 @@ class Model(IOMixin):
                     ],
                     how="vertical_relaxed",
                 ).insert_column(0, pl.lit(str(yr)).alias("year"))
-                for yr in self.d.opt_years
+                for yr in self.opt_years
             ],
             how="diagonal_relaxed",
         )
@@ -1397,7 +1351,7 @@ class Model(IOMixin):
         costs = (
             self.d.ba_data["dispatchable_cost"]
             .filter(
-                (pl.col("datetime").dt.year() >= self.d.opt_years[0])
+                (pl.col("datetime").dt.year() >= self.opt_years[0])
                 & (c.plant_id_eia == self.i.pid)
                 & c.generator_id.is_in(self.i.gens)
             )
@@ -1442,7 +1396,7 @@ class Model(IOMixin):
                     mcoe=pl.lit(mcoe.filter(pl.col("datetime") == y)["cost"].item()),
                 )
                 .lazy()
-                for y in self.d.opt_years
+                for y in self.opt_years
             ]
         else:
             new_fos_tech = None
@@ -1481,7 +1435,7 @@ class Model(IOMixin):
                         .join(
                             self.re_selected.lazy(), on=["re_site_id", "re_type"], how="right"
                         )
-                        for y in self.d.opt_years
+                        for y in self.opt_years
                     ]
                     + [x for t in self.es_types for x in self[f"{t}_storage"].for_econ()]
                     + new_fos_specs,
@@ -2442,7 +2396,7 @@ class Model(IOMixin):
             dispatchable_specs=self.d["dispatchable_specs"],
             dispatchable_profiles=new_profs,
             dispatchable_cost=self.d["dispatchable_cost"]
-            .filter(c.datetime.dt.year() >= self.d.opt_years[0])
+            .filter(c.datetime.dt.year() >= self.opt_years[0])
             .collect()
             .to_pandas()
             .set_index(["plant_id_eia", "generator_id", "datetime"]),

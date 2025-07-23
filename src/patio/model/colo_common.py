@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import logging
 import operator
 import os
@@ -8,63 +6,24 @@ import tempfile
 import threading
 import time
 import traceback
-from collections.abc import Generator, Sequence  # noqa: TC003
+from collections.abc import Generator, Sequence
 from contextlib import contextmanager
 from functools import reduce, singledispatch
 from io import StringIO
 from pathlib import Path
-from typing import TYPE_CHECKING, Literal, NamedTuple
+from typing import Literal, NamedTuple
 
-import cvxpy as cp
 import numpy as np
 import pandas as pd
 import polars as pl
 import polars.selectors as cs
-import scipy.sparse as sp  # noqa: TC002
 from etoolbox.utils.pudl import pl_read_pudl
 from numba.cuda.cudadrv.devicearray import lru_cache
 from tqdm.auto import tqdm
 
-if TYPE_CHECKING:
-    from patio.model.colo_lp import Info
+from patio.model.colo_lp import Info
 
 logger = logging.getLogger("patio")
-
-
-class _LPProblem(NamedTuple):
-    c: np.ndarray
-    A_ub: sp.csc_array
-    b_ub: np.ndarray
-    A_eq: sp.csc_array
-    b_eq: np.ndarray
-    bounds: np.ndarray
-    x0: np.ndarray | None = None
-    integrality: np.ndarray | None = None
-
-    def check(self):
-        dv_aligned = (
-            self.c.shape[0] == self.A_ub.shape[1] == self.A_eq.shape[1] == self.bounds.shape[0]
-        )
-        ub_aligned = self.A_ub.shape[0] == self.b_ub.shape[0]
-        eq_aligned = self.A_eq.shape[0] == self.b_eq.shape[0]
-        if not all((dv_aligned, ub_aligned, eq_aligned)):
-            raise AssertionError(
-                f"LP input shapes do not match:\n\n"
-                f"{self.c.shape=}\n{self.A_ub.shape=}\n{self.b_ub.shape=}"
-                f"\n{self.A_eq.shape=}\n{self.b_eq.shape=}\n{self.bounds.shape=}"
-            )
-        return self
-
-    def as_cvxpy(self):
-        x = cp.Variable(len(self.c))
-        constraints = [
-            self.A_ub @ x <= self.b_ub,
-            self.A_eq @ x == self.b_eq,
-            x >= self.bounds[:, 0],
-            x <= self.bounds[:, 1],
-        ]
-        objective = cp.Minimize(self.c @ x)
-        return cp.Problem(objective, constraints)
 
 
 SUCCESS = 0

@@ -3,14 +3,12 @@
 This module contains the core logic of the model.
 """
 
-from __future__ import annotations
-
 import json
 import logging
 import multiprocessing
 import warnings
 from collections import Counter, defaultdict
-from collections.abc import Sequence  # noqa: TC003
+from collections.abc import Sequence
 from contextlib import nullcontext, suppress
 from datetime import datetime, timedelta
 from functools import cached_property, lru_cache
@@ -57,13 +55,9 @@ from patio.constants import (
     ROOT_PATH,
 )
 from patio.data.asset_data import AssetData
-
-# from gencost.crosswalk import _prep_for_networkx, _subplant_ids_from_prepped_crosswalk
-# from gencost.entity_ids import add_ba_code
 from patio.data.entity_ids import add_ba_code
 from patio.data.profile_data import ProfileData
 from patio.exceptions import (
-    NoMaxRE,
     PatioData,
     ScenarioError,
 )
@@ -276,6 +270,7 @@ class BA(IOMixin):
         colo_method: Literal["direct", "iter"] | None = None,
         old_clean_adj_net_load=True,
         colo_dir: str | None = None,
+        pudl_release: str | None = None,
         **kwargs,
     ):
         for scen in scenario_configs:
@@ -298,6 +293,7 @@ class BA(IOMixin):
             "colo_techs": colo_techs,
             "regime": regime,
         }
+        self.pudl_release = pudl_release
         profiles, self._re_profiles = self.align_profiles(
             profiles.reindex(index=pd.to_datetime(profiles.index.to_series())),
             re_profiles,
@@ -1843,7 +1839,6 @@ class BAs:
         regime: Literal["reference", "limited"] = "reference",
         solar_ilr: float = 1.34,
         data_kwargs: dict | None = None,
-        by_plant: bool = False,  # noqa: FBT001
         data_source: str | None = None,
         pudl_release: str = PATIO_PUDL_RELEASE,
         queue=None,
@@ -1903,7 +1898,6 @@ class BAs:
             self.data_kwargs = {}
         else:
             self.data_kwargs = data_kwargs
-        self.by_plant = by_plant
         self.bad_scenarios = defaultdict(list)
         self.good_objs = []
         now = datetime.now().strftime("%Y%m%d%H%M")
@@ -1915,7 +1909,6 @@ class BAs:
                 json.dump(
                     {
                         "plants": [],
-                        "regime": regime,
                         "pudl_release": pudl_release,
                         "created": now,
                         "data_commit": _git_commit_info(),
@@ -2108,34 +2101,10 @@ class BAs:
                         )
                         LOGGER.error("%s %r", ba_code, exc, exc_info=True)  # noqa: G201
                     else:
-                        if self.by_plant:
-                            self._plant_level_helper(ba_code, dz=z, data=data, pad=pad)
-                        else:
-                            self._setup_and_run_helper(ba_code, dz=z, data=data)
+                        self._setup_and_run_helper(ba_code, dz=z, data=data)
             self._attrs_to_z(z)
 
             self.log_error_counts("setup", "run")
-
-    def _plant_level_helper(self, ba_code: str, dz, data, pad):
-        plant_loop: Any[str] = tqdm(
-            data["plant_data"]
-            .query(
-                "technology_description == 'Conventional Steam Coal' & category == 'existing_fossil'"
-            )
-            .reset_index()
-            .plant_id_eia.unique(),
-            desc=f"{ba_code:10}".ljust(pad, " "),
-            position=1,
-        )
-        for pid in plant_loop:
-            plant_loop.set_description(
-                f"{ba_code.rjust(15, ' ')} plant_id={pid}".ljust(pad, " ")
-            )
-            try:
-                data_ = self.pd.one_plant(pid, data)
-            except NoMaxRE as exc:
-                self.errors["setup"][ba_code].append(TracebackException.from_exception(exc))
-            self._setup_and_run_helper(data_["ba_code"], dz=dz, data=data_)
 
     def get_fossils_specs(self):
         with logging_redirect_tqdm():
@@ -2158,6 +2127,7 @@ class BAs:
                 scenario_configs=self.scenario_configs,
                 queue=self.queue,
                 colo_dir=self.colo_dir,
+                pudl_release=self.pudl_release,
             )
             self.good_objs.append(ba_code)
             if self.scenario_configs:

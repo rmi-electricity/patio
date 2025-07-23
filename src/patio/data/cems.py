@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import logging
 from dataclasses import dataclass
 from functools import lru_cache
@@ -8,11 +6,7 @@ from traceback import TracebackException
 import numpy as np
 import pandas as pd
 from etoolbox.datazip import DataZip
-
-# from pudl.helpers import simplify_columns
 from etoolbox.utils.pudl_helpers import simplify_columns
-
-# from gencost.constants import UDAY_FOSSIL_FUEL_MAP
 from numba import njit
 from tqdm import tqdm
 from tqdm.contrib.concurrent import process_map

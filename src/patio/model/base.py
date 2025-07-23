@@ -1,33 +1,26 @@
-from __future__ import annotations
-
 import itertools
 import logging
 import warnings
+from collections.abc import Sequence
 from copy import deepcopy
 from dataclasses import dataclass, field
+from datetime import datetime
 from inspect import signature
-from typing import TYPE_CHECKING, Literal, NamedTuple
+from typing import Literal, NamedTuple, Self
 
 import cvxpy as cp
 import numpy as np
 import pandas as pd
-from dispatch import zero_profiles_outside_operating_dates
+from dispatch import DispatchModel, zero_profiles_outside_operating_dates
 from numba import NumbaPerformanceWarning, njit
 from plotly import express as px
-from plotly import graph_objs as go  # noqa: TC002
+from plotly import graph_objs as go
 from scipy.optimize import LinearConstraint, linprog, minimize
 
 from patio.constants import COLORS, MTDF, PERMUTATIONS
 from patio.helpers import agg_profile, solver
 
-if TYPE_CHECKING:
-    from collections.abc import Sequence
-    from datetime import datetime
-
-    from dispatch import DispatchModel
-
 LOGGER = logging.getLogger("patio")
-__all__ = ["BaseProfileMatch", "equal_capacity", "equal_energy"]
 
 
 class ScenarioConfig(NamedTuple):
@@ -43,7 +36,7 @@ class ScenarioConfig(NamedTuple):
     def re_share_of_total(self):
         return self.re_energy
 
-    def is_re_child(self, other: ScenarioConfig) -> bool:
+    def is_re_child(self, other: Self) -> bool:
         """Determine if ``other`` is a child of this scenario."""
         if hasattr(other, "config") and isinstance(other.config, ScenarioConfig):
             other = other.config
@@ -61,7 +54,7 @@ class ScenarioConfig(NamedTuple):
             )
         )
 
-    def is_li_child(self, other: ScenarioConfig) -> bool:
+    def is_li_child(self, other: Self) -> bool:
         """Determine if ``other`` is a child of this scenario."""
         if hasattr(other, "config") and isinstance(other.config, ScenarioConfig):
             other = other.config

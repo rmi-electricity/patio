@@ -1,12 +1,10 @@
-from __future__ import annotations
-
 import gc
 import json
 import logging
-from collections.abc import Callable, Sequence  # noqa: TC003
+from collections.abc import Sequence
 from datetime import timedelta
 from pathlib import Path
-from typing import Any, NamedTuple
+from typing import TYPE_CHECKING, Any, Self
 
 import numpy as np
 import pandas as pd
@@ -33,8 +31,9 @@ from patio.constants import (
     TD_MAP,
     TECH_CODES,
 )
+from patio.data.profile_data import get_714profile
 from patio.exceptions import ScenarioError
-from patio.helpers import df_query, make_core_lhs_rhs
+from patio.helpers import df_query, generate_projection_from_historical_pl, make_core_lhs_rhs
 from patio.model.base import (
     ScenarioConfig,
     calc_redispatch_cost,
@@ -42,148 +41,11 @@ from patio.model.base import (
     optimize_equal_energy,
 )
 
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
 LOGGER = logging.getLogger("patio")
 MIN_HIST_FOSSIL = 0.05
-
-
-class IterativeOptimizationData(NamedTuple):
-    x: dict
-    diffs: dict
-    emm: dict
-    obj_fun: dict
-    adj_cost: dict
-    cost: dict
-    ptc: dict
-    mkt_rev: dict
-    c_cost: np.ndarray | dict[int, pd.DataFrame]
-    c_rev: dict
-    c_ptc: dict
-    c_all: dict
-    ba_marg: np.ndarray | list
-    idx: pd.MultiIndex | None = None
-    c_idx: pd.Index | None = None
-    dt_idx: pd.DatetimeIndex | None = None
-    error: str | dict = ""
-    alt_last: int | None = None
-
-    @classmethod
-    def new_empty(
-        cls,
-        idx: pd.MultiIndex | None = None,
-        c_idx: pd.Index | None = None,
-        dt_idx: pd.DatetimeIndex | None = None,
-        error: str | dict = "",
-    ):
-        return cls(*[{} for _ in range(12)], [], idx, c_idx, dt_idx, error)
-
-    @property
-    def last_idx(self):
-        return max(self.obj_fun) if self.alt_last is None else self.alt_last
-
-    def multi_year_update(self, years, other: IterativeOptimizationData):
-        last = other.last_idx
-        for fld in (
-            "x",
-            "emm",
-            "obj_fun",
-            "adj_cost",
-            "cost",
-            "ptc",
-            "mkt_rev",
-            "c_rev",
-            "c_ptc",
-        ):
-            getattr(self, fld)[years] = getattr(other, fld)[last]
-        self.error[years] = other.error
-        self.ba_marg.append(pd.Series(other.ba_marg, index=other.dt_idx))
-        self.core_update(years, other)
-        assert np.isclose(self.adj_cost[years] - self.mkt_rev[years], self.obj_fun[years])
-        return self
-
-    def core_update(self, years, other):
-        last = other.last_idx
-        self.c_all[str(years)] = pd.DataFrame(
-            {
-                "base": other.c_cost,
-                "mkt_rev": other.c_rev[last],
-                "ptc": other.c_ptc[last],
-                "x_star": other.x[last],
-                "mkt_rev_pre": other.c_rev[last - 1],
-                "ptc_pre": other.c_ptc[last - 1],
-                "x_star_pre": other.x[last - 1],
-            },
-            index=other.idx,
-        )
-        self.error[years] = other.error
-
-    def set_static(self, c_cost, ba_marg):
-        return self._replace(c_cost=c_cost, ba_marg=ba_marg)
-
-    def iter_update(self, i, c_rev, c_ptc, emm):
-        self.c_rev[i] = c_rev
-        self.c_ptc[i] = c_ptc
-        c_a = self.c_cost - c_rev - c_ptc
-        self.cost[i] = self.c_cost @ self.x[i]
-        self.ptc[i] = c_ptc @ self.x[i]
-        self.mkt_rev[i] = c_rev @ self.x[i]
-        self.obj_fun[i] = c_a @ self.x[i]
-        self.adj_cost[i] = self.cost[i] - self.ptc[i]
-        self.emm[i] = emm
-        if i > 0:
-            l_c = len(self.c_idx)
-            self.diffs[i] = [
-                np.abs(self.x[i][:l_c] - self.x[i - 1][:l_c]).sum(),
-                (self.obj_fun[i] - self.obj_fun[i - 1])
-                / (0.5 * self.obj_fun[i] + 0.5 * self.obj_fun[i - 1]),
-                (self.emm[i] - self.emm[i - 1]) / (0.5 * self.emm[i] + 0.5 * self.emm[i - 1]),
-            ]
-        return c_a
-
-    def get_diff_ddiff(self, i):
-        current = abs(self.diffs[i][1])
-        if i <= 1:
-            return current, 1.0
-        return current, abs(current - abs(self.diffs[i - 1][1]))
-
-    def override_last_idx(self, min_idx, **kwargs):
-        drop_before_min_idx = {k: v for k, v in self.obj_fun.items() if k >= min_idx}
-        alt_last = min(drop_before_min_idx, key=drop_before_min_idx.get)
-        return self._replace(alt_last=alt_last, **kwargs)
-
-    def get_best_x_c(self):
-        return self.x[min(self.obj_fun, key=self.obj_fun.get)]
-
-    def summary(self, poi, l_s):
-        return (
-            pd.concat(
-                [
-                    pd.DataFrame(self.x, index=self.idx).groupby(level=0, sort=False).sum(),
-                    pd.Series(self.cost, name="cost").to_frame().T,
-                    pd.Series(self.ptc, name="ptc").to_frame().T,
-                    pd.Series(self.adj_cost, name="adj_cost").to_frame().T,
-                    pd.Series(self.mkt_rev, name="market_revenue").to_frame().T,
-                    pd.Series(self.obj_fun, name="objective").to_frame().T,
-                    pd.DataFrame(
-                        self.diffs,
-                        index=["re_cap_diff", "objective_diff", "emissions_diff"],
-                    ),
-                ]
-            )
-            .T.assign(icx_cf=lambda x: x.fos / (poi * l_s))
-            .T
-        )
-
-    def last_x_c(self) -> pd.Series | np.ndarray:
-        x_c = self.x[self.last_idx][: len(self.c_idx)]
-        return pd.Series(x_c, index=self.c_idx)
-
-    def last_x_ts(self) -> pd.DataFrame:
-        x_ts = self.x[self.last_idx][len(self.c_idx) : -1]
-        return pd.DataFrame(
-            np.reshape(x_ts, (int(len(x_ts) / 4), 4), order="F"),
-            index=self.dt_idx,
-            columns=["discharge", "charge", "soc", "fossil"],
-        )
 
 
 class BAScenario:
@@ -608,7 +470,7 @@ class BAScenario:
             .update_layout(title=f"{self.ba.ba_name} {stem}"),
         }
 
-    def is_duplicate_scen(self, others: Sequence[BAScenario]) -> bool:
+    def is_duplicate_scen(self, others: Sequence[Self]) -> bool:
         return any(self.config[1:] == x.config[1:] and self.re_cap == x.re_cap for x in others)
 
     @property
@@ -2190,18 +2052,6 @@ class BAScenario:
                     else:
                         if p:
                             plants_data.append(p)
-
-                # plants_data = [
-                #     self.setup_re_colo_data(pid, gens, cap, first_year=2024)
-                #     for pid, gens, cap in tqdm(
-                #         ids.itertuples(index=False),
-                #         total=len(ids),
-                #         position=4,
-                #         leave=False,
-                #         desc=f"{self.ba.ba_code} colo data setup",
-                #     )
-                # ]
-                # plants_data = [p for p in plants_data if p]
                 json_plants["plants"].extend(plants_data)
                 with open(json_path, "w") as cjson:
                     json.dump(json_plants, cjson, indent=4)
@@ -2213,6 +2063,15 @@ class BAScenario:
         self.dm[0].re_plant_specs = self.dm[0].re_plant_specs.assign(
             simple_td=lambda x: x.technology_description.map(SIMPLE_TD_MAP)
         )
+        ferc714 = generate_projection_from_historical_pl(
+            get_714profile(
+                tuple(self.ba.plant_data.respondent_id_ferc714.dropna().astype(int).unique()),
+                self.ba.pudl_release,
+            )
+            .pivot(on="respondent_id_ferc714", index="datetime", values="mwh")
+            .sort("datetime"),
+            year_mapper=self.ba._metadata["year_mapper"],
+        ).cast({"datetime": pl.Datetime("ns")})
         baseline = pd.concat(
             [
                 self.dm[0]
@@ -2254,7 +2113,6 @@ class BAScenario:
                 .rename("baseline_sys_co2"),
                 calc_redispatch_cost(self.dm[0]).rename("baseline_sys_cost"),
                 self.dm[0].redispatch.sum(axis=1).rename("baseline_sys_dispatchable"),
-                # self.dm[0].grouper(self.dm[0].redispatch, by="simple_td", freq="h"),
                 self.dm[0].re_profiles_ac.sum(axis=1).rename("baseline_sys_renewable"),
                 self.dm[0]
                 .storage_dispatch.T.groupby(level=0)
@@ -2262,11 +2120,6 @@ class BAScenario:
                 .T.assign(baseline_sys_storage=lambda x: x.discharge - x.gridcharge)[
                     "baseline_sys_storage"
                 ],
-                # self.dm[0]
-                # .re_profiles_ac.set_axis(self.dm[0].re_plant_specs.simple_td, axis=1)
-                # .T.groupby(level=0)
-                # .sum()
-                # .T,
             ],
             axis=1,
         )
@@ -2276,9 +2129,9 @@ class BAScenario:
             re_profs = re_profs.reindex(columns=re_specs.index).fillna(0.0)
 
         out = {
-            "baseline": pl.from_pandas(baseline, include_index=True).filter(
-                pl.col("datetime").dt.year() >= first_year
-            ),
+            "baseline": pl.from_pandas(baseline, include_index=True)
+            .filter(pl.col("datetime").dt.year() >= first_year)
+            .join(ferc714, on="datetime", how="left"),
             "ba_dm_data": {
                 "dispatchable_profiles": self.dm[0].dispatchable_profiles.query(
                     "datetime.dt.year >= @first_year"
@@ -2300,21 +2153,6 @@ class BAScenario:
         ) as dz:
             for k, v in out.items():
                 dz[k] = v
-        # save_pickle(
-        #     {
-        #         "baseline": baseline,
-        #         "ba_dm_data": {
-        #             "load_profile": self.dm[0].load_profile,
-        #             "dispatchable_profiles": self.dm[0].dispatchable_profiles.to_parquet(),
-        #             "dispatchable_specs": self.dm[0].dispatchable_specs,
-        #             "dispatchable_cost": self.dm[0].dispatchable_cost.to_parquet(),
-        #             "storage_specs": self.dm[0].storage_specs,
-        #         },
-        #         "plant_data": self.ba.plant_data.reset_index(),
-        #         "fuel_curve": self.ba.fuel_curve.to_parquet(),
-        #     },
-        #     Path.home() / f"{self.ba.colo_dir}/data/{self.ba.ba_code}.pkl",
-        # )
         gc.collect()
         return None
 
@@ -2350,6 +2188,10 @@ class BAScenario:
             "reg_mult",
             "energy_community",
             "state",
+            "utility_id_eia_lse",
+            "utility_name_eia_lse",
+            "balancing_authority_code_eia",
+            "respondent_id_ferc714",
         )
         re = (
             self.ba._re_plant_specs.query("icx_id == @pid & icx_gen in @gens")
@@ -2383,23 +2225,11 @@ class BAScenario:
                 }
             )
         )
-        # if (
-        #     self.ba.ba_code == "PJM"
-        #     and self.ba.plant_data.query("plant_id_eia == @pid").state.iloc[0] != "VA"
-        # ):
-        #     LOGGER.warning("Skipping non-VA PJM plants")
-        #     return None
         other_gens_selected = (
             self.re_plant_specs.assign(used_site_type_mw=lambda x: x.capacity_mw)
             .query("(icx_id != @pid | icx_gen not in @gens)")
             .groupby(["re_site_id", "re_type"], as_index=False)
-            .agg(
-                {
-                    "used_site_type_mw": "sum",
-                    "area_sq_km": "first",
-                    "area_per_mw": "first",
-                }
-            )
+            .agg({"used_site_type_mw": "sum", "area_sq_km": "first", "area_per_mw": "first"})
             .assign(
                 used_site_type_area=lambda x: x.used_site_type_mw * x.area_per_mw,
                 used_site_area=lambda x: x.groupby("re_site_id").used_site_type_area.transform(
@@ -2447,26 +2277,11 @@ class BAScenario:
             fuel = _fuels.mode().item()
             LOGGER.warning(
                 "%s %s %s %s has multiple fuels, selecting %s from %s",
-                self.ba.ba_code,
-                pid,
-                gens,
-                icx_tech,
-                fuel,
-                list(_fuels.unique()),
+                *(self.ba.ba_code, pid, gens, icx_tech, fuel, list(_fuels.unique())),
             )
-
-        # lhs_rhs = make_core_lhs_rhs(re).query("cons_set != 'fossil'")
         assert make_core_lhs_rhs(re, fossil=False).query("rhs.isna()").empty, (
             "rhs adjustment failed: idx mismatch"
         )
-
-        # es = re[re.es_mw > 0.0]
-        # es_ids = [
-        #     x
-        #     for y in es.plant_id_eia
-        #     for x in y
-        #     if x in self.dm[0].storage_dispatch.columns.get_level_values(1)
-        # ]
         re_pro_ = self.ba.setup_re_profiles(re)[1]
         assert re_pro_.isna().sum().sum() == 0, "re_profiles contains NaNs"
 
@@ -2496,91 +2311,22 @@ class BAScenario:
                 .groupby(pd.Grouper(freq="MS", level="datetime"))
                 .mean()
             )
-        # re_pro_ = self.ba.setup_re_profiles(re)[1]
-        # _esd = self.dm[0].storage_dispatch
-        # cr_req_pro_all = np.minimum(
-        #     poi,
-        #     np.maximum(
-        #         0.0,
-        #         re_pro_ @ re.set_index(["re_site_id", "re_type"]).cr_mw
-        #         + _esd.loc[:, [("discharge", i, "es") for i in es_ids]].sum(axis=1)
-        #         - _esd.loc[:, [("gridcharge", i, "es") for i in es_ids]].sum(axis=1),
-        #     ),
-        # )
-        # self.dm[0].dispatchable_specs = self.dm[0].dispatchable_specs.assign(
-        #     simple_td=lambda x: x.technology_description.map(SIMPLE_TD_MAP)
-        # )
-        # self.dm[0].re_plant_specs = self.dm[0].re_plant_specs.assign(
-        #     simple_td=lambda x: x.technology_description.map(SIMPLE_TD_MAP)
-        # )
-        # re_specs = self.dm[0].re_plant_specs.copy()
-        # if "icx_id" in re_specs:
-        #     re_specs = re_specs.query("icx_id != @pid | icx_gen not in @gens")
-        #     old_ids = list(
-        #         re_specs[["re_site_id", "re_type"]].itertuples(index=False, name=None)
-        #     )
-        #     re_profs = pd.concat(
-        #         [
-        #             self.ba.re_profiles.loc[:, old_ids].set_axis(re_specs.index, axis=1),
-        #             self.ba.profiles[self.ba.clean_list],
-        #         ],
-        #         axis=1,
-        #     ).sort_index(axis=1)
-        # else:
-        #     re_profs = self.ba.profiles[self.ba.clean_list]
-        #     if set(re_profs.columns) != set(re_specs.index):
-        #         re_profs = re_profs.reindex(columns=re_specs.index).fillna(0.0)
         icx_tech = {v: k for k, v in TECH_CODES.items()}[icx_tech]
-        list(re[["combined", "combi_id"]].itertuples(name=None, index=False))
-        out = {
-            "re": pl.from_pandas(re),
-            "re_pro": self.ba._re_profiles.filter(
-                pl.col("datetime").dt.year() >= first_year
-            ).select(
-                "datetime",
-                *[
-                    pl.col(a).alias(b)
-                    for a, b in re[["combined", "combi_id"]].itertuples(name=None, index=False)
-                ],
-            ),
-            "icx_pro": pl.from_pandas(
-                pd.concat(
-                    [
-                        icx_pro_all.to_frame("icx"),
-                        icx_histpro_all.to_frame("icx_hist"),
-                        # self.dm[0].redispatch_lambda().to_frame("ba_lambda"),
-                        # self.dm[0].load_profile.to_frame("ba_load").assign(
-                        #     ba_net_load=self.dm[0].net_load_profile
-                        # ),
-                        # np.maximum(
-                        #     0.0,
-                        #     np.minimum(
-                        #         1.0,
-                        #         self.dm[0]
-                        #         .system_summary_core(freq="h")
-                        #         .loc[:, "curtailment_pct"]
-                        #         .fillna(0.0),
-                        #     ),
-                        # ),
-                    ],
-                    axis=1,
-                ),
-                include_index=True,
-            ).filter(pl.col("datetime").dt.year() >= first_year),
-            "var_all": pl.from_pandas(var_all, include_index=True),
-            "opt_years": [y for y in self.ba._metadata["year_mapper"] if y >= first_year],
-            # "dm_data": {
-            #     "re_profiles": re_profs,
-            #     "re_plant_specs": re_specs,
-            # },
-        }
+        pro_cols = re[["combined", "combi_id"]].itertuples(name=None, index=False)
         with DataZip(
             Path.home()
             / f"{self.ba.colo_dir}/{self.ba.ba_code}_{pid}_{icx_tech}_{status}.zip",
             "w",
         ) as dz:
-            for k, v in out.items():
-                dz[k] = v
+            dz["re"] = pl.from_pandas(re)
+            dz["re_pro"] = self.ba._re_profiles.filter(
+                pl.col("datetime").dt.year() >= first_year
+            ).select("datetime", *[pl.col(a).alias(b) for a, b in pro_cols])
+            dz["icx_pro"] = pl.from_pandas(
+                pd.concat({"icx": icx_pro_all, "icx_hist": icx_histpro_all}, axis=1),
+                include_index=True,
+            ).filter(pl.col("datetime").dt.year() >= first_year)
+            dz["var_all"] = pl.from_pandas(var_all, include_index=True)
         gc.collect()
         return {
             "ba": self.ba.ba_code,
@@ -2590,7 +2336,7 @@ class BAScenario:
             "status": status,
             "cap": poi,
             "fuel": fuel,
-            # "years": years,
+            "ferc_id": int(re.respondent_id_ferc714.unique().item()),
         }
 
     @property

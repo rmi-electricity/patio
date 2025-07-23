@@ -3,14 +3,12 @@
 This module contains the objects and specific methods to set up and manage data.
 """
 
-from __future__ import annotations
-
 import logging
 import shutil
 import warnings
 from dataclasses import dataclass, field
 from datetime import datetime
-from functools import lru_cache
+from functools import lru_cache, singledispatch
 from pathlib import Path
 from typing import Literal
 from zoneinfo import ZoneInfo
@@ -21,7 +19,7 @@ import pandas as pd
 import polars as pl
 from etoolbox.utils.cloud import get, rmi_cloud_fs
 from etoolbox.utils.misc import download
-from etoolbox.utils.pudl import generator_ownership, pd_read_pudl, pl_scan_pudl
+from etoolbox.utils.pudl import generator_ownership, pd_read_pudl, pl_read_pudl, pl_scan_pudl
 from etoolbox.utils.pudl_helpers import (
     month_year_to_date,
     simplify_columns,
@@ -53,7 +51,6 @@ from patio.helpers import (
 from patio.package_data import PACKAGE_DATA_PATH
 
 LOGGER = logging.getLogger("patio")
-__all__ = ["AssetData"]
 
 _ = OTHER_TD_MAP
 fs = rmi_cloud_fs()
@@ -1297,6 +1294,7 @@ class AssetData:
                 "REGULATED",
                 holding_co_lse="HOLDING_CO",
             )
+            .pipe(add_id_ferc714, util_id_col="id", pudl_release=self.pudl_release)
             .join(parent, on="id", how="left")
             .with_columns(
                 n_matches_o=pl.col("id").n_unique().over("plant_id_eia", "generator_id"),
@@ -1405,6 +1403,7 @@ class AssetData:
                 "n_matches_o",
                 "n_matches",
                 "n_types",
+                "respondent_id_ferc714",
             )
         )
         mess = (
@@ -1444,6 +1443,7 @@ class AssetData:
                     "holding_co_lse",
                     pl.col("id").cast(pl.Utf8).alias("utility_id_eia_lse"),
                     "balancing_authority_code_eia",
+                    "respondent_id_ferc714",
                 ),
                 gen_lse.filter((pl.col("n_matches") != 1) & (pl.col("n_types") == 1))
                 .group_by("plant_id_eia", "generator_id")
@@ -1460,7 +1460,8 @@ class AssetData:
                     .cast(pl.Utf8)
                     .str.join(",")
                     .alias("utility_id_eia_lse"),
-                    pl.col("balancing_authority_code_eia").first(),
+                    pl.col("balancing_authority_code_eia").mode().first(),
+                    pl.col("respondent_id_ferc714").drop_nulls().mode().first(),
                 ),
                 gen_lse.filter(
                     (pl.col("n_matches") != 1)
@@ -1481,7 +1482,8 @@ class AssetData:
                     .cast(pl.Utf8)
                     .str.join(",")
                     .alias("utility_id_eia_lse"),
-                    pl.col("balancing_authority_code_eia").first(),
+                    pl.col("balancing_authority_code_eia").mode().first(),
+                    pl.col("respondent_id_ferc714").drop_nulls().mode().first(),
                 ),
                 mess.filter(pl.col("n_matches") == 1).select(
                     "plant_id_eia",
@@ -1493,7 +1495,8 @@ class AssetData:
                     "parent_name_lse",
                     "holding_co_lse",
                     pl.col("id").cast(pl.Utf8).alias("utility_id_eia_lse"),
-                    "balancing_authority_code_eia",
+                    pl.col("balancing_authority_code_eia").mode().first(),
+                    pl.col("respondent_id_ferc714").drop_nulls().mode().first(),
                 ),
                 mess.filter((pl.col("n_matches") != 1) & pl.col("all_good_ranks"))
                 .group_by("plant_id_eia", "generator_id")
@@ -1510,7 +1513,8 @@ class AssetData:
                     .cast(pl.Utf8)
                     .str.join(",")
                     .alias("utility_id_eia_lse"),
-                    pl.col("balancing_authority_code_eia").first(),
+                    pl.col("balancing_authority_code_eia").mode().first(),
+                    pl.col("respondent_id_ferc714").drop_nulls().mode().first(),
                 ),
                 mess.filter(
                     (pl.col("n_matches") != 1)
@@ -1533,6 +1537,7 @@ class AssetData:
                     "holding_co_lse",
                     pl.col("id").cast(pl.Utf8).alias("utility_id_eia_lse"),
                     "balancing_authority_code_eia",
+                    "respondent_id_ferc714",
                 ),
             ],
             how="diagonal",
@@ -1558,8 +1563,10 @@ class AssetData:
                     "reg_rank",
                     "entity_type_lse",
                     "utility_name_eia_lse",
+                    "utility_id_eia_lse",
                     "parent_name_lse",
                     "holding_co_lse",
+                    "respondent_id_ferc714",
                 ).to_pandas(),
                 on=["plant_id_eia", "generator_id"],
                 how="left",
@@ -3393,3 +3400,76 @@ def irp_data(asset_data):
     ]
     out.to_parquet(Path.home() / "patio_data/irp2.parquet")
     return out
+
+
+@lru_cache
+def ferc714_ids(pudl_release=PATIO_PUDL_RELEASE):
+    ferc714 = pl_read_pudl("out_ferc714__respondents_with_fips", release=pudl_release).filter(
+        pl.col("respondent_id_ferc714").is_not_null()
+    )
+    ba714 = (
+        ferc714.filter(pl.col("respondent_type") == "balancing_authority")
+        .group_by("balancing_authority_code_eia")
+        .agg(
+            pl.last("respondent_id_ferc714"), count=pl.col("respondent_id_ferc714").n_unique()
+        )
+        .filter(pl.col("count") == 1)
+        .to_pandas()
+        .set_index("balancing_authority_code_eia")
+        .respondent_id_ferc714.to_dict()
+    )
+    util714 = (
+        ferc714.filter(pl.col("respondent_type") == "utility")
+        .group_by("utility_id_eia")
+        .agg(
+            pl.last("respondent_id_ferc714"), count=pl.col("respondent_id_ferc714").n_unique()
+        )
+        .filter(pl.col("count") == 1)
+        .to_pandas()
+        .set_index("utility_id_eia")
+        .respondent_id_ferc714.to_dict()
+    )
+    return ba714, util714
+
+
+@singledispatch
+def add_id_ferc714(df, util_id_col="utility_id_eia", pudl_release=PATIO_PUDL_RELEASE):
+    raise NotImplementedError
+
+
+@add_id_ferc714.register(pd.DataFrame)
+def _(
+    df: pd.DataFrame, util_id_col="utility_id_eia", pudl_release=PATIO_PUDL_RELEASE
+) -> pd.DataFrame:
+    ba714, util714 = ferc714_ids(pudl_release=pudl_release)
+    return df.assign(
+        respondent_id_ferc714=lambda x: x[util_id_col]
+        .map(util714)
+        .fillna(x.balancing_authority_code_eia.map(ba714)),
+    )
+
+
+@add_id_ferc714.register(pl.DataFrame)
+def _(
+    df: pl.DataFrame, util_id_col="utility_id_eia", pudl_release=PATIO_PUDL_RELEASE
+) -> pl.DataFrame:
+    ba714, util714 = ferc714_ids(pudl_release=pudl_release)
+    return df.with_columns(
+        respondent_id_ferc714=pl.col(util_id_col)
+        .replace_strict(util714, default=None)
+        .fill_null(pl.col("balancing_authority_code_eia").replace_strict(ba714, default=None))
+        .cast(pl.Int32),
+    )
+
+
+@add_id_ferc714.register(pl.LazyFrame)
+def _(
+    df: pl.LazyFrame, util_id_col="utility_id_eia", pudl_release=PATIO_PUDL_RELEASE
+) -> pl.LazyFrame:
+    ba714, util714 = ferc714_ids(pudl_release=pudl_release)
+    return df.with_columns(
+        respondent_id_ferc714=pl.col(util_id_col)
+        .replace_strict(util714, default=None)
+        .fill_null(pl.col("balancing_authority_code_eia").replace_strict(ba714, default=None))
+        .cast(pl.Int32),
+    )

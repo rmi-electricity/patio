@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import gc
 import json
 import logging
@@ -205,6 +203,9 @@ def setup_plants_configs(
     if pids := config["project"].get("plant_ids", None):
         plants_data = [p for p in plants_data if p.pid in pids]
     config["scenario"]["default"]["param"]["pudl_release"] = pudl_release
+    config["scenario"]["default"]["param"]["opt_years"] = tuple(
+        config["scenario"]["default"]["param"]["opt_years"]
+    )
     configs = [
         {
             "name": k,

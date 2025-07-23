@@ -1,13 +1,11 @@
-from __future__ import annotations
-
 import datetime
 import logging
 import os
 import subprocess
 import time
-from collections.abc import Callable  # noqa: TC003
+from collections.abc import Callable
 from functools import lru_cache
-from pathlib import Path  # noqa: TC003
+from pathlib import Path
 
 import cvxpy as cp
 import numpy as np
@@ -16,88 +14,47 @@ import polars as pl
 from etoolbox.utils.cloud import get
 from etoolbox.utils.misc import all_logging_disabled
 from numba import njit
-from plotly import graph_objs as go  # noqa: TC002
+from plotly import graph_objs as go
 from plotly import io as pio
 
 from patio.constants import RE_TECH, ROOT_PATH, STATE_BOUNDS
 
 LOGGER = logging.getLogger("patio")
-__all__ = [
-    "add_states",
-    "adjust_col_for_pct_owned",
-    "agg_profile",
-    "cat_multiindex_as_col",
-    "check_lat_lons",
-    "clean_col",
-    "combine_cols",
-    "combine_profiles",
-    "df_in_half",
-    "df_product",
-    "distance",
-    "distance_arrays",
-    "find_na",
-    "fix_cems_datetime",
-    "fix_na_neg_col",
-    "idfn",
-    "isclose",
-    "load_or_rebuild_parquet",
-    "lstrip0",
-    "mo_to_days",
-    "ninja_profile_fix",
-    "prep_for_re_ninja",
-    "round_coordinates",
-    "seconds_since_touch",
-    "show",
-]
+QUERY_FUNCS = {
+    "pandas": {
+        "cols": lambda df: df.columns,
+        "in": lambda df, k, v: df[df[k].isin(v["item"])],
+        "eq": lambda df, k, v: df[df[k] == v["item"]],
+        "ge": lambda df, k, v: df[df[k] >= v["item"]],
+        "le": lambda df, k, v: df[df[k] <= v["item"]],
+        "ge.dt.year": lambda df, k, v: df[df[k].dt.year >= v["item"]],
+        "le.dt.year": lambda df, k, v: df[df[k].dt.year <= v["item"]],
+        "is_true": lambda df, k, v: df[df[k]],
+        "is_false": lambda df, k, v: df[~df[k]],
+    },
+    "polars": {
+        "cols": lambda df: df.lazy().collect_schema().names(),
+        "in": lambda df, k, v: df.filter(pl.col(k).is_in(v["item"])),
+        "eq": lambda df, k, v: df.filter(pl.col(k) == v["item"]),
+        "ge": lambda df, k, v: df.filter(pl.col(k) >= v["item"]),
+        "le": lambda df, k, v: df.filter(pl.col(k) <= v["item"]),
+        "ge.dt.year": lambda df, k, v: df.filter(pl.col(k).dt.year() >= v["item"]),
+        "le.dt.year": lambda df, k, v: df.filter(pl.col(k).dt.year() <= v["item"]),
+        "is_true": lambda df, k, v: df.filter(pl.col(k)),
+        "is_false": lambda df, k, v: df.filter(pl.col(k).not_()),
+    },
+}
 
 
 def df_query[T: pd.DataFrame | pl.DataFrame | pl.LazyFrame](df: T, qs: dict) -> T:
-    if isinstance(df, pd.DataFrame):
-        for k, v in qs.items():
-            if not isinstance(v, dict) or "comp" not in v:
-                continue
-            if v.get("alt_name", "") in df.columns:
-                k = v["alt_name"]
-            if v["comp"] == "in":
-                df = df[df[k].isin(v["item"])]
-            if v["comp"] == "eq":
-                df = df[df[k] == v["item"]]
-            if v["comp"] == "ge":
-                df = df[df[k] >= v["item"]]
-            if v["comp"] == "le":
-                df = df[df[k] <= v["item"]]
-            if v["comp"] == "ge.dt.year":
-                df = df[df[k].dt.year >= v["item"]]
-            if v["comp"] == "le.dt.year":
-                df = df[df[k].dt.year <= v["item"]]
-            if v["comp"] == "is_true":
-                df = df[df[k]]
-            if v["comp"] == "is_false":
-                df = df[~df[k]]
-        return df
-    elif isinstance(df, pl.DataFrame | pl.LazyFrame):
-        for k, v in qs.items():
-            if not isinstance(v, dict) or "comp" not in v:
-                continue
-            if v.get("alt_name", "") in df.columns:
-                k = v["alt_name"]
-            if v["comp"] == "in":
-                df = df.filter(pl.col(k).is_in(v["item"]))
-            if v["comp"] == "eq":
-                df = df.filter(pl.col(k) == v["item"])
-            if v["comp"] == "ge":
-                df = df.filter(pl.col(k) >= v["item"])
-            if v["comp"] == "le":
-                df = df.filter(pl.col(k) <= v["item"])
-            if v["comp"] == "ge.dt.year":
-                df = df.filter(pl.col(k).dt.year() >= v["item"])
-            if v["comp"] == "le.dt.year":
-                df = df.filter(pl.col(k).dt.year() <= v["item"])
-            if v["comp"] == "is_true":
-                df = df.filter(pl.col(k))
-            if v["comp"] == "is_false":
-                df = df.filter(pl.col(k).not_())
-        return df
+    funcs = QUERY_FUNCS[df.__module__.partition(".")[0]]
+    for k, v in qs.items():
+        if not isinstance(v, dict) or "comp" not in v:
+            continue
+        if v.get("alt_name", "") in funcs["cols"](df):
+            k = v["alt_name"]
+        df = funcs[v["comp"]](df, k, v)
+    return df
 
 
 def re_limited(re_meta: pd.DataFrame) -> pd.DataFrame:
