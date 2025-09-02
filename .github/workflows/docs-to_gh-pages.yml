@@ -4,13 +4,13 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Get history and tags for SCM versioning to work
         run: |
           git fetch --prune --unshallow
           git fetch --depth=1 origin +refs/tags/*:refs/tags/*
       - name: Install pixi
-        uses: prefix-dev/setup-pixi@v0.6.0
+        uses: prefix-dev/setup-pixi@v0.9.0
         with:
           pixi-version: v0.48.0
           manifest-path: pyproject.toml
