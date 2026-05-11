@@ -38,7 +38,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "coverage>=5.3,<7.10",  # Lets us track what code is being tested
+    "coverage>=5.3,<7.15",  # Lets us track what code is being tested
     "pytest>=6.2,<8.5",  # test framework
     "pytest-console-scripts>=1.1,<1.5",  # Allow automatic testing of scripts
     "doc8>=0.9,<2.1",  # Ensures clean documentation formatting
