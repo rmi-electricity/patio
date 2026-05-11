@@ -20,7 +20,7 @@ dependencies = [
     "rmi.dispatch[viz] @ git+https://github.com/rmi/dispatch.git",
     "rmi.etoolbox @ git+https://github.com/rmi/etoolbox.git",
     "highspy>=1.10.0,<2",
-    "pandas>=2.2.3,<3",
+    "pandas>=2.2.3,<4",
     "requests",
     "scipy>=1.15.2,<2",
     "geopandas>=1.0.1,<2",
